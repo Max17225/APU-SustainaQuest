@@ -50,11 +50,8 @@ The system reflects APU’s commitment to sustainability by combining **gamifica
 - Includes countdown timer to next refresh.
 - Refreshes automatically based on a preloaded item list in the database.
 
-### 📚 Educational Component
-- Tutors or Admins can post sustainability tips, articles, or quizzes.
-- Users earn bonus points by engaging with learning content.
-
 ---
+
 
 
 
