@@ -1,4 +1,4 @@
-# 🌿 APU Green Point & Rewards Challenge System
+# 🌿 EcoGreen 
 
 A web-based sustainability engagement platform designed for the APU community to take part in eco-friendly challenges, earn Green Points, and redeem rewards.  
 This system encourages positive environmental behavior through gamification, education, and real-world impact.
@@ -7,11 +7,11 @@ This system encourages positive environmental behavior through gamification, edu
 
 ## 📘 Overview
 
-The **APU Green Point & Rewards Challenge System** allows APU students and staff to participate in daily and weekly sustainability challenges (called *Quests*).  
+**EcoGreen* allows APU students and staff to participate in daily and weekly sustainability challenges (called *Quests*).  
 Participants earn **Green Points** for completing verified eco-actions such as recycling, reducing waste, and saving energy.  
 Points can be used to redeem rewards in the in-app shop, while leaderboards and badges foster healthy competition among the community.
 
-The system reflects APU’s commitment to sustainability by combining **education**, **participation**, and **digital motivation**.
+The system reflects APU’s commitment to sustainability by combining **gamification**, **participation**, and **digital motivation**.
 
 ---
 
@@ -55,5 +55,6 @@ The system reflects APU’s commitment to sustainability by combining **educatio
 - Users earn bonus points by engaging with learning content.
 
 ---
+
 
 
