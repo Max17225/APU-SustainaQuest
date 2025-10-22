@@ -1,4 +1,4 @@
-# 🌿 EcoGreen 
+# 🌿 EcoQuest 
 
 A web-based sustainability engagement platform designed for the APU community to take part in eco-friendly challenges, earn Green Points, and redeem rewards.  
 This system encourages positive environmental behavior through gamification, education, and real-world impact.
@@ -7,7 +7,7 @@ This system encourages positive environmental behavior through gamification, edu
 
 ## 📘 Overview
 
-**EcoGreen** allows APU students and staff to participate in daily and weekly sustainability challenges (called *Quests*).  
+**EcoQuest** allows APU students and staff to participate in daily and weekly sustainability challenges (called *Quests*).  
 Participants earn **Green Points** for completing verified eco-actions such as recycling, reducing waste, and saving energy.  
 Points can be used to redeem rewards in the in-app shop, while leaderboards and badges foster healthy competition among the community.
 
@@ -51,6 +51,7 @@ The system reflects APU’s commitment to sustainability by combining **gamifica
 - Refreshes automatically based on a preloaded item list in the database.
 
 ---
+
 
 
 
