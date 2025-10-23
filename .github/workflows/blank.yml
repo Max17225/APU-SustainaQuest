@@ -1,6 +1,6 @@
 name: PHP CI/CD Pipeline
 
-# 🧩 Trigger when code is pushed to main branch or manually run
+# Trigger when code is pushed to main branch, on PR, or manually run
 on:
   push:
     branches:
@@ -11,26 +11,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  # 🚦 Job 1: Syntax Checking (CI)
+  # Job 1: Syntax Checking (CI)
   syntax-check:
     name: PHP Syntax Validation
     runs-on: ubuntu-latest
 
     steps:
-      # 📥 Step 1: Check out repository
+      # Step 1: Check out repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🐘 Step 2: Set up PHP environment
+      # Step 2: Set up PHP environment
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
 
-      # 🔍 Step 3: Run syntax check on all PHP files
+      # Step 3: Run syntax check on all PHP files and fail if any errors are found
       - name: Run PHP syntax check
         run: |
-          echo "🔍 Checking PHP syntax..."
-          find . -type f -name "*.php" -exec php -l {} \;
-          echo "No syntax errors detected!"
-
+          echo "Checking PHP syntax..."
+          # Run PHP linter on all files and save output
+          find . -type f -name "*.php" -print0 | xargs -0 -n1 php -l | tee php-lint.log
+          
+          # Detect any syntax errors
+          if grep -q "Errors parsing" php-lint.log; then
+            echo "Syntax errors found! Please fix the issues above."
+            exit 1
+          else
+            echo "No syntax errors detected!"
+          fi
