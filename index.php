@@ -1,1 +1,3 @@
-<button><button//>
+$$variable
+
+echo$variable
