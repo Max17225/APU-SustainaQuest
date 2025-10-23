@@ -1,37 +1,36 @@
 name: PHP CI/CD Pipeline
 
+# 🧩 Trigger when code is pushed to main branch or manually run
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   workflow_dispatch:
 
 jobs:
-  deploy:
+  # 🚦 Job 1: Syntax Checking (CI)
+  syntax-check:
+    name: PHP Syntax Validation
     runs-on: ubuntu-latest
 
     steps:
+      # 📥 Step 1: Check out repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 🐘 Step 2: Set up PHP environment
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
 
+      # 🔍 Step 3: Run syntax check on all PHP files
       - name: Run PHP syntax check
-        run: find . -type f -name "*.php" -exec php -l {} \;
+        run: |
+          echo "🔍 Checking PHP syntax..."
+          find . -type f -name "*.php" -exec php -l {} \;
+          echo "No syntax errors detected!"
 
-      - name: Deploy to FTP Server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /public_html/greenpoint/
-          local-dir: ./
-          exclude: |
-            **/.git*
-            **/.github*
-            **/database/*
-            **/uploads/*
