@@ -1,5 +1,0 @@
-<?php
-$var =
-
-echo$var 
-?>
