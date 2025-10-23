@@ -1,3 +1,3 @@
-$$variable
+$var =
 
-echo$variable
+echo$var 
