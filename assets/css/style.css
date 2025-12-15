@@ -23,7 +23,9 @@ a {
   transition: 0.3s;
 }
 
-/* Header */
+/* =========================================
+   2. HEADER (Desktop Defaults)
+   ========================================= */
 .main-header {
   background-color: #264633;
   color: #ffffff;
@@ -33,10 +35,7 @@ a {
   padding: 10px 50px;
   height: 90px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.logo-img {
-  transform: translateY(5px);
+  position: relative;
 }
 
 .logo-container {
@@ -67,7 +66,6 @@ a {
   color: #ffffff;
 }
 
-/* Underline animation for links */
 .nav-link::after {
   content: "";
   position: absolute;
@@ -75,7 +73,7 @@ a {
   height: 2px;
   bottom: -4px;
   left: 0;
-  background-color: #8bc34a; /* Light Green Accent */
+  background-color: #8bc34a;
   transition: width 0.3s;
 }
 
@@ -83,6 +81,7 @@ a {
   width: 100%;
 }
 
+/* Auth Button (Desktop) */
 .btn-login {
   background-color: #ffffff;
   color: #264633;
@@ -94,7 +93,12 @@ a {
 
 .btn-login:hover {
   background-color: #e0e0e0;
-  transform: translateY(-2px); /* Slight lift effect */
+  transform: translateY(-2px);
+}
+
+/* Hamburger Icon (Hidden on Desktop) */
+.menu-toggle {
+  display: none;
 }
 
 /* =========================================
@@ -104,7 +108,6 @@ a {
   position: relative;
   width: 100%;
   height: 550px;
-  /* --- IMPORTANT: Change this URL to your background image --- */
   background-image: url("../image/hero_bg.png");
   background-size: cover;
   background-position: center;
@@ -128,7 +131,7 @@ a {
 }
 
 .hero-content {
-  max-width: 1000x;
+  max-width: 1000px;
   padding: 20px;
   z-index: 2;
 }
@@ -151,7 +154,7 @@ a {
 }
 
 .btn-register-hero {
-  background-color: #7cb342; /* Bright Green */
+  background-color: #7cb342;
   color: white;
   padding: 16px 45px;
   border-radius: 8px;
@@ -162,11 +165,10 @@ a {
 
 .btn-register-hero:hover {
   background-color: #689f38;
-  box-shadow: 0 6px 20px rgba(124, 179, 66, 0.6);
 }
 
 /* =========================================
-   4. CONTENT WRAPPER (About & How it Works)
+   4. CONTENT WRAPPER
    ========================================= */
 .content-wrapper {
   max-width: 1200px;
@@ -178,7 +180,6 @@ a {
   z-index: 5;
 }
 
-/* LEFT COLUMN: About */
 .about-card {
   flex: 1;
   background: #ffffff;
@@ -187,21 +188,13 @@ a {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.about-card h2 {
+.about-card h2,
+.how-it-works-container h2 {
   color: #264633;
   font-size: 1.8rem;
   margin-bottom: 20px;
-  display: flex;
-  align-items: center;
 }
 
-.about-card p {
-  color: #555;
-  font-size: 1.05rem;
-  text-align: justify;
-}
-
-/* RIGHT COLUMN: How It Works */
 .how-it-works-container {
   flex: 1.5;
   background: #f4f8f5;
@@ -210,21 +203,12 @@ a {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-.how-it-works-container h2 {
-  text-align: center;
-  color: #264633;
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-}
-
-/* 2x2 Grid for Steps */
 .steps-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-/* Individual Step Card */
 .step-card {
   background: white;
   padding: 20px;
@@ -232,36 +216,19 @@ a {
   display: flex;
   align-items: flex-start;
   gap: 15px;
-  transition: transform 0.2s;
   border: 1px solid #eef2f0;
+  transition: transform 0.2s;
 }
 
 .step-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-.step-icon-slot {
-  flex-shrink: 0;
-}
-
-.step-text h3 {
-  font-size: 1.1rem;
-  color: #264633;
-  margin-bottom: 5px;
-}
-
-.step-text p {
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.4;
 }
 
 /* =========================================
    5. FOOTER
    ========================================= */
 .main-footer {
-  margin-top: auto; /* Pushes footer to bottom */
+  margin-top: auto;
   background-color: #264633;
   color: white;
   padding: 20px;
@@ -269,31 +236,154 @@ a {
 }
 
 /* =========================================
-   6. RESPONSIVE (Mobile & Tablet)
+   6. SIDEBAR 
    ========================================= */
-@media (max-width: 900px) {
-  .content-wrapper {
-    flex-direction: column;
-    margin-top: 40px;
-  }
 
-  .hero-content h1 {
-    font-size: 2.5rem;
-  }
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  background-color: #1a3023;
+  overflow-x: hidden;
+  transition: 0.3s;
+  padding-top: 60px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 600px) {
+.sidebar-logo-container {
+  text-align: center;
+}
+
+.sidebar-logo-container img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 30;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar a {
+  padding: 15px 30px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #f1f1f1;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #8bc34a;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  font-size: 40px;
+  margin-left: 0;
+  padding: 10px;
+}
+
+.sidebar-btn-login {
+  background-color: #7cb342;
+  color: white !important;
+  margin: 20px 30px;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 12px 0 !important;
+}
+
+/* =========================================
+   7. MOBILE RESPONSIVE LOGIC
+   ========================================= */
+@media (max-width: 768px) {
   .main-header {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px;
+    padding: 10px 20px;
+    justify-content: space-between;
   }
 
-  .main-nav {
-    display: none; /* Hide standard nav on mobile for now */
+  .menu-toggle {
+    display: block;
+    order: 1;
+    flex: 1;
+  }
+
+  .logo-container {
+    order: 2;
+    flex: 2;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  .logo-container img {
+    width: 40px !important;
+    height: 40px !important;
+    object-fit: contain;
+    margin: 0 !important;
+  }
+
+  .site-title {
+    font-size: 1.1rem !important;
+    white-space: nowrap !important;
+    display: block !important;
+    color: white;
+  }
+
+  .main-header::after {
+    content: "";
+    flex: 1;
+    order: 3;
+  }
+
+  .main-nav,
+  .auth-action {
+    display: none !important;
+  }
+
+  .site-title {
+    font-size: 1.1rem;
+  }
+
+  .content-wrapper {
+    flex-direction: column !important; /* Stack Vertical */
+    margin-top: 20px;
+  }
+
+  .about-card,
+  .how-it-works-container {
+    width: 100% !important;
+    flex: none !important;
+    margin-bottom: 20px;
+    padding: 30px 20px;
   }
 
   .steps-grid {
-    grid-template-columns: 1fr; /* Stack steps vertically */
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    min-height: 400px;
+    padding: 60px 20px;
+  }
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .site-title {
+    display: none;
   }
 }
