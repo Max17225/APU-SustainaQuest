@@ -113,7 +113,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </div>
                 </a>
             <?php else: ?>
-                <a href="<?php echo $path; ?>login.php" class="btn-login">Login/Register</a>
+                <a href="<?php echo $path; ?>auth_page/login.php" class="btn-login">Login/Register</a>
             <?php endif; ?>
         </div>
     </header>
