@@ -1,0 +1,332 @@
+/* ============ 1. GLOBAL LAYOUT ============ */
+html {
+  overflow-y: scroll;
+}
+
+body {
+  background-color: #f4f7f6;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  text-align: left;
+}
+
+.quest-main-container {
+  margin: 30px auto;
+  width: 90%;
+  max-width: 1400px;
+  min-height: 500px;
+  text-align: left;
+}
+
+/* ============ 2. TOGGLE BUTTONS (CENTERED) ============ */
+.main-toggle-container {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  background-color: #e0e0e0;
+  border-radius: 50px;
+  padding: 5px;
+  margin: 0 auto 30px auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.main-toggle-btn {
+  padding: 12px 35px;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 40px;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.main-toggle-btn.active {
+  background-color: #264633;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(38, 70, 51, 0.3);
+}
+
+.main-toggle-btn:hover:not(.active) {
+  background-color: #d4d4d4;
+  color: #333;
+}
+
+/* ============ 3. SUB TABS (Daily/Weekly) ============ */
+#view-available,
+#view-history {
+  width: 100%;
+}
+
+.sub-tabs-container {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 30px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0;
+  width: 100%;
+}
+
+.sub-tab-link {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #999;
+  cursor: pointer;
+  padding-bottom: 12px;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.2s;
+}
+
+.sub-tab-link:hover {
+  color: #555;
+}
+.sub-tab-link.active {
+  color: #264633;
+  border-bottom: 3px solid #264633;
+}
+
+/* ============ 4. GRID SYSTEM (Strict 5 Columns) ============ */
+.quests-grid {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  /* Default for Mobile/Tablet: Auto-fit */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+/* FOR LAPTOPS & DESKTOPS: FORCE 5 COLUMNS */
+@media (min-width: 1100px) {
+  .quests-grid {
+    /* This forces exactly 5 items per row */
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* ============ 5. CARD DESIGN ============ */
+.quest-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  min-height: 320px;
+  height: 100%;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.quest-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  border-color: #264633;
+}
+
+.card-content-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.card-img-box {
+  background-color: #f8fcf9;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.card-img-box img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.quest-card h3 {
+  font-size: 1rem;
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.quest-stats {
+  background-color: #f1f8f4;
+  border-radius: 8px;
+  padding: 8px;
+  width: 100%;
+  font-size: 0.8rem;
+  color: #264633;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: #264633;
+  color: #ffffff;
+  border: none;
+  padding: 10px 0;
+  width: 100%;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.9rem;
+}
+
+.btn-primary:hover {
+  background-color: #1e3628;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:disabled {
+  background-color: #95a5a6 !important;
+  color: #ecf0f1 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============ 6. STATUS BADGES ============ */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-pending {
+  background: #fff3e0;
+  color: #e67e22;
+}
+.status-completed {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+.status-rejected {
+  background: #ffebee;
+  color: #c0392b;
+}
+
+.quest-type-label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f0f0f0;
+  color: #777;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.quest-card {
+  position: relative;
+}
+
+/* ============ 7. MODAL ============ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  /* 1. Stretch to edges */
+  margin: -30px -30px 20px -30px;
+  padding: 20px 30px;
+
+  /* 2. Dark Green Background */
+  background-color: #264633;
+  border-radius: 12px 12px 0 0;
+
+  /* 3. Layout */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: none;
+}
+
+/* Make the title text white */
+.modal-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Make the 'X' close button white */
+.close-modal {
+  cursor: pointer;
+  font-size: 2rem;
+  line-height: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s;
+}
+
+.close-modal:hover {
+  color: #ffffff;
+}
+
+.detail-row {
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: #333;
+  display: flex;
+  align-items: baseline;
+}
+.detail-label {
+  font-weight: 600;
+  min-width: 110px;
+  color: #555;
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}

@@ -1,3 +1,98 @@
+/* --- HEADER SPECIFIC STYLES --- */
+.navbar {
+    background-color: #264633; /* Your dark green theme */
+    color: white;
+    padding: 15px 0;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #2ecc71; /* Light green hover */
+}
+
+/* --- PROFILE CIRCLE & DROPDOWN --- */
+.profile-menu {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #ecf0f1;
+    color: #264633;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: background 0.2s;
+}
+
+.profile-circle:hover {
+    background-color: #2ecc71;
+    color: white;
+}
+
+/* Dropdown Hidden by Default */
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Show class added by JS */
+.profile-dropdown.show {
+    display: block;
+}
+
+.profile-dropdown a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+}
+
+.profile-dropdown a:hover {
+    background-color: #f1f1f1;
+}
+
+.profile-dropdown .danger-link {
+    color: #e74c3c;
+}
+
+.dropdown-header {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+
 /* =========================================
    1. GLOBAL RESET & FONTS
    ========================================= */
@@ -33,7 +128,7 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 10px 50px;
-  height: 90px;
+  height: 100px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
 }
@@ -81,7 +176,6 @@ a {
   width: 100%;
 }
 
-/* Auth Button (Desktop) */
 .btn-login {
   background-color: #ffffff;
   color: #264633;
@@ -96,7 +190,6 @@ a {
   transform: translateY(-2px);
 }
 
-/* Hamburger Icon (Hidden on Desktop) */
 .menu-toggle {
   display: none;
 }
@@ -293,8 +386,8 @@ a {
 }
 
 .sidebar-btn-login {
-  background-color: #7cb342;
-  color: white !important;
+  background-color: #ffffff;
+  color: #264633 !important;
   margin: 20px 30px;
   text-align: center;
   border-radius: 5px;
@@ -357,7 +450,7 @@ a {
   }
 
   .content-wrapper {
-    flex-direction: column !important; /* Stack Vertical */
+    flex-direction: column !important;
     margin-top: 20px;
   }
 

@@ -2,16 +2,79 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (!isset($path)) { $path = ""; }
+
+// Check login status
+$is_logged_in = isset($_SESSION['user_id']);
+$path = $path ?? "./"; 
+
+// Get current page name to set active class 
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SustainaQuest - Home</title>
+    <title>SustainaQuest</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="<?php echo $path; ?>assets/css/style.css">
+
+    <?php if (isset($page_css)): ?>
+        <link rel="stylesheet" href="<?php echo $path; ?>assets/css/<?php echo $page_css; ?>">
+    <?php endif; ?>
+
+    <style>
+        /* Active Link Style (Permanent Underline) */
+        .nav-link.active {
+            position: relative;
+            color: #fff; 
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #fff; 
+        }
+
+        /* Profile Header Styles */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .user-profile .user-name {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .profile-pic-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #d9d9d9; 
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-pic-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,14 +92,29 @@ if (!isset($path)) { $path = ""; }
         </div>
 
         <nav class="main-nav">
-            <a href="<?php echo $path; ?>index.php" class="nav-link">Home</a>
-            <a href="<?php echo $path; ?>user/quests.php" class="nav-link">Quests</a>
-            <a href="<?php echo $path; ?>leaderboard.php" class="nav-link">Leaderboard</a>
-            <a href="<?php echo $path; ?>shop.php" class="nav-link">Reward Shop</a>
+            <?php if ($is_logged_in): ?>
+                <a href="<?php echo $path; ?>user/user_dashboard.php" class="nav-link <?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+            <?php else: ?>
+                <a href="<?php echo $path; ?>index.php" class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
+            <?php endif; ?>
+
+            <a href="<?php echo $path; ?>user/quests.php" class="nav-link <?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
+            <a href="<?php echo $path; ?>leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+            <a href="<?php echo $path; ?>shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
         </nav>
 
         <div class="auth-action">
-            <a href="<?php echo $path; ?>login.php" class="btn-login">Login/Register</a>
+            <?php if ($is_logged_in): ?>
+                <a href="<?php echo $path; ?>user/profile.php" class="user-profile">
+                    <span class="user-name">User</span> <div class="profile-pic-container">
+                        <?php if (isset($_SESSION['profile_pic']) && !empty($_SESSION['profile_pic'])): ?>
+                            <img src="<?php echo $path . $_SESSION['profile_pic']; ?>" alt="Profile">
+                        <?php endif; ?>
+                    </div>
+                </a>
+            <?php else: ?>
+                <a href="<?php echo $path; ?>login.php" class="btn-login">Login/Register</a>
+            <?php endif; ?>
         </div>
     </header>
 
@@ -48,14 +126,24 @@ if (!isset($path)) { $path = ""; }
         </div>
 
         <div class="sidebar-content">
-            <a href="<?php echo $path; ?>index.php">Home</a>
-            <a href="<?php echo $path; ?>user/quests.php">Quests</a>
-            <a href="<?php echo $path; ?>leaderboard.php">Leaderboard</a>
-            <a href="<?php echo $path; ?>shop.php">Reward Shop</a>
+            <?php if ($is_logged_in): ?>
+                <a href="<?php echo $path; ?>user/dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+            <?php else: ?>
+                <a href="<?php echo $path; ?>index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
+            <?php endif; ?>
+            
+            <a href="<?php echo $path; ?>user/quests.php" class="<?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
+            <a href="<?php echo $path; ?>leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+            <a href="<?php echo $path; ?>shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
             
             <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 20px;">
             
-            <a href="<?php echo $path; ?>login.php" class="sidebar-btn-login">Login / Register</a>
+            <?php if ($is_logged_in): ?>
+                <a href="<?php echo $path; ?>user/profile.php">My Profile</a>
+                <a href="<?php echo $path; ?>logout.php" style="color: #ff6b6b;">Logout</a>
+            <?php else: ?>
+                <a href="<?php echo $path; ?>login.php" class="sidebar-btn-login">Login / Register</a>
+            <?php endif; ?>
         </div>
     </div>
 
