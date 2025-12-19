@@ -5,7 +5,7 @@
         <div class="hero-content">
             <h1>Make a Difference. Get Rewarded</h1>
             <p>Join APU Green Points & Rewards Challenge System Today!</p>
-            <a href="register.php" class="btn-register-hero">Register Now!</a>
+            <a href="auth_page/register.php" class="btn-register-hero">Register Now!</a>
         </div>
     </div>
 </section>
