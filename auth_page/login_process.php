@@ -39,19 +39,21 @@ try {
     $stmt = $conn->prepare("
         SELECT *
         FROM (
-            SELECT 
-                userId AS id,
-                userName AS username,
-                passwordHash AS password,
-                'user' AS role,
-                isBanned AS isBanned
-            FROM users
+            SELECT
+                moderatorId AS id,
+                modName AS username,
+                email AS email,
+                modPassword AS password,
+                'moderator' AS role,
+                0 AS isBanned
+            FROM moderators
 
             UNION ALL
 
             SELECT
                 adminId AS id,
                 adminName AS username,
+                NULL AS email,
                 adminPassword AS password,
                 'admin' AS role,
                 0 AS isBanned
@@ -59,19 +61,20 @@ try {
 
             UNION ALL
 
-            SELECT
-                moderatorId AS id,
-                modName AS username,
-                modPassword AS password,
-                'moderator' AS role,
-                0 AS isBanned
-            FROM moderators
+            SELECT 
+                userId AS id,
+                userName AS username,
+                email AS email,
+                passwordHash AS password,
+                'user' AS role,
+                isBanned AS isBanned
+            FROM users
         ) AS all_accounts
-        WHERE username = ?
+        WHERE username = ? OR email = ?
         LIMIT 1
     ");
 
-    $stmt->bind_param("s", $username_input); 
+    $stmt->bind_param("ss", $username_input, $username_input);
     $stmt->execute();
 
     $result = $stmt->get_result();
@@ -101,15 +104,15 @@ try {
 
     switch ($account['role']) {
         case 'admin':
-            header('Location: admin/admin_dashboard.php'); // Redirect to the homepage u did
+            header('Location: ../admin/admin_dashboard.php'); // Redirect to the homepage u did
             exit;
 
         case 'moderator':
-            header('Location: moderator/mod_dashboard.php'); // Redirect to the homepage u did
+            header('Location: ../moderator/mod_dashboard.php'); // Redirect to the homepage u did
             exit;
 
         default:
-            header('Location: user/user_dashboard.php'); // Redirect to the homepage u did
+            header('Location: ../user/user_dashboard.php'); // Redirect to the homepage u did
     }
 
 } catch (mysqli_sql_exception $e) {
