@@ -1,14 +1,15 @@
+<!-- auth_page/register_process.php -->
+
 <?php
 session_start();
 require_once '../includes/db_connect.php'; 
+require_once '../includes/general_function.php';
 
 /* =========================
    Request Method Check
    ========================= */
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: register.php');
-    exit;
-}
+// Ensure the this process is accessed via the registration form submission only
+require_post('register.php');
 
 /* =========================
    Input Sanitization
@@ -21,33 +22,25 @@ $password_input = $_POST['password'] ?? '';
    Basic Validation
    ========================= */
 if ($username_input === '' || $password_input === '' || $email_input === '') {
-    $_SESSION['status_msg']   = 'Please fill in all required fields.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: register.php');
+    redirect_with_status('Please fill in all required fields.', 'warning', 'register.php');
     exit;
 }
 
 // Validate email format
 if (!filter_var($email_input, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['status_msg']   = 'Invalid email format.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: register.php');
+    redirect_with_status('Invalid email format.', 'warning', 'register.php');
     exit;
 }
 
 // Username format validation (alphanumeric and underscores, 3-20 characters)
 if (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username_input)) {
-    $_SESSION['status_msg']   = 'Invalid username format.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: register.php');
+    redirect_with_status('Invalid username format.', 'warning', 'register.php');
     exit;
 }
 
 // Password strength validation (minimum 8 characters)
 if (strlen($password_input) < 8) {
-    $_SESSION['status_msg']   = 'Password must be at least 8 characters long.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: register.php');
+    redirect_with_status('Password must be at least 8 characters long.', 'warning', 'register.php');
     exit;
 }
 
@@ -56,9 +49,7 @@ if (strlen($password_input) < 8) {
    ========================= */
 // Special case: disallow "adam" as a username(the only reserved name for admin account)
 if ($username_input === 'adam') {
-    $_SESSION['status_msg']   = 'INVALID USERNAME "adam" - TRY ANOTHER USERNAME.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: register.php');
+    redirect_with_status('INVALID USERNAME "adam" - TRY ANOTHER USERNAME.', 'warning', 'register.php');
     exit;
 }
 
@@ -81,9 +72,7 @@ try {
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            $_SESSION['status_msg']   = 'Username already taken. Please choose another one.';
-            $_SESSION['status_class'] = 'status-warning';
-            header('Location: register.php');
+            redirect_with_status('Username already taken. Please choose another one.', 'warning', 'register.php');
             exit;
         }
 
@@ -95,9 +84,7 @@ try {
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            $_SESSION['status_msg']   = 'Email already taken. Please choose another one.';
-            $_SESSION['status_class'] = 'status-warning';
-            header('Location: register.php');
+            redirect_with_status('Email already taken. Please choose another one.', 'warning', 'register.php');
             exit;
         }
     }
@@ -116,15 +103,14 @@ try {
     $stmt->bind_param('sss', $username_input, $email_input, $hashedPassword);
     $stmt->execute();
 
-    $_SESSION['status_msg']   = 'Registration successful! You can now log in.';
-    $_SESSION['status_class'] = 'status-success';
-    header('Location: login.php');
+    redirect_with_status('Registration successful! You can now log in.', 'success', 'login.php');
 
 } catch (mysqli_sql_exception $e) {
-    $_SESSION['status_msg']   = 'An error occurred during registration. Please try again later.';
-    $_SESSION['status_class'] = 'status-error';
-    header('Location: register.php');
+    redirect_with_status('Something went wrong. Please try again.', 'error', 'register.php');
     exit;
 
+} finally {
+    if (isset($stmt)) {
+        $stmt->close();
+    }
 }
-?>
