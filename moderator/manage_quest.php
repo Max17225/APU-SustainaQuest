@@ -213,6 +213,5 @@ $quests = fetch_all_quests($conn); // function defined in ../utilities/moderator
         });
 
     </script>
-    </script>
 
     <?php include_once '../includes/footer.php'; ?>
