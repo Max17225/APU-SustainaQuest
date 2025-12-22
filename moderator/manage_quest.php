@@ -12,7 +12,7 @@ require_once '../includes/functions.php';
 require_once 'mod_functions.php';
 
 // Ensure only a logged-in Moderator can access this page BEFORE sending output
-check_moderator_access();
+require_role('moderator');
 
 // Set header path and optional page-specific CSS, then include global header
 $path = "../"; // assets are one level up from moderator/
