@@ -20,7 +20,7 @@ require_once '../includes/db_connect.php';
 // Ensure the user is logged in before allowing quest submission
 // ============================================================
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: ../auth_page/login.php");
     exit();
 }
 
@@ -149,14 +149,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["evidence_file"])) {
         // 7. AWARD POINTS & EXP (AUTO-APPROVED ONLY)
         // ====================================================
         if ($status === 'Approved') {
-            $upd = $conn->prepare(
-                "UPDATE users 
-                 SET greenPoints = greenPoints + ?, 
-                     levelProgress = levelProgress + ? 
-                 WHERE userId = ?"
-            );
-            $upd->bind_param("iii", $points, $exp, $user_id);
+            
+            // A. Award Green Points (Simple Addition)
+            $upd = $conn->prepare("UPDATE users SET greenPoints = greenPoints + ? WHERE userId = ?");
+            $upd->bind_param("ii", $points, $user_id);
             $upd->execute();
+
+            // B. Award XP & Handle Level Up (Using user_functions.php)
+            // --------------------------------------------------------
+            // This replaces the simple UPDATE query for levels.
+            // It handles the exponential curve and level-up overflow.
+            // --------------------------------------------------------
+            
+            // Check location of user_functions.php
+            if (file_exists('../includes/user_functions.php')) {
+                require_once '../includes/user_functions.php';
+            } else {
+                // Fallback if file is in the same directory
+                require_once 'user_functions.php';
+            }
+
+            // Call the function to add XP and check for level up
+            // Note: This function ALSO checks for badges internally if a level up occurs!
+            add_xp_and_level_up($conn, $user_id, $exp);
         }
 
         // Redirect back to quests page with success indicator

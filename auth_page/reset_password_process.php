@@ -1,14 +1,15 @@
+<!-- auth_page/reset_password_process.php -->
+
 <?php
 session_start();
 require_once '../includes/db_connect.php'; 
+require_once '../includes/general_function.php';
 
 /* =========================
    Request Method Check
    ========================= */
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: reset_password.php');
-    exit;
-}
+// Ensure the this process is accessed via the reset password form submission only
+require_post('reset_password.php');
 
 /* =========================
    Input Sanitization
@@ -22,17 +23,7 @@ $confirm_password_input = $_POST['confirm_password'] ?? '';
    Basic Validation
    ========================= */
 if ($username_input === '' || $email_input === '' || $new_password_input === '' || $confirm_password_input === '') {
-    $_SESSION['status_msg']   = 'Please fill in all required fields.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: reset_password.php');
-    exit;
-}
-
-// Validate email format
-if (!filter_var($email_input, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['status_msg']   = 'Invalid email format.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: reset_password.php');
+    redirect_with_status('Please fill in all required fields.', 'warning', 'reset_password.php');
     exit;
 }
 
@@ -40,33 +31,46 @@ if (!filter_var($email_input, FILTER_VALIDATE_EMAIL)) {
    Username and email existence check
    ========================= */
 try {
-    // Prepare statement
-    $stmt = $conn->prepare(
-        "SELECT * FROM users WHERE userName = ? AND email = ?"
-    );
+    $target_user = null;
+    $role = null;
 
-    // Bind parameters
+
+    // Check in users table
+    $stmt = $conn->prepare("SELECT userName, email FROM users WHERE userName = ? AND email = ?");
+
     $stmt->bind_param('ss', $username_input, $email_input);
     $stmt->execute();
-
-    // Get result
     $result = $stmt->get_result();
     $target_user = $result->fetch_assoc();
 
-    // Check if user exists
+    if ($target_user) {
+        $role = 'user';
+
+    } else {
+
+        // Check in moderators table
+        $stmt = $conn->prepare(
+            "SELECT modName, email FROM moderators WHERE modName = ? AND email = ?"
+        );
+        $stmt->bind_param('ss', $username_input, $email_input);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $target_user = $result->fetch_assoc();
+
+        if ($target_user) {
+            $role = 'moderator';
+        }
+    }
+
     if (!$target_user) {
-        $_SESSION['status_msg']   = 'No account found with the provided username and email.';
-        $_SESSION['status_class'] = 'status-warning';
-        header('Location: reset_password.php');
+        redirect_with_status('No account found with the provided username and email.', 'warning', 'reset_password.php');
         exit;
     }
 
 } catch (mysqli_sql_exception $e) {
 
     error_log($e->getMessage());
-    $_SESSION['status_msg']   = 'Something went wrong. Please try again.';
-    $_SESSION['status_class'] = 'status-error';
-    header('Location: reset_password.php');
+    redirect_with_status('Something went wrong. Please try again.', 'error', 'reset_password.php');
     exit;
 }
 
@@ -74,9 +78,7 @@ try {
    New Password format validation
    ========================= */
 if (strlen($new_password_input) < 8) {
-    $_SESSION['status_msg']   = 'Password must be at least 8 characters long.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: reset_password.php');
+    redirect_with_status('Password must be at least 8 characters long.', 'warning', 'reset_password.php');
     exit;
 }
 
@@ -84,9 +86,7 @@ if (strlen($new_password_input) < 8) {
    Password Confirmation Check
    ========================= */
 if ($new_password_input !== $confirm_password_input) {
-    $_SESSION['status_msg']   = 'New password and confirmation do not match.';
-    $_SESSION['status_class'] = 'status-warning';
-    header('Location: reset_password.php');
+    redirect_with_status('Confirm passwords do not match.', 'warning', 'reset_password.php');
     exit;
 }
 
@@ -97,14 +97,23 @@ try {
     // Hash password first
     $hashed_password = password_hash($new_password_input, PASSWORD_DEFAULT);
 
-    // Prepare statement
-    $stmt = $conn->prepare(
-        "UPDATE users 
-         SET passwordHash = ? 
-         WHERE userName = ? AND email = ?"
-    );
+    if ($role === 'user') {
 
-    // Bind parameters (3 params = 3 types)
+        $stmt = $conn->prepare(
+            "UPDATE users 
+            SET passwordHash = ? 
+            WHERE userName = ? AND email = ?"
+        );
+
+    } elseif ($role === 'moderator') {
+
+        $stmt = $conn->prepare(
+            "UPDATE moderators 
+            SET modPassword = ? 
+            WHERE modName = ? AND email = ?"
+        );
+    }
+
     $stmt->bind_param(
         'sss',
         $hashed_password,
@@ -114,24 +123,21 @@ try {
 
     $stmt->execute();
 
-    // Check if update was successful
+    // Check if any row was actually updated
     if ($stmt->affected_rows === 1) {
-        $_SESSION['status_msg']   = 'Password reset successfully.';
-        $_SESSION['status_class'] = 'status-success';
-        header('Location: login.php');
+        // Successful password reset
+        redirect_with_status('Password has been reset successfully.', 'success', 'login.php');
         exit;
+
     } else {
-        $_SESSION['status_msg']   = 'Password reset failed or no changes made.';
-        $_SESSION['status_class'] = 'status-warning';
-        header('Location: reset_password.php');
+        // No rows updated 
+        redirect_with_status('Failed to reset password. Please try again.', 'error', 'reset_password.php');
         exit;
     }
 } catch (mysqli_sql_exception $e) {
 
     error_log('Password Reset Error: ' . $e->getMessage());
-    $_SESSION['status_msg']   = 'Something went wrong. Please try again.';
-    $_SESSION['status_class'] = 'status-error';
-    header('Location: reset_password.php');
+    redirect_with_status('Server error. Please try again later.', 'error', 'reset_password.php');
     exit;
 
 } finally {

@@ -1,15 +1,15 @@
+<!-- auth_page/login_process.php -->
+
 <?php
 session_start();
-require_once '../includes/db_connect.php'; 
+require_once '../includes/db_connect.php';
+require_once '../includes/general_function.php'; 
 
 /* =========================
    Request Method Check
    ========================= */
 // Ensure the this process is accessed via the login form submission only
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: login.php');
-    exit;
-}
+require_post('login.php');
 
 /* =========================
    Input Sanitization
@@ -24,10 +24,7 @@ $password_input  = $_POST['password'] ?? '';
 // Client-side HTML validation like required can be bypassed by disabling JavaScript or sending a manual POST request
 // If any required field is empty, redirect the user back to the login page
 if ($username_input === '' || $password_input === '') {
-    $_SESSION['status_msg'] = 'Please fill in all required fields.';
-    $_SESSION['status_class']   = 'status-warning';
-
-    header('Location: login.php');
+    redirect_with_status('Please fill in all required fields.', 'warning', 'login.php');
     exit;
 }
 
@@ -79,19 +76,13 @@ try {
 
     // Verify user existence and password correctness
     if (!$account || !password_verify($password_input, $account['password'])) {
-        $_SESSION['status_msg'] = 'Invalid username or password.';
-        $_SESSION['status_class']   = 'status-warning';
-
-        header('Location: login.php');
+        redirect_with_status('Invalid username or password.', 'warning', 'login.php');
         exit;
     }
 
     // Check if the normal user is banned
     if ($account['role'] === 'user' && $account['isBanned']) {
-        $_SESSION['status_msg'] = 'The user account has been banned.';
-        $_SESSION['status_class']   = 'status-error';
-
-        header('Location: login.php');
+        redirect_with_status('Account has been banned.', 'warning', 'login.php');
         exit;
     }
 
@@ -99,27 +90,31 @@ try {
     $_SESSION['role'] = $account['role'];
     $_SESSION['user_id'] = $account['id'];
 
+    $admin_dashboard = resolve_location('admin_dashboard.php');
+    $mod_dashboard   = resolve_location('mod_dashboard.php');
+    $user_dashboard  = resolve_location('user_dashboard.php');
     switch ($account['role']) {
+
         case 'admin':
-            header('Location: admin/admin_dashboard.php'); // Redirect to the homepage u did
+            header("Location: $admin_dashboard"); // Redirect to the homepage u did
             exit;
 
         case 'moderator':
-            header('Location: moderator/mod_dashboard.php'); // Redirect to the homepage u did
+            header("Location: $mod_dashboard"); // Redirect to the homepage u did
             exit;
 
         default:
-            header('Location: user/user_dashboard.php'); // Redirect to the homepage u did
+            header("Location: $user_dashboard"); // Redirect to the homepage u did
     }
 
 } catch (mysqli_sql_exception $e) {
     // Log the error message for debugging (avoid displaying sensitive info to users)
     error_log('Database Error: ' . $e->getMessage());
-    $_SESSION['status_msg'] = 'Server error. Please try again later.';
-    $_SESSION['status_class']   = 'status-error';
-
-    header('Location: login.php');
+    redirect_with_status('Server error. Please try again later.', 'error', 'login.php');
     exit;
     
+} finally {
+    if (isset($stmt)) {
+        $stmt->close();
+    }
 }
-?>
