@@ -101,7 +101,30 @@ try {
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('sss', $username_input, $email_input, $hashedPassword);
-    $stmt->execute();
+    if ($stmt->execute()) {
+        
+        // Get the ID of the newly created user
+        $new_user_id = $conn->insert_id;
+
+        // ============================================================
+        // AWARD DEFAULT 'Green Rookie' BADGE
+        // ============================================================
+        
+        // 1. Get Badge ID
+        $badge_sql = "SELECT badgeId FROM badges WHERE badgeName = 'Green Rookie' LIMIT 1";
+        $badge_stmt = $conn->prepare($badge_sql);
+        $badge_stmt->execute();
+        $badge_result = $badge_stmt->get_result();
+
+        if ($default_badge = $badge_result->fetch_assoc()) {
+            // 2. Assign Badge to User
+            $award_sql = "INSERT INTO userbadges (userId, badgeId) VALUES (?, ?)";
+            $award_stmt = $conn->prepare($award_sql);
+            $award_stmt->bind_param("ii", $new_user_id, $default_badge['badgeId']);
+            $award_stmt->execute();
+        }
+    }
+
 
     redirect_with_status('Registration successful! You can now log in.', 'success', 'login.php');
 

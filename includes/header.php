@@ -3,12 +3,38 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check login status
+// 1. Check login status
 $is_logged_in = isset($_SESSION['user_id']);
+
+// 2. Set Path Default
 $path = $path ?? "./"; 
 
-// Get current page name to set active class 
+// 3. Define Home Link
+$home_link = $is_logged_in ? $path . "user/user_dashboard.php" : $path . "index.php";
+
+// 4. Get Current Page
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// ============================================================
+// 5. FETCH USERNAME 
+// ============================================================
+$display_name = "User"; 
+
+if ($is_logged_in) {
+    if (!isset($conn)) {
+        require_once($path . "includes/db_connect.php");
+    }
+
+    // Fetch the name from the database
+    $h_stmt = $conn->prepare("SELECT userName FROM users WHERE userId = ?");
+    $h_stmt->bind_param("i", $_SESSION['user_id']);
+    $h_stmt->execute();
+    $h_result = $h_stmt->get_result();
+    
+    if ($row = $h_result->fetch_assoc()) {
+        $display_name = $row['userName'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -24,57 +50,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <?php if (isset($page_css)): ?>
         <link rel="stylesheet" href="<?php echo $path; ?>assets/css/<?php echo $page_css; ?>">
     <?php endif; ?>
-
-    <style>
-        /* Active Link Style (Permanent Underline) */
-        .nav-link.active {
-            position: relative;
-            color: #fff; 
-            font-weight: 600;
-        }
-        
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: #fff; 
-        }
-
-        /* Profile Header Styles */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: white;
-            cursor: pointer;
-        }
-
-        .user-profile .user-name {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .profile-pic-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #d9d9d9; 
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .profile-pic-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
 </head>
 <body>
 
@@ -85,9 +60,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
 
         <div class="logo-container">
-            <img src="<?php echo $path; ?>assets/image/SustainaQuest Logo.png" alt="SustainaQuest Logo" class="logo-img" style="width: 50px; height: 50px; object-fit: contain;"> 
-            <a href="<?php echo $path; ?>index.php" style="text-decoration:none; color:white;">
-                <span class="site-title">SustainaQuest</span>
+            <a href="<?php echo $home_link; ?>" style="text-decoration:none; display:flex; align-items:center; gap:15px;">
+                <img src="<?php echo $path; ?>assets/image/SustainaQuest Logo.png" alt="SustainaQuest Logo" class="logo-img"> 
+                <span class="site-title" style="color:white;">SustainaQuest</span>
             </a>
         </div>
 
@@ -99,16 +74,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <?php endif; ?>
 
             <a href="<?php echo $path; ?>user/quests.php" class="nav-link <?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
-            <a href="<?php echo $path; ?>leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
-            <a href="<?php echo $path; ?>shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+            <a href="<?php echo $path; ?>user/leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+            <a href="<?php echo $path; ?>user/shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
         </nav>
 
         <div class="auth-action">
             <?php if ($is_logged_in): ?>
                 <a href="<?php echo $path; ?>user/profile.php" class="user-profile">
-                    <span class="user-name">User</span> <div class="profile-pic-container">
+                    
+                    <span class="user-name"><?php echo htmlspecialchars($display_name); ?></span> 
+                    
+                    <div class="profile-pic-container">
                         <?php if (isset($_SESSION['profile_pic']) && !empty($_SESSION['profile_pic'])): ?>
                             <img src="<?php echo $path . $_SESSION['profile_pic']; ?>" alt="Profile">
+                        <?php else: ?>
+                             <span style="color:#555; font-size:1.2rem;">👤</span>
                         <?php endif; ?>
                     </div>
                 </a>
@@ -127,22 +107,22 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         <div class="sidebar-content">
             <?php if ($is_logged_in): ?>
-                <a href="<?php echo $path; ?>user/dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+                <a href="<?php echo $path; ?>user/user_dashboard.php" class="<?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
             <?php else: ?>
                 <a href="<?php echo $path; ?>index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
             <?php endif; ?>
             
             <a href="<?php echo $path; ?>user/quests.php" class="<?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
-            <a href="<?php echo $path; ?>leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
-            <a href="<?php echo $path; ?>shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+            <a href="<?php echo $path; ?>user/leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+            <a href="<?php echo $path; ?>user/shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
             
             <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 20px;">
             
             <?php if ($is_logged_in): ?>
                 <a href="<?php echo $path; ?>user/profile.php">My Profile</a>
-                <a href="<?php echo $path; ?>logout.php" style="color: #ff6b6b;">Logout</a>
+                <a href="<?php echo $path; ?>auth_page/logout.php" style="color: #ff6b6b;">Logout</a>
             <?php else: ?>
-                <a href="<?php echo $path; ?>login.php" class="sidebar-btn-login">Login / Register</a>
+                <a href="<?php echo $path; ?>auth_page/login.php" class="sidebar-btn-login">Login / Register</a>
             <?php endif; ?>
         </div>
     </div>
@@ -157,3 +137,5 @@ $current_page = basename($_SERVER['PHP_SELF']);
             }
         }
     </script>
+</body>
+</html>
