@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 // FILE: includes/session_check.php
 
