@@ -6,6 +6,8 @@ require_once 'mod_functions.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Ensure only a logged-in Moderator can access this page
 require_role('moderator');
 
 require_once '../includes/header.php';
