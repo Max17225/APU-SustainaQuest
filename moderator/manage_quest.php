@@ -2,6 +2,12 @@
 require_once '../includes/session_check.php';
 require_once '../includes/db_connect.php';
 require_once 'mod_functions.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_role('moderator');
+
 require_once '../includes/header.php';
 
 $notice = '';
