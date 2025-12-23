@@ -2,9 +2,7 @@
 
 <!-- Prepare status message HTML if exists -->
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 $status_HTML = '';
 if (isset($_SESSION['status_msg']) && isset($_SESSION['status_class'])) {
 
@@ -40,7 +38,7 @@ if (isset($_SESSION['status_msg']) && isset($_SESSION['status_class'])) {
 
     <!-- Logo Image Path -->
     <?php
-        require_once '../includes/functions.php';
+        include '../includes/general_function.php';
     ?>
 
 </head>

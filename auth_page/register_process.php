@@ -1,15 +1,15 @@
+<!-- auth_page/register_process.php -->
+
 <?php
 session_start();
 require_once '../includes/db_connect.php'; 
-require_once '../includes/functions.php'; 
+require_once '../includes/general_function.php';
 
 /* =========================
    Request Method Check
    ========================= */
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: register.php');
-    exit;
-}
+// Ensure the this process is accessed via the registration form submission only
+require_post('register.php');
 
 /* =========================
    Input Sanitization
@@ -47,8 +47,9 @@ if (strlen($password_input) < 8) {
 /* =========================
    Reserved Username (check for username conflicts)
    ========================= */
+// Special case: disallow "adam" as a username(the only reserved name for admin account)
 if ($username_input === 'adam') {
-    redirect_with_status('The username "adam" is reserved. Please choose another.', 'warning', 'register.php');
+    redirect_with_status('INVALID USERNAME "adam" - TRY ANOTHER USERNAME.', 'warning', 'register.php');
     exit;
 }
 
@@ -83,7 +84,7 @@ try {
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            redirect_with_status('An account with this email already exists.', 'warning', 'register.php');
+            redirect_with_status('Email already taken. Please choose another one.', 'warning', 'register.php');
             exit;
         }
     }
@@ -100,14 +101,39 @@ try {
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('sss', $username_input, $email_input, $hashedPassword);
-    $stmt->execute();
+    if ($stmt->execute()) {
+        
+        // Get the ID of the newly created user
+        $new_user_id = $conn->insert_id;
+
+        // ============================================================
+        // AWARD DEFAULT 'Green Rookie' BADGE
+        // ============================================================
+        
+        // 1. Get Badge ID
+        $badge_sql = "SELECT badgeId FROM badges WHERE badgeName = 'Green Rookie' LIMIT 1";
+        $badge_stmt = $conn->prepare($badge_sql);
+        $badge_stmt->execute();
+        $badge_result = $badge_stmt->get_result();
+
+        if ($default_badge = $badge_result->fetch_assoc()) {
+            // 2. Assign Badge to User
+            $award_sql = "INSERT INTO userbadges (userId, badgeId) VALUES (?, ?)";
+            $award_stmt = $conn->prepare($award_sql);
+            $award_stmt->bind_param("ii", $new_user_id, $default_badge['badgeId']);
+            $award_stmt->execute();
+        }
+    }
+
 
     redirect_with_status('Registration successful! You can now log in.', 'success', 'login.php');
 
 } catch (mysqli_sql_exception $e) {
-    error_log('Registration Error: ' . $e->getMessage());
-    redirect_with_status('An error occurred during registration. Please try again later.', 'error', 'register.php');
+    redirect_with_status('Something went wrong. Please try again.', 'error', 'register.php');
     exit;
 
+} finally {
+    if (isset($stmt)) {
+        $stmt->close();
+    }
 }
-?>

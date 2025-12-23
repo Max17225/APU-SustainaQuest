@@ -1,15 +1,15 @@
+<!-- auth_page/reset_password_process.php -->
+
 <?php
 session_start();
 require_once '../includes/db_connect.php'; 
-require_once '../includes/functions.php'; 
+require_once '../includes/general_function.php';
 
 /* =========================
    Request Method Check
    ========================= */
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: reset_password.php');
-    exit;
-}
+// Ensure the this process is accessed via the reset password form submission only
+require_post('reset_password.php');
 
 /* =========================
    Input Sanitization
@@ -27,36 +27,48 @@ if ($username_input === '' || $email_input === '' || $new_password_input === '' 
     exit;
 }
 
-// Validate email format
-if (!filter_var($email_input, FILTER_VALIDATE_EMAIL)) {
-    redirect_with_status('Invalid email format.', 'warning', 'reset_password.php');
-    exit;
-}
-
 /* =========================
    Username and email existence check
    ========================= */
 try {
-    // Prepare statement
-    $stmt = $conn->prepare(
-        "SELECT * FROM users WHERE userName = ? AND email = ?"
-    );
+    $target_user = null;
+    $role = null;
 
-    // Bind parameters
+
+    // Check in users table
+    $stmt = $conn->prepare("SELECT userName, email FROM users WHERE userName = ? AND email = ?");
+
     $stmt->bind_param('ss', $username_input, $email_input);
     $stmt->execute();
-
-    // Get result
     $result = $stmt->get_result();
     $target_user = $result->fetch_assoc();
 
-    // Check if user exists
+    if ($target_user) {
+        $role = 'user';
+
+    } else {
+
+        // Check in moderators table
+        $stmt = $conn->prepare(
+            "SELECT modName, email FROM moderators WHERE modName = ? AND email = ?"
+        );
+        $stmt->bind_param('ss', $username_input, $email_input);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $target_user = $result->fetch_assoc();
+
+        if ($target_user) {
+            $role = 'moderator';
+        }
+    }
+
     if (!$target_user) {
         redirect_with_status('No account found with the provided username and email.', 'warning', 'reset_password.php');
         exit;
     }
 
 } catch (mysqli_sql_exception $e) {
+
     error_log($e->getMessage());
     redirect_with_status('Something went wrong. Please try again.', 'error', 'reset_password.php');
     exit;
@@ -74,7 +86,7 @@ if (strlen($new_password_input) < 8) {
    Password Confirmation Check
    ========================= */
 if ($new_password_input !== $confirm_password_input) {
-    redirect_with_status('New password and confirmation do not match.', 'warning', 'reset_password.php');
+    redirect_with_status('Confirm passwords do not match.', 'warning', 'reset_password.php');
     exit;
 }
 
@@ -85,14 +97,23 @@ try {
     // Hash password first
     $hashed_password = password_hash($new_password_input, PASSWORD_DEFAULT);
 
-    // Prepare statement
-    $stmt = $conn->prepare(
-        "UPDATE users 
-         SET passwordHash = ? 
-         WHERE userName = ? AND email = ?"
-    );
+    if ($role === 'user') {
 
-    // Bind parameters (3 params = 3 types)
+        $stmt = $conn->prepare(
+            "UPDATE users 
+            SET passwordHash = ? 
+            WHERE userName = ? AND email = ?"
+        );
+
+    } elseif ($role === 'moderator') {
+
+        $stmt = $conn->prepare(
+            "UPDATE moderators 
+            SET modPassword = ? 
+            WHERE modName = ? AND email = ?"
+        );
+    }
+
     $stmt->bind_param(
         'sss',
         $hashed_password,
@@ -102,17 +123,21 @@ try {
 
     $stmt->execute();
 
-    // Check if update was successful
+    // Check if any row was actually updated
     if ($stmt->affected_rows === 1) {
-        redirect_with_status('Password reset successfully. You can now log in.', 'success', 'login.php');
+        // Successful password reset
+        redirect_with_status('Password has been reset successfully.', 'success', 'login.php');
         exit;
+
     } else {
-        redirect_with_status('Password reset failed. The new password might be the same as the old one.', 'warning', 'reset_password.php');
+        // No rows updated 
+        redirect_with_status('Failed to reset password. Please try again.', 'error', 'reset_password.php');
         exit;
     }
 } catch (mysqli_sql_exception $e) {
+
     error_log('Password Reset Error: ' . $e->getMessage());
-    redirect_with_status('Something went wrong during the password update. Please try again.', 'error', 'reset_password.php');
+    redirect_with_status('Server error. Please try again later.', 'error', 'reset_password.php');
     exit;
 
 } finally {
