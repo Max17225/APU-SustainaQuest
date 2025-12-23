@@ -3,7 +3,7 @@
 <?php
 session_start();
 require_once '../includes/db_connect.php';
-require_once '../includes/functions.php'; 
+require_once '../includes/general_function.php'; 
 
 /* =========================
    Request Method Check
@@ -14,7 +14,7 @@ require_post('login.php');
 /* =========================
    Input Sanitization
    ========================= */
-$username_input = sanitize_input($_POST['username'] ?? '');
+$username_input = trim($_POST['username'] ?? '');
 $password_input  = $_POST['password'] ?? '';
 
 /* =========================
