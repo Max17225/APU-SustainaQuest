@@ -38,7 +38,7 @@ if (isset($_SESSION['status_msg']) && isset($_SESSION['status_class'])) {
 
     <!-- Logo Image Path -->
     <?php
-        require_once '../includes/functions.php';
+        include '../includes/functions.php';
     ?>
 
 </head>
