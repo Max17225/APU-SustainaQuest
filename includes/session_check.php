@@ -1,6 +1,6 @@
 <!-- FILE: includes/session_check.php -->
 <?php
-require_once __DIR__ . '/general_function.php';
+require_once __DIR__ . '/functions.php';
 
 // Require user to be logged in to access a page
 function require_login() {

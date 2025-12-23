@@ -2,7 +2,9 @@
 
 <!-- Prepare status message HTML if exists -->
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $status_HTML = '';
 if (isset($_SESSION['status_msg']) && isset($_SESSION['status_class'])) {
 
