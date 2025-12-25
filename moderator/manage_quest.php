@@ -10,9 +10,17 @@ if (session_status() === PHP_SESSION_NONE) {
 // Ensure only a logged-in Moderator can access this page
 require_role('moderator');
 
+$path = '../'; // Fix: Set path for header assets to load correctly from subfolder
 require_once '../includes/header.php';
 
 $notice = '';
+
+// Handle Rotation Logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['rotate_quests'])) {
+    rotate_quests($conn);
+    $notice = 'Quests rotated successfully! 5 Daily and 3 Weekly quests are now active.';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
@@ -25,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
     } else {
         $modId = $_SESSION['user_id'] ?? null;
         if (create_quest($conn, $title, $description, $type, $pointReward, $expReward, $modId)) {
-            $notice = 'Quest created successfully.';
+            $notice = 'Quest created successfully (Added to pool).';
         } else {
             $notice = 'Failed to create quest.';
         }
@@ -41,6 +49,14 @@ $quests = fetch_all_quests($conn);
     <?php if ($notice): ?>
         <div class="status-info"><?php echo htmlspecialchars($notice); ?></div>
     <?php endif; ?>
+
+    <section class="actions" style="margin-bottom: 20px; padding: 15px; background: #f4f4f4; border-radius: 8px;">
+        <h2>Quest Rotation</h2>
+        <p>Click below to randomly activate 5 Daily and 3 Weekly quests for the week. All others will be deactivated.</p>
+        <form method="POST">
+            <button type="submit" name="rotate_quests" style="background-color: #e67e22;">Randomize Active Quests</button>
+        </form>
+    </section>
 
     <section class="create-quest">
         <h2>Create Quest</h2>
