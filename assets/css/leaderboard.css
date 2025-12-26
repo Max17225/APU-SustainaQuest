@@ -1,0 +1,426 @@
+/* ============================================================
+   1. LAYOUT & CONTAINER
+   ============================================================ */
+.leaderboard-container {
+  width: 92%;
+  max-width: 1300px;
+  margin: 30px auto;
+  font-family: "Poppins", sans-serif;
+}
+
+.leaderboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Desktop Split */
+@media (min-width: 1000px) {
+  .leaderboard-grid {
+    grid-template-columns: 1fr 1.5fr;
+  }
+}
+
+.lb-section-title {
+  color: #264633;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* ============================================================
+   2. LEFT COLUMN: PYRAMID AREA
+   ============================================================ */
+.top-three-wrapper {
+  background: #f0f4f2;
+  padding: 30px 20px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 550px;
+  overflow: hidden;
+}
+
+.top-3-pyramid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 30px;
+  width: 100%;
+  height: 350px;
+  padding-bottom: 20px;
+}
+
+/* --- BASE CARD STYLES --- */
+.lb-card {
+  border-radius: 20px;
+  padding: 15px 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 28%;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: #fff;
+}
+
+.lb-card:hover {
+  transform: translateY(-5px);
+}
+
+/* --- RANK 1: GOLD --- */
+.rank-1 {
+  order: 2;
+  height: 100%;
+  width: 36%;
+  background: linear-gradient(180deg, #fff9c4 0%, #fff176 100%);
+  border: 3px solid #fbc02d;
+  box-shadow: 0 15px 40px rgba(251, 192, 45, 0.3);
+  transform: translateY(-30px) scale(1.05);
+  z-index: 10;
+}
+
+/* --- RANK 2: SILVER --- */
+.rank-2 {
+  order: 1;
+  height: 82%;
+  background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
+  border: 3px solid #9e9e9e;
+  box-shadow: 0 10px 25px rgba(158, 158, 158, 0.25);
+}
+
+/* --- RANK 3: BRONZE --- */
+.rank-3 {
+  order: 3;
+  height: 75%;
+  background: linear-gradient(180deg, #ffccbc 0%, #ffab91 100%);
+  border: 3px solid #d84315;
+  box-shadow: 0 10px 25px rgba(216, 67, 21, 0.2);
+}
+
+/* --- EMPTY SLOTS --- */
+.empty-slot {
+  opacity: 0.5;
+  background: #fcfcfc;
+  border: 2px dashed #ccc;
+  box-shadow: none;
+  transform: none !important;
+}
+
+/* --- BADGES --- */
+.lb-rank-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.rank-1 .lb-rank-badge {
+  background: #f9a825;
+  color: #fff;
+}
+.rank-2 .lb-rank-badge {
+  background: #757575;
+  color: #fff;
+}
+.rank-3 .lb-rank-badge {
+  background: #bf360c;
+  color: #fff;
+}
+.empty-slot .lb-rank-badge {
+  background: #eee;
+  color: #999;
+  text-shadow: none;
+}
+
+/* --- IMAGES --- */
+.lb-img-box {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
+}
+.rank-1 .lb-img-box {
+  width: 90px;
+  height: 90px;
+}
+.lb-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.1));
+}
+.lb-card:hover .lb-img-box {
+  transform: scale(1.1);
+}
+
+/* --- TEXT --- */
+.lb-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  color: #333;
+  line-height: 1.2;
+  word-break: break-word;
+  padding: 0 2px;
+}
+.rank-1 .lb-name {
+  font-size: 1.1rem;
+  color: #222;
+}
+.lb-stat {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #264633;
+}
+.rank-1 .lb-stat {
+  font-size: 1.4rem;
+  color: #1b5e20;
+}
+.lb-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: #666;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   3. RIGHT COLUMN: TABLE
+   ============================================================ */
+.global-rank-wrapper {
+  background: #f0f4f2;
+  padding: 30px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.filter-label {
+  font-weight: 700;
+  color: #444;
+  margin-right: 5px;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 25px;
+  font-size: 0.8rem;
+  color: #666;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.filter-btn:hover {
+  background: #eee;
+  color: #333;
+}
+.filter-btn.active {
+  background: #264633;
+  color: #fff;
+  border-color: #264633;
+  box-shadow: 0 4px 10px rgba(38, 70, 51, 0.2);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-y: auto;
+  padding-right: 5px;
+  border-radius: 12px;
+  flex-grow: 1;
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+}
+.table-responsive::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.lb-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.lb-table th {
+  position: sticky;
+  top: 0;
+  background: #f0f4f2;
+  z-index: 5;
+  text-align: left;
+  padding: 10px 15px;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.lb-table th:last-child {
+  text-align: center;
+}
+
+.lb-table td {
+  padding: 15px 15px;
+  background: #fff;
+  vertical-align: middle;
+  color: #333;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.lb-table tr td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.lb-table tr td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.col-rank {
+  font-weight: 800;
+  color: #aaa;
+  width: 40px;
+  text-align: center;
+}
+.col-stat {
+  text-align: center;
+  font-weight: 800;
+  color: #27ae60;
+  font-size: 1rem;
+  width: 120px;
+}
+.player-cell {
+  display: flex;
+  align-items: center;
+}
+.table-name {
+  font-weight: 600;
+  color: #333;
+}
+
+/* ============================================================
+   4. MOBILE RESPONSIVENESS 
+   ============================================================ */
+@media (max-width: 768px) {
+  .leaderboard-container {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  .leaderboard-grid {
+    gap: 30px;
+  }
+
+  .top-three-wrapper {
+    padding: 20px 10px;
+    height: auto;
+    min-height: 380px;
+  }
+
+  .top-3-pyramid {
+    gap: 4px;
+    width: 100%;
+    margin-top: 10px;
+    height: 260px;
+  }
+  .lb-card {
+    width: 30%;
+    padding: 10px 2px;
+  }
+  .rank-1 {
+    width: 38%;
+    transform: translateY(-10px) scale(1.02);
+  }
+
+  .lb-img-box {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+  }
+  .rank-1 .lb-img-box {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Shrink Text */
+  .lb-rank-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    margin-bottom: 5px;
+  }
+  .lb-name {
+    font-size: 0.75rem;
+  }
+  .rank-1 .lb-name {
+    font-size: 0.9rem;
+  }
+  .lb-stat {
+    font-size: 0.9rem;
+  }
+  .rank-1 .lb-stat {
+    font-size: 1.1rem;
+  }
+  .lb-stat-label {
+    font-size: 0.55rem;
+  }
+
+  .global-rank-wrapper {
+    padding: 20px 15px;
+    height: 500px;
+  }
+
+  .lb-table th,
+  .lb-table td {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+
+  .col-stat {
+    font-size: 0.9rem;
+  }
+}
