@@ -90,21 +90,18 @@ try {
     $_SESSION['role'] = $account['role'];
     $_SESSION['user_id'] = $account['id'];
 
-    $admin_dashboard = resolve_location('admin_dashboard.php');
-    $mod_dashboard   = resolve_location('mod_dashboard.php');
-    $user_dashboard  = resolve_location('user_dashboard.php');
-    switch ($account['role']) {
-
+    switch ($_SESSION['role']) {
         case 'admin':
-            header("Location: $admin_dashboard"); // Redirect to the homepage u did
+            header('Location: ' . resolve_location('admin'));
             exit;
 
         case 'moderator':
-            header("Location: $mod_dashboard"); // Redirect to the homepage u did
+            header('Location: ' . resolve_location('mod_dashboard.php'));
             exit;
 
         default:
-            header("Location: $user_dashboard"); // Redirect to the homepage u did
+            header('Location: ' . resolve_location('user_dashboard.php'));
+            exit;
     }
 
 } catch (mysqli_sql_exception $e) {
