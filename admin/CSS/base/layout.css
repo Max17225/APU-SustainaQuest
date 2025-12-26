@@ -1,0 +1,380 @@
+/* admin/CSS/base/layout.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: grid;
+
+    grid-template-columns: 1fr 6fr;
+    grid-template-rows: 1fr 10fr;
+
+    grid-template-areas:
+        "nav top"
+        "nav main";
+    
+    position: relative;
+}
+
+/* Grid mapping */
+/* ==============================
+              nav bar
+   ==============================*/
+.nav-bar {
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    grid-area: nav;
+    min-width: 200px;
+    background: var(--nav-bg);
+
+    box-shadow:
+        0 0 24px rgba(0, 0, 0, 0.7),
+        1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.nav-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.08),
+        rgba(0, 0, 0, 0.8)
+    );
+
+    z-index: 0;
+}
+
+/* ------------------------------------------- Logo container */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 0.5rem;
+    padding: 0.7rem 0;
+}
+
+.nav-logo img {
+    width: clamp(30px, 3vw, 48px);
+    height: auto;
+}
+
+.nav-logo span {
+    font-size: clamp(14px, 1.2vw, 20px);
+    font-size: 0.7rem;
+    font-family: "Press Start 2P", sans-serif;
+    color: var(--logo-light-green);
+    white-space: nowrap;
+    position: relative;
+    bottom: 10px;
+}
+
+
+/* ------------------------------------------- Nav options */
+.nav-option {
+    margin-top: 1rem;
+}
+
+.nav-option ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0 0.5rem;
+}
+
+.nav-option a {
+    display: flex;
+    align-items: center;
+
+    padding: 0.75rem 1rem;
+    border-radius: 7px;
+
+    font-family: "Aldrich", sans-serif;
+    font-size: 0.9rem;
+    color: var(--non-active);
+    text-decoration: none;
+
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.15s ease;
+}
+
+.nav-option a:hover {
+    background: var(--nav-op-bg);
+    color: var(--active-op);
+    transform: translateX(4px);
+}
+
+.nav-option a.active {
+    background: var(--nav-op-bg);
+    color: var(--active-op);
+    font-weight: 600;
+}
+
+/* left indicator bar */
+.nav-option a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--active-op);
+    transition: height 0.25s ease;
+}
+
+.nav-option a:hover::before,
+.nav-option a.active::before {
+    height: 100%;
+}
+
+/* ------------------------------------------- Nav logout */
+.nav-logout {
+    margin-top: auto;
+    padding-left: 1.3rem;
+    padding-right: 1.3rem;
+}
+
+/* Logout button */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    padding: 0.75rem 1rem;
+    /* border-radius: 12px; */
+
+    font-family: "Aldrich", sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+
+    color: var(--non-active);
+    border-top: 2px solid var(--non-active);
+    text-decoration: none;
+
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+/* hover state */
+.btn-logout:hover {
+    color: var(--active-op);
+    border-top: 2px solid var(--active-op);
+    transform: translateY(-2px);
+}
+
+/* click feedback */
+.btn-logout:active {
+    transform: scale(0.97);
+}
+
+/* ==============================
+            top bar
+   ==============================*/
+/* ---------------------------------------------------------------------------------------------- General CSS (top bar)*/
+.top-bar {
+    grid-area: top;
+    background: var(--top-main-bg); 
+    padding: 0 2rem;
+}
+
+.top-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    height: 100%;
+    max-width: 100%;
+}
+
+/* bottom line */
+.top-bar-inner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background: var(--non-active);
+    border-radius: 999px; /* round both ends */
+}
+
+/* ----------------------------------- Right side (DATE TIME) */
+.top-bar-datetime {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+    cursor: default;
+}
+
+.top-bar-date {
+    font-size: 0.8rem;
+    font-family: "Aldrich", sans-serif;
+    color: var(--active-op);
+}
+
+.top-bar-time {
+    font-size: 1.5rem;
+    font-family: "Aldrich", sans-serif;
+    font-weight: 600;
+    color: var(--active-op);
+}
+
+/* ---------------------------------------------------------------------------------------------- admin_dashboard CSS (top bar) */
+.admin-dashboard-top-bar {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.admin-dashboard-top-bar .tool-title {
+    font-family:"Aldrich", sans-serif;
+    font-size: 1.6rem;
+    color: var(--active-op);
+    border-right: 3px solid var(--active-op); 
+    padding-right: 2rem; 
+}
+
+.admin-dashboard-top-bar .tool-option {
+    font-family:"Aldrich", sans-serif;
+    font-size: 1.2rem;
+    display: flex;
+    gap: 3rem; 
+
+    padding-right: 2rem;
+}
+
+.admin-dashboard-top-bar .tool-btn {
+    color: var(--non-active); 
+    text-decoration: none;
+    position: relative;  
+
+    transition: color 0.25s ease;
+}
+
+/* -------------------------------------------- tool btn hover effect */
+.admin-dashboard-top-bar .tool-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+
+    width: 100%;
+    height: 2px;
+    background: var(--active-op);
+
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s ease;
+}
+
+/* hover in */
+.admin-dashboard-top-bar .tool-btn:hover {
+    color: var(--active-op);
+}
+
+.admin-dashboard-top-bar .tool-btn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* -------------------------------------------- tool btn active(current page) */
+.admin-dashboard-top-bar .tool-btn.active {
+    color: var(--active-op);
+}
+
+/* underline stays visible */
+.admin-dashboard-top-bar .tool-btn.active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* breathing glow */
+.admin-dashboard-top-bar .tool-btn.active {
+    animation: activeGlow 6s ease-in-out infinite;
+}
+
+@keyframes activeGlow {
+    0% {
+        text-shadow: 0 0 4px var(--text-glow-in);
+    }
+    50% {
+        text-shadow: 0 0 20px var(--text-glow-out);
+    }
+    100% {
+        text-shadow: 0 0 4px var(--text-glow-in);
+    }
+}
+
+/* -------------------------------------------- click feedback */
+.admin-dashboard-top-bar .tool-btn:active {
+    transform: translateY(1px);
+}
+
+/* ==============================
+            Main Section
+   ==============================*/
+.main-section {
+    background-color: var(--top-main-bg);
+    grid-area: main;
+    overflow-y: auto;
+    
+}
+
+/* ==========================
+            Mobile View          
+   ========================== */
+@media (max-width: 768px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+
+        grid-template-areas:
+            "top"
+            "main"
+            "nav";
+    }
+
+    .nav-bar {
+        height: 56px;
+    }
+        .nav-option ul {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 0;
+    }
+
+    .nav-option a {
+        flex-direction: column;
+        padding: 0.5rem;
+        font-size: 0.7rem;
+        transform: none;
+    }
+
+    .nav-option a::before {
+        display: none;
+    }
+}
