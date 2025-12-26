@@ -6,7 +6,7 @@
 function image_path(string $key): string
 {
     $map = [
-        'logo' => '/APU-SustainaQuest/assets/image/SustainaQuest Logo.png',
+        'logo' => '/APU-GreenPoint-System/assets/image/SustainaQuest Logo.png',
     ];
 
     return $map[$key];
@@ -20,14 +20,14 @@ function resolve_location(string $page): string
     $page = trim($page);
 
     $routes = [
-        'login.php'          => '/APU-SustainaQuest/auth_page/login.php',
-        'register.php'       => '/APU-SustainaQuest/auth_page/register.php',
-        'reset_password.php' => '/APU-SustainaQuest/auth_page/reset_password.php',
-        'logout.php'         => '/APU-SustainaQuest/includes/logout.php',
-        'user_dashboard.php' => '/APU-SustainaQuest/user/user_dashboard.php',
-        'admin_dashboard.php'=> '/APU-SustainaQuest/admin/admin_dashboard.php',
-        'mod_dashboard.php'  => '/APU-SustainaQuest/moderator/mod_dashboard.php',
-        'admin'              => '/APU-SustainaQuest/admin/',
+        'login.php'          => '/APU-GreenPoint-System/auth_page/login.php',
+        'register.php'       => '/APU-GreenPoint-System/auth_page/register.php',
+        'reset_password.php' => '/APU-GreenPoint-System/auth_page/reset_password.php',
+        'logout.php'         => '/APU-GreenPoint-System/includes/logout.php',
+        'user_dashboard.php' => '/APU-GreenPoint-System/user/user_dashboard.php',
+        'admin_dashboard.php'=> '/APU-GreenPoint-System/admin/admin_dashboard.php',
+        'mod_dashboard.php'  => '/APU-GreenPoint-System/moderator/mod_dashboard.php',
+        'admin'              => '/APU-GreenPoint-System/admin/',
     ];
 
     if (!isset($routes[$page])) {
