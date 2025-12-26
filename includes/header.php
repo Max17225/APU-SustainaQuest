@@ -10,7 +10,19 @@ $is_logged_in = isset($_SESSION['user_id']);
 $path = $path ?? "./"; 
 
 // 3. Define Home Link
-$home_link = $is_logged_in ? $path . "user/user_dashboard.php" : $path . "index.php";
+$user_role = $_SESSION['role'] ?? 'guest';
+
+if ($is_logged_in) {
+    if ($user_role === 'moderator') {
+        $home_link = $path . "moderator/mod_dashboard.php";
+    } elseif ($user_role === 'admin') {
+        $home_link = $path . "admin/admin_dashboard.php";
+    } else {
+        $home_link = $path . "user/user_dashboard.php";
+    }
+} else {
+    $home_link = $path . "index.php";
+}
 
 // 4. Get Current Page
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -47,7 +59,7 @@ if ($is_logged_in) {
 
     <link rel="stylesheet" href="<?php echo $path; ?>assets/css/style.css">
 
-    <?php if (isset($page_css)): ?>
+    <?php if (isset($page_css) && !empty($page_css)): ?>
         <link rel="stylesheet" href="<?php echo $path; ?>assets/css/<?php echo $page_css; ?>">
     <?php endif; ?>
 </head>
@@ -67,15 +79,25 @@ if ($is_logged_in) {
         </div>
 
         <nav class="main-nav">
-            <?php if ($is_logged_in): ?>
-                <a href="<?php echo $path; ?>user/user_dashboard.php" class="nav-link <?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+            <?php if ($user_role === 'moderator'): ?>
+                <a href="<?php echo $path; ?>moderator/mod_dashboard.php" class="nav-link <?php echo ($current_page == 'mod_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+                <a href="<?php echo $path; ?>moderator/verify_submissions.php" class="nav-link <?php echo ($current_page == 'verify_submissions.php') ? 'active' : ''; ?>">Verify Submissions</a>
+                <a href="<?php echo $path; ?>moderator/manage_quest.php" class="nav-link <?php echo ($current_page == 'manage_quest.php') ? 'active' : ''; ?>">Manage Quests</a>
+            
+            <?php elseif ($user_role === 'admin'): ?>
+                <a href="<?php echo $path; ?>admin/admin_dashboard.php" class="nav-link <?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+            
             <?php else: ?>
-                <a href="<?php echo $path; ?>index.php" class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
-            <?php endif; ?>
+                <?php if ($is_logged_in): ?>
+                    <a href="<?php echo $path; ?>user/user_dashboard.php" class="nav-link <?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+                <?php else: ?>
+                    <a href="<?php echo $path; ?>index.php" class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
+                <?php endif; ?>
 
-            <a href="<?php echo $path; ?>user/quests.php" class="nav-link <?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
-            <a href="<?php echo $path; ?>user/leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
-            <a href="<?php echo $path; ?>user/shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+                <a href="<?php echo $path; ?>user/quests.php" class="nav-link <?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
+                <a href="<?php echo $path; ?>user/leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+                <a href="<?php echo $path; ?>user/shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+            <?php endif; ?>
         </nav>
 
         <div class="auth-action">
@@ -106,15 +128,25 @@ if ($is_logged_in) {
         </div>
 
         <div class="sidebar-content">
-            <?php if ($is_logged_in): ?>
-                <a href="<?php echo $path; ?>user/user_dashboard.php" class="<?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-            <?php else: ?>
-                <a href="<?php echo $path; ?>index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
-            <?php endif; ?>
+            <?php if ($user_role === 'moderator'): ?>
+                <a href="<?php echo $path; ?>moderator/mod_dashboard.php" class="<?php echo ($current_page == 'mod_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+                <a href="<?php echo $path; ?>moderator/verify_submissions.php" class="<?php echo ($current_page == 'verify_submissions.php') ? 'active' : ''; ?>">Verify Submissions</a>
+                <a href="<?php echo $path; ?>moderator/manage_quest.php" class="<?php echo ($current_page == 'manage_quest.php') ? 'active' : ''; ?>">Manage Quests</a>
             
-            <a href="<?php echo $path; ?>user/quests.php" class="<?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
-            <a href="<?php echo $path; ?>user/leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
-            <a href="<?php echo $path; ?>user/shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+            <?php elseif ($user_role === 'admin'): ?>
+                <a href="<?php echo $path; ?>admin/admin_dashboard.php" class="<?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+            
+            <?php else: ?>
+                <?php if ($is_logged_in): ?>
+                    <a href="<?php echo $path; ?>user/user_dashboard.php" class="<?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+                <?php else: ?>
+                    <a href="<?php echo $path; ?>index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
+                <?php endif; ?>
+                
+                <a href="<?php echo $path; ?>user/quests.php" class="<?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
+                <a href="<?php echo $path; ?>user/leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+                <a href="<?php echo $path; ?>user/shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+            <?php endif; ?>
             
             <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 20px;">
             
