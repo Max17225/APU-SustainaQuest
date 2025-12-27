@@ -23,11 +23,9 @@ function resolve_location(string $page): string
         'login.php'          => '/APU-SustainaQuest/auth_page/login.php',
         'register.php'       => '/APU-SustainaQuest/auth_page/register.php',
         'reset_password.php' => '/APU-SustainaQuest/auth_page/reset_password.php',
-        'logout.php'         => '/APU-SustainaQuest/includes/logout.php',
         'user_dashboard.php' => '/APU-SustainaQuest/user/user_dashboard.php',
         'admin_dashboard.php'=> '/APU-SustainaQuest/admin/admin_dashboard.php',
         'mod_dashboard.php'  => '/APU-SustainaQuest/moderator/mod_dashboard.php',
-        'admin'              => '/APU-SustainaQuest/admin/',
     ];
 
     if (!isset($routes[$page])) {

@@ -1,4 +1,4 @@
-<!-- includes/session_check.php -->
+<!-- FILE: includes/session_check.php -->
 <?php
 require_once __DIR__ . '/general_function.php';
 
@@ -14,7 +14,6 @@ function require_login() {
 }
 
 // Require a specific user role to access a page, use this function after session_start().
-// !!!!!!!!!!!!!!!!!!!!!!!!!! VERY IMPORTANT - Make sure start session first !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // e.g., require_role('admin') for admin-only pages
 // e.g., require_role('moderator') for moderator-only pages
 // e.g., require_role('user') for normal user-only pages
