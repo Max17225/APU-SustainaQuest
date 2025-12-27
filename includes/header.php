@@ -114,7 +114,6 @@ if ($is_logged_in) {
                         <?php endif; ?>
                     </div>
                 </a>
-                <a href="<?php echo $path; ?>includes/logout.php" style="margin-left: 15px; color: #ff6b6b; text-decoration: none; font-weight: 600; font-size: 0.9rem;">Logout</a>
             <?php else: ?>
                 <a href="<?php echo $path; ?>auth_page/login.php" class="btn-login">Login/Register</a>
             <?php endif; ?>
@@ -153,7 +152,7 @@ if ($is_logged_in) {
             
             <?php if ($is_logged_in): ?>
                 <a href="<?php echo $path; ?>user/profile.php">My Profile</a>
-                <a href="<?php echo $path; ?>includes/logout.php" style="color: #ff6b6b;">Logout</a>
+                <a href="<?php echo $path; ?>auth_page/logout.php" style="color: #ff6b6b;">Logout</a>
             <?php else: ?>
                 <a href="<?php echo $path; ?>auth_page/login.php" class="sidebar-btn-login">Login / Register</a>
             <?php endif; ?>
@@ -170,3 +169,5 @@ if ($is_logged_in) {
             }
         }
     </script>
+</body>
+</html>

@@ -96,8 +96,8 @@ $sql_popular = "
   LIMIT 1
 ";
 $popular_row = $conn->query($sql_popular)->fetch_assoc();
-$popular_title = isset($popular_row['title']) ? $popular_row['title'] : "-";
-$popular_completions = isset($popular_row['completions']) ? (int)$popular_row['completions'] : 0;
+$popular_title = $popular_row['title'] ?? "-";
+$popular_completions = (int) ($popular_row['completions'] ?? 0);
 
 // Top contributor (by completed weekly submissions)
 $sql_top_user = "
@@ -112,7 +112,7 @@ $sql_top_user = "
   LIMIT 1
 ";
 $top_user_row = $conn->query($sql_top_user)->fetch_assoc();
-$top_user = isset($top_user_row['userName']) ? $top_user_row['userName'] : "-";
+$top_user = $top_user_row['userName'] ?? "-";
 
 // Peak submission time (hour block) for today (all submissions)
 $sql_peak = "
@@ -124,8 +124,8 @@ $sql_peak = "
   LIMIT 1
 ";
 $peak_row = $conn->query($sql_peak)->fetch_assoc();
-$peak_hr = ($peak_row && isset($peak_row['hr'])) ? (int) $peak_row['hr'] : null;
-$peak_total = isset($peak_row['total']) ? (int)$peak_row['total'] : 0;
+$peak_hr = isset($peak_row['hr']) ? (int) $peak_row['hr'] : null;
+$peak_total = (int) ($peak_row['total'] ?? 0);
 $peak_label = ($peak_hr === null) ? "-" : sprintf("%02d:00 - %02d:00", $peak_hr, ($peak_hr + 2) % 24);
 ?>
 
