@@ -10,19 +10,7 @@ $is_logged_in = isset($_SESSION['user_id']);
 $path = $path ?? "./"; 
 
 // 3. Define Home Link
-$user_role = $_SESSION['role'] ?? 'guest';
-
-if ($is_logged_in) {
-    if ($user_role === 'moderator') {
-        $home_link = $path . "moderator/mod_dashboard.php";
-    } elseif ($user_role === 'admin') {
-        $home_link = $path . "admin/admin_dashboard.php";
-    } else {
-        $home_link = $path . "user/user_dashboard.php";
-    }
-} else {
-    $home_link = $path . "index.php";
-}
+$home_link = $is_logged_in ? $path . "user/user_dashboard.php" : $path . "index.php";
 
 // 4. Get Current Page
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -34,17 +22,22 @@ $display_name = "User";
 
 if ($is_logged_in) {
     if (!isset($conn)) {
-        require_once($path . "includes/db_connect.php");
+        // Adjust this path if your db_connect is elsewhere
+        if(file_exists($path . "includes/db_connect.php")) {
+            require_once($path . "includes/db_connect.php");
+        }
     }
 
-    // Fetch the name from the database
-    $h_stmt = $conn->prepare("SELECT userName FROM users WHERE userId = ?");
-    $h_stmt->bind_param("i", $_SESSION['user_id']);
-    $h_stmt->execute();
-    $h_result = $h_stmt->get_result();
-    
-    if ($row = $h_result->fetch_assoc()) {
-        $display_name = $row['userName'];
+    // Only run query if connection exists
+    if(isset($conn)) {
+        $h_stmt = $conn->prepare("SELECT userName FROM users WHERE userId = ?");
+        $h_stmt->bind_param("i", $_SESSION['user_id']);
+        $h_stmt->execute();
+        $h_result = $h_stmt->get_result();
+        
+        if ($row = $h_result->fetch_assoc()) {
+            $display_name = $row['userName'];
+        }
     }
 }
 ?>
@@ -59,9 +52,55 @@ if ($is_logged_in) {
 
     <link rel="stylesheet" href="<?php echo $path; ?>assets/css/style.css">
 
-    <?php if (isset($page_css) && !empty($page_css)): ?>
+    <?php if (isset($page_css)): ?>
         <link rel="stylesheet" href="<?php echo $path; ?>assets/css/<?php echo $page_css; ?>">
     <?php endif; ?>
+
+    <style>
+        .user-profile-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .profile-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #ffffff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .profile-dropdown-menu a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .profile-dropdown-menu a:hover {
+            background-color: #f1f1f1;
+            color: #28a745; 
+        }
+
+        .profile-dropdown-menu a.logout-link:hover {
+            background-color: #ffeaea;
+            color: #dc3545;
+        }
+
+        .show-dropdown {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
@@ -79,42 +118,49 @@ if ($is_logged_in) {
         </div>
 
         <nav class="main-nav">
-            <?php if ($user_role === 'moderator'): ?>
-                <a href="<?php echo $path; ?>moderator/mod_dashboard.php" class="nav-link <?php echo ($current_page == 'mod_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-                <a href="<?php echo $path; ?>moderator/verify_submissions.php" class="nav-link <?php echo ($current_page == 'verify_submissions.php') ? 'active' : ''; ?>">Verify Submissions</a>
-                <a href="<?php echo $path; ?>moderator/manage_quest.php" class="nav-link <?php echo ($current_page == 'manage_quest.php') ? 'active' : ''; ?>">Manage Quests</a>
-            
-            <?php elseif ($user_role === 'admin'): ?>
-                <a href="<?php echo $path; ?>admin/admin_dashboard.php" class="nav-link <?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-            
+            <?php if ($is_logged_in): ?>
+                <a href="<?php echo $path; ?>user/user_dashboard.php" class="nav-link <?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
             <?php else: ?>
-                <?php if ($is_logged_in): ?>
-                    <a href="<?php echo $path; ?>user/user_dashboard.php" class="nav-link <?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-                <?php else: ?>
-                    <a href="<?php echo $path; ?>index.php" class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
-                <?php endif; ?>
-
-                <a href="<?php echo $path; ?>user/quests.php" class="nav-link <?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
-                <a href="<?php echo $path; ?>user/leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
-                <a href="<?php echo $path; ?>user/shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+                <a href="<?php echo $path; ?>index.php" class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
             <?php endif; ?>
+
+            <a href="<?php echo $path; ?>user/quests.php" class="nav-link <?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
+            <a href="<?php echo $path; ?>user/leaderboard.php" class="nav-link <?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+            <a href="<?php echo $path; ?>user/shop.php" class="nav-link <?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
         </nav>
 
         <div class="auth-action">
             <?php if ($is_logged_in): ?>
-                <a href="<?php echo $path; ?>user/profile.php" class="user-profile">
+                
+                <div class="user-profile-container" onclick="toggleProfileDropdown(event)">
                     
-                    <span class="user-name"><?php echo htmlspecialchars($display_name); ?></span> 
-                    
-                    <div class="profile-pic-container">
-                        <?php if (isset($_SESSION['profile_pic']) && !empty($_SESSION['profile_pic'])): ?>
-                            <img src="<?php echo $path . $_SESSION['profile_pic']; ?>" alt="Profile">
-                        <?php else: ?>
-                             <span style="color:#555; font-size:1.2rem;">👤</span>
-                        <?php endif; ?>
+                    <div class="user-profile" style="display: flex; align-items: center; gap: 10px;">
+                        <span class="user-name"><?php echo htmlspecialchars($display_name); ?></span> 
+                        
+                        <div class="profile-pic-container">
+                            <?php 
+                            $default_pic = $path . "assets/image/profile_picture.png";
+
+                            if (isset($_SESSION['profile_pic']) && !empty($_SESSION['profile_pic'])) {
+                                $profile_src = $path . $_SESSION['profile_pic'];
+                            } else {
+                                $profile_src = $default_pic; 
+                            }
+                            ?>
+                            
+                            <img src="<?php echo $profile_src; ?>" alt="Profile" 
+                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        </div>
                     </div>
-                </a>
-                <a href="<?php echo $path; ?>includes/logout.php" style="margin-left: 15px; color: #ff6b6b; text-decoration: none; font-weight: 600; font-size: 0.9rem;">Logout</a>
+
+                    <div id="myDropdown" class="profile-dropdown-menu">
+                        <a href="<?php echo $path; ?>user/profile.php">My Profile</a>
+                        <hr style="margin:0; border:0; border-top:1px solid #eee;">
+                        <a href="<?php echo $path; ?>includes/logout.php" class="logout-link">Logout</a>
+                    </div>
+
+                </div>
+
             <?php else: ?>
                 <a href="<?php echo $path; ?>auth_page/login.php" class="btn-login">Login/Register</a>
             <?php endif; ?>
@@ -129,25 +175,15 @@ if ($is_logged_in) {
         </div>
 
         <div class="sidebar-content">
-            <?php if ($user_role === 'moderator'): ?>
-                <a href="<?php echo $path; ?>moderator/mod_dashboard.php" class="<?php echo ($current_page == 'mod_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-                <a href="<?php echo $path; ?>moderator/verify_submissions.php" class="<?php echo ($current_page == 'verify_submissions.php') ? 'active' : ''; ?>">Verify Submissions</a>
-                <a href="<?php echo $path; ?>moderator/manage_quest.php" class="<?php echo ($current_page == 'manage_quest.php') ? 'active' : ''; ?>">Manage Quests</a>
-            
-            <?php elseif ($user_role === 'admin'): ?>
-                <a href="<?php echo $path; ?>admin/admin_dashboard.php" class="<?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-            
+            <?php if ($is_logged_in): ?>
+                <a href="<?php echo $path; ?>user/user_dashboard.php" class="<?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
             <?php else: ?>
-                <?php if ($is_logged_in): ?>
-                    <a href="<?php echo $path; ?>user/user_dashboard.php" class="<?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-                <?php else: ?>
-                    <a href="<?php echo $path; ?>index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
-                <?php endif; ?>
-                
-                <a href="<?php echo $path; ?>user/quests.php" class="<?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
-                <a href="<?php echo $path; ?>user/leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
-                <a href="<?php echo $path; ?>user/shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
+                <a href="<?php echo $path; ?>index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">Home</a>
             <?php endif; ?>
+            
+            <a href="<?php echo $path; ?>user/quests.php" class="<?php echo ($current_page == 'quests.php') ? 'active' : ''; ?>">Quests</a>
+            <a href="<?php echo $path; ?>user/leaderboard.php" class="<?php echo ($current_page == 'leaderboard.php') ? 'active' : ''; ?>">Leaderboard</a>
+            <a href="<?php echo $path; ?>user/shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">Reward Shop</a>
             
             <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 20px;">
             
@@ -169,4 +205,23 @@ if ($is_logged_in) {
                 sidebar.style.width = "250px";
             }
         }
+
+        function toggleProfileDropdown(event) {
+            event.stopPropagation(); 
+            document.getElementById("myDropdown").classList.toggle("show-dropdown");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile-container')) {
+                var dropdowns = document.getElementsByClassName("profile-dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show-dropdown')) {
+                        openDropdown.classList.remove('show-dropdown');
+                    }
+                }
+            }
+        }
     </script>
+</body>
+</html>
