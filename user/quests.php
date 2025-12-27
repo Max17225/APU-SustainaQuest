@@ -1,25 +1,40 @@
 <?php 
-// 1. SESSION HANDLING
+// SESSION HANDLING (Check if got session if none then start one)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. INCLUDES & SETTINGS
+// LINKS BACK TO HEADER.PHP
 $path = "../";
 $page_css = "quests.css";
 
 include '../includes/db_connect.php';
 include '../includes/header.php';
-include 'user_functions.php'; 
 
-// ================= FETCH DATA (USING FUNCTIONS FROM user_functions.php) =================
+// ================= FETCH DATA =================
+// GET Available Quests
+$daily_quests = [];
+$weekly_quests = [];
 
-// 1. Get Available Quests (Daily & Weekly)
-$quests_data = get_available_quests($conn);
-$daily_quests = $quests_data['daily'];
-$weekly_quests = $quests_data['weekly'];
+// SQL QUERY TO GET ALL QUESTS TYPE THEN EXECUTES IT, AND STORE IN $result
+$sql = "SELECT * FROM quests WHERE isActive = 1";
+$result = $conn->query($sql);
 
-// 2. Initialize User Data
+// THEN USE LOOP TO FILTER AND PUT DAILY QUEST TYPE INTO $daily_quests & WEEKLY QUEST TYPE INTO $weekly_quests
+if ($result && $result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        if ($row['type'] === 'Daily') {
+            $daily_quests[] = $row;
+        } else if ($row['type'] === 'Weekly') {
+            $weekly_quests[] = $row;
+        }
+    }
+}
+// Limit Daily Quests to 5 quests and Weekly Quests to 3 ONLY
+$daily_quests = array_slice($daily_quests, 0, 5);
+$weekly_quests = array_slice($weekly_quests, 0, 3);
+
+// FOR LOGGED IN USERS
 $pending_quests = [];
 $completed_quests = [];
 $rejected_quests = [];
@@ -28,19 +43,56 @@ $locked_quest_ids = [];
 $is_logged_in = isset($_SESSION['user_id']);
 
 if ($is_logged_in) {
+
     $uid = $_SESSION['user_id'];
 
-    // 3. Get Locked Quest IDs (Logic for 24hr cooldown / Weekly check)
-    $locked_quest_ids = get_locked_quest_ids($conn, $uid);
+    // CHECK FOR COMPLETED/PENDING QUESTS
+    // - Daily: Checks if submitted in the last 24 hours 
+    // - Weekly: Checks if submitted in the current week
+    $lock_sql = "SELECT q.questId, q.type 
+                 FROM questsubmissions qs
+                 JOIN quests q ON qs.questId = q.questId
+                 WHERE qs.submittedByUserId = '$uid' 
+                 AND qs.approveStatus != 'Rejected'
+                 AND (
+                    (q.type = 'Daily' AND qs.submitDate >= (NOW() - INTERVAL 1 DAY))
+                    OR
+                    (q.type = 'Weekly' AND YEARWEEK(qs.submitDate, 1) = YEARWEEK(CURDATE(), 1))
+                 )";
 
-    // 4. Get Quest History (Pending, Completed, Rejected)
-    $history_data = get_user_quest_history($conn, $uid);
-    $pending_quests = $history_data['pending'];
-    $completed_quests = $history_data['completed'];
-    $rejected_quests = $history_data['rejected'];
+    $lock_result = $conn->query($lock_sql);
+
+    if (!$lock_result) {
+        echo "<div style='background:red; color:white; padding:10px;'>SQL ERROR: " . $conn->error . "</div>";
+    }
+
+    if ($lock_result) {
+        while($row = $lock_result->fetch_assoc()) {
+            // Force ID to be a string for strict matching later
+            $locked_quest_ids[] = (string)$row['questId'];
+        }
+    }
+
+    // 2. FETCH QUESTS HISTORY 
+    $h_sql = "SELECT qs.*, q.title, q.type, q.questIconURL, q.pointReward, q.expReward, q.description, m.modName 
+              FROM questsubmissions qs 
+              JOIN quests q ON qs.questId = q.questId 
+              LEFT JOIN moderators m ON qs.verifiedByModeratorId = m.moderatorId
+              WHERE qs.submittedByUserId = '$uid' 
+              ORDER BY qs.submitDate DESC";
+    
+    $h_result = $conn->query($h_sql);
+    if ($h_result) {
+        while($row = $h_result->fetch_assoc()) {
+            if ($row['approveStatus'] == 'Pending') $pending_quests[] = $row;
+            elseif ($row['approveStatus'] == 'Approved') $completed_quests[] = $row;
+            else $rejected_quests[] = $row;
+        }
+    }
 }
 ?>
 
+<!-- ================= MAIN QUEST PAGE CONTAINER ================= -->
 <div class="quest-main-container">
 
     <div class="main-toggle-container">
@@ -48,33 +100,42 @@ if ($is_logged_in) {
         <button class="main-toggle-btn" id="btn-history" onclick="switch_main_view('history')">Quests History</button>
     </div>
 
+    <!-- ================= AVAILABLE QUESTS VIEW ================= -->
     <div id="view-available">
         <div class="sub-tabs-container">
             <span class="sub-tab-link active" onclick="switch_sub_view('daily', this)">Daily</span>
             <span class="sub-tab-link" onclick="switch_sub_view('weekly', this)">Weekly</span>
         </div>
 
+        <!-- ===== DAILY QUEST GRID ===== -->
         <div id="grid-daily" class="quests-grid">
             <?php foreach ($daily_quests as $q): 
                 // Check if this quest is locked
                 $is_locked = in_array((string)$q['questId'], $locked_quest_ids);
             ?>
+                 <!-- Individual quest card -->
                 <div class="quest-card">
 
+                    <!-- Quest card upper content -->
                     <div class="card-content-top">
 
+                        <!-- Quest icon -->
                         <div class="card-img-box">
                             <img src="<?php echo $path . ($q['questIconURL'] ?? 'assets/image/leaf.png'); ?>">
                         </div>
 
-                         <h3><?php echo $q['title']; ?></h3>
+                         <!-- Quest title -->
+                        <h3><?php echo $q['title']; ?></h3>
 
-                         <div class="quest-stats">
+                         <!-- Quest reward info -->
+                        <div class="quest-stats">
                             EXP: <?php echo $q['expReward']; ?><br>
                             Green Points: <?php echo $q['pointReward']; ?>
                         </div>
                     </div>
 
+                    <!-- View details button -->
+                    <!-- If its locked, if so then disable button -->
                     <?php if ($is_locked): ?>
                         <button class="btn-primary" disabled style="background-color: #ccc; cursor: not-allowed; opacity: 0.7;">
                             Completed
@@ -94,9 +155,11 @@ if ($is_logged_in) {
                 </div>
             <?php endforeach; ?>
             
+             <!-- Message if no daily quests -->
              <?php if(empty($daily_quests)) echo "<p>No quests available.</p>"; ?>
         </div>
 
+        <!-- ===== WEEKLY QUEST GRID ===== -->
         <div id="grid-weekly" class="quests-grid" style="display:none;">
             <?php foreach ($weekly_quests as $q): 
                 // Check if this quest is locked
@@ -114,6 +177,8 @@ if ($is_logged_in) {
                         </div>
                     </div>
 
+                    <!-- Weekly quest modal (view details) trigger -->
+                    <!-- Check if its locked, if so then disable button -->
                     <?php if ($is_locked): ?>
                         <button class="btn-primary" disabled style="background-color: #ccc; cursor: not-allowed; opacity: 0.7;">
                             Completed / Pending
@@ -137,16 +202,20 @@ if ($is_logged_in) {
         </div>
     </div>
 
+    <!-- ================= QUEST HISTORY VIEW ================= -->
     <div id="view-history" style="display:none;">
 
+        <!-- Check if user is logged if so procceed below-->
         <?php if ($is_logged_in): ?>
 
-             <div class="sub-tabs-container">
+             <!-- ===== HISTORY STATUS FILTER TABS (Completed/Rejected/Pending) ===== -->
+            <div class="sub-tabs-container">
                 <span class="sub-tab-link active" onclick="switch_history_sub('completed', this)">Completed</span>
                 <span class="sub-tab-link" onclick="switch_history_sub('rejected', this)">Rejected</span>
                 <span class="sub-tab-link" onclick="switch_history_sub('pending', this)">Pending</span>
             </div>
 
+            <!--  // Function to render quest history cards -->
             <?php 
             function render_history_grid($id, $quests, $status_class, $path) {
                 echo "<div id='$id' class='quests-grid' " . ($id != 'hist-completed' ? "style='display:none;'" : "") . ">";
@@ -224,12 +293,14 @@ if ($is_logged_in) {
             }
             ?>
 
+            <!-- Render history sections -->
             <?php render_history_grid('hist-completed', $completed_quests, 'status-completed', $path); ?>
             <?php render_history_grid('hist-rejected', $rejected_quests, 'status-rejected', $path); ?>
             <?php render_history_grid('hist-pending', $pending_quests, 'status-pending', $path); ?>
 
         <?php else: ?>
 
+            <!-- ===== IF NOT LOGGED IN, AND WHEN U CLICK ON "QUESTS HISTORY" THIS WILL SHOW ===== -->
             <div style="padding: 60px 20px; text-align: center; color: #555; background: white; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto;">
                 <img src="../assets/image/trophy.png" style="width: 60px; margin-bottom: 20px; opacity: 0.6;">
                 <h2 style="margin-bottom: 10px; color: #264633;">Track Your Progress</h2>
@@ -242,19 +313,26 @@ if ($is_logged_in) {
     </div>
 </div> 
 
+<!-- ================= QUEST DETAILS MODAL ================= -->
 <div id="quest-modal" class="modal-overlay">
+    <!-- Modal content container -->
     <div class="modal-content">
+        <!-- Modal header -->
         <div class="modal-header">
             <h3>Quest Details</h3>
+            <!-- Call close_modal function -->
             <span class="close-modal" onclick="close_modal()">&times;</span>
         </div>
 
+        <!-- Quest title -->
         <h2 id="m-title">Title</h2>
 
+        <!-- Reward display -->
         <div class="quest-stats" style="text-align:left; background:none; padding:0; margin-bottom:10px;">
             <p><strong>Rewards:</strong> <span id="m-exp"></span> EXP, <span id="m-points"></span> Green Points</p>
         </div>
 
+        <!-- ===== AVAILABLE QUEST POP UP WHEN CLICK ON "VIEW DETAILS"  ===== -->
         <div id="modal-section-available" style="display:none;">
             <h4>Instructions:</h4>
             <p id="m-desc" style="color:#666; margin-bottom:15px; white-space: pre-line;"></p>
@@ -284,6 +362,7 @@ if ($is_logged_in) {
             <?php endif; ?>
         </div>
 
+        <!-- ===== HISTORY QUEST POP UP WHEN CLICK ON "VIEW DETAILS BUTTON" ===== -->
         <div id="modal-section-history" style="display:none;">
             <hr>
             <div class="detail-row"><span class="detail-label">Submission ID:</span> <span id="h-sub-id"></span></div>
@@ -315,7 +394,9 @@ if ($is_logged_in) {
     </div>
 </div>
 
+<!-- Load TensorFlow.js. This is required to use MobileNet. -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<!-- Load the MobileNet model. -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 
 <script>
