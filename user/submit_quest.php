@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["evidence_file"])) {
     // --------------------------------------------------------
     // Evidence files are stored in a dedicated folder
     // ========================================================
-    $target_dir = "../assets/evidence/";
+    $target_dir = "../assets/uploads/";
     if (!file_exists($target_dir)) { 
         mkdir($target_dir, 0777, true); 
     }
@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["evidence_file"])) {
         
         // Move uploaded image to target directory
         if (move_uploaded_file($evidence_file["tmp_name"], $target_img_path)) {
-            $img_db_path = "assets/evidence/" . $new_img_name;
+            $img_db_path = "assets/uploads/" . $new_img_name;
         } else {
             die("Error uploading image file.");
         }
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["evidence_file"])) {
             
             // Move uploaded video file
             if (move_uploaded_file($video_file["tmp_name"], $target_vid_path)) {
-                $vid_db_path = "assets/evidence/" . $new_vid_name;
+                $vid_db_path = "assets/uploads/" . $new_vid_name;
             }
         }
     }
