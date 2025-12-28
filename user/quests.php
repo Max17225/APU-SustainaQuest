@@ -438,14 +438,9 @@ if ($is_logged_in) {
     // Load AI Model Function
     (async function load_model() {
         console.log("Loading AI...");
-        try {
-            // Store in ai_model so it can be reused, "await" is used to let mobilenet to finish loading then proceed with next stype
-            ai_model = await mobilenet.load();
-            console.log("AI Ready");
-        } catch (e) {
-            console.error("AI Failed to load", e);
-            alert("Warning: AI Model failed to load. Please Refresh.");
-        }
+        // Store in ai_model so it can be reused, "await" is used to let mobilenet to finish loading then proceed with next stype
+        ai_model = await mobilenet.load();
+
     })();
 
     // This function:

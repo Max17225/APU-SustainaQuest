@@ -1,17 +1,15 @@
 <?php
-/* =======================
-   1. SESSION & AUTH
-======================= */
+// 1. SESSION HANDLING
 session_start();
+
+// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth_page/login.php");
     exit();
 }
 $user_id = $_SESSION['user_id'];
 
-/* =======================
-   2. INCLUDES
-======================= */
+// 2. INCLUDES & SETTINGS
 $path = "../";
 $page_css = "user_dashboard.css";
 
@@ -19,9 +17,9 @@ require_once '../includes/db_connect.php';
 require_once '../includes/header.php';
 require_once 'user_functions.php'; 
 
-/* =======================
-   3. USER SUMMARY
-======================= */
+// ================= FETCH DATA (DATABASE LOGIC) =================
+
+// 3. Get User Summary (Name, Level, Points)
 $user_stmt = $conn->prepare("
     SELECT userName, level, levelProgress, greenPoints
     FROM users
@@ -31,27 +29,23 @@ $user_stmt->bind_param("i", $user_id);
 $user_stmt->execute();
 $user = $user_stmt->get_result()->fetch_assoc();
 
-// ============================================================
-// Forces the system to check your badges every time you look at your dashboard.
-// ============================================================
+// 4. Automate Badge Checking
+// (Forces system to check/award badges based on latest stats)
 check_and_award_badges($conn, $user_id);
 
-/* =======================
-   4. LEVEL CALCULATION
-======================= */
+// 5. Level Calculation
 $current_xp = (int) $user['levelProgress'];
-// Use function from user_functions.php
-$required_xp = get_required_xp($user['level']);
+$required_xp = get_required_xp($user['level']); // From user_functions.php
 
+// Avoid division by zero
 if ($required_xp > 0) {
+    // Calculate percentage for progress bar (capped at 100%)
     $level_percent = min(100, ($current_xp / $required_xp) * 100);
 } else {
     $level_percent = 0;
 }
 
-/* =======================
-   5. BADGE COUNT
-======================= */
+// 6. Get Total Earned Badges Count
 $badge_count_result = $conn->query("
     SELECT COUNT(*) AS total
     FROM userbadges
@@ -59,9 +53,8 @@ $badge_count_result = $conn->query("
 ");
 $badge_count = $badge_count_result->fetch_assoc()['total'];
 
-/* =======================
-   6. RANK CALCULATION
-======================= */
+// 7. Calculate Global Rank
+// Logic: Count how many users have MORE points than the current user + 1
 $rank_sql = "
     SELECT COUNT(*) + 1 AS user_rank
     FROM users
@@ -70,9 +63,8 @@ $rank_sql = "
 $rank_result = $conn->query($rank_sql);
 $user_rank = $rank_result->fetch_assoc()['user_rank'];
 
-/* =======================
-   7. RECENT ACTIVITY
-======================= */
+// 8. Get Recent Activity Feed
+// Logic: Combine (UNION) Redemptions and Completed Quests into one list
 $activity_sql = "
     (SELECT CONCAT('You redeemed ', i.itemName, ' for ', i.pointCost, ' pts') AS activity,
             r.redempDate AS activity_date
@@ -94,9 +86,7 @@ $activity_sql = "
 ";
 $activities = $conn->query($activity_sql);
 
-/* =======================
-   8. QUEST STATUS
-======================= */
+// 9. Get Quest Status (Specific for the Quest Card)
 $quest_status = $conn->query("
     SELECT q.title, qs.approveStatus
     FROM questsubmissions qs
@@ -106,10 +96,9 @@ $quest_status = $conn->query("
     LIMIT 4
 ");
 
-/* =======================
-   9. USER BADGES 
-======================= */
-// A. Fetch ALL badges (so can show locked ones)
+// 10. Fetch Badge Data (For Grid Display)
+
+// A. Fetch ALL available badges (to display locked state)
 $all_badges_result = $conn->query("SELECT badgeId, badgeName, description, badgeIconURL FROM badges ORDER BY badgeId ASC");
 $all_badges = [];
 if ($all_badges_result) {
@@ -118,7 +107,7 @@ if ($all_badges_result) {
     }
 }
 
-// B. Fetch User's Earned Badge IDs
+// B. Fetch IDs of badges the user has actually earned
 $user_badges_result = $conn->query("SELECT badgeId FROM userbadges WHERE userId = $user_id");
 $earned_badge_ids = [];
 if ($user_badges_result) {
@@ -171,7 +160,7 @@ if ($user_badges_result) {
             <ul class="dashboard-list scrollable-list">
                 <?php if ($activities && $activities->num_rows > 0): ?>
                     <?php while ($row = $activities->fetch_assoc()): ?>
-                        <li>🌱 <?= htmlspecialchars($row['activity']) ?></li>
+                        <li> <?= htmlspecialchars($row['activity']) ?></li>
                     <?php endwhile; ?>
                 <?php else: ?>
                     <li class="empty">No recent activity.</li>
@@ -179,10 +168,11 @@ if ($user_badges_result) {
             </ul>
         </div>
 
-       <div class="dashboard-card">
+        <div class="dashboard-card">
             <h3>My Quest Status</h3>
             <ul class="dashboard-list scrollable-list">
                 <?php 
+                // Re-running query here if variable was overwritten or strictly for view context
                 $quest_status = $conn->query("
                     SELECT q.title, qs.approveStatus, qs.submitDate
                     FROM questsubmissions qs
@@ -222,12 +212,12 @@ if ($user_badges_result) {
             <h3>My Badges</h3>
             <div class="badges-container">
                 <?php 
-                // Loop through ALL badges
+                // Loop through ALL badges to create the grid
                 foreach ($all_badges as $badge): 
                     $badge_id = $badge['badgeId'];
                     $is_earned = in_array($badge_id, $earned_badge_ids);
                     
-                    // Prepare Popup Data
+                    // Prepare Data for Modal
                     $b_status = $is_earned ? 'earned' : 'locked';
                     $b_name   = htmlspecialchars($badge['badgeName']);
                     $b_desc   = htmlspecialchars($badge['description']);
@@ -284,22 +274,28 @@ if ($user_badges_result) {
 </div>
 
 <script>
-// Get DOM Elements
+// ==========================================
+// 1. SETUP DOM ELEMENTS
+// ==========================================
 const modal = document.getElementById("badgeModal");
 const closeBtn = document.getElementsByClassName("close-modal")[0];
 const badgeSlots = document.querySelectorAll('.badge-icon-slot');
 
-// Modal Content Elements
+// Modal Inner Elements
 const mImg = document.getElementById("modalBadgeImg");
 const mLockedIcon = document.getElementById("modalLockedIcon");
 const mName = document.getElementById("modalBadgeName");
 const mDesc = document.getElementById("modalBadgeDesc");
 const mStatus = document.getElementById("modalBadgeStatus");
 
-// Function to open modal and fill data
+// ==========================================
+// 2. MODAL LOGIC
+// ==========================================
+
+// Attach Click Event to every Badge Slot
 badgeSlots.forEach(slot => {
     slot.addEventListener('click', function() {
-        // 1. Read data from clicked slot
+        // 1. Read data attributes from clicked slot
         const data = this.dataset;
 
         // 2. Populate Modal Text
@@ -307,16 +303,16 @@ badgeSlots.forEach(slot => {
         mDesc.textContent = data.desc;
         mStatus.textContent = data.status === 'earned' ? 'Earned' : 'Locked';
         
-        // 3. Update Status Pill Class
+        // 3. Update Status Pill Style
         mStatus.className = 'status-pill ' + data.status;
 
-        // 4. Show correct icon (Image vs Lock emoji)
+        // 4. Handle Image vs Locked Icon
         if (data.img) {
             mImg.src = data.img;
             mImg.style.display = 'inline-block';
             mLockedIcon.style.display = 'none';
 
-            // UPDATED: If status is locked, make the popup image grey too!
+            // VISUAL LOGIC: If status is locked, grey out the popup image too
             if (data.status === 'locked') {
                 mImg.style.filter = "grayscale(100%) opacity(0.5)";
             } else {
@@ -333,10 +329,20 @@ badgeSlots.forEach(slot => {
     });
 });
 
-// Close Modal Logic
-closeBtn.onclick = function() { modal.style.display = "none"; }
+// ==========================================
+// 3. CLOSE HANDLERS
+// ==========================================
+
+// Close on 'X' click
+closeBtn.onclick = function() { 
+    modal.style.display = "none"; 
+}
+
+// Close on outside click
 window.onclick = function(event) {
-    if (event.target == modal) { modal.style.display = "none"; }
+    if (event.target == modal) { 
+        modal.style.display = "none"; 
+    }
 }
 </script>
 
