@@ -1,12 +1,11 @@
 <?php
-// 1. SESSION HANDLING
+// 1. SESSION & AUTH
 session_start();
+require_once '../includes/session_check.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth_page/login.php");
-    exit();
-}
+// Forces login. If not logged in, they get kicked out.
+require_login();
+
 $user_id = $_SESSION['user_id'];
 
 // 2. INCLUDES & SETTINGS
@@ -15,7 +14,7 @@ $page_css = "user_dashboard.css";
 
 require_once '../includes/db_connect.php';
 require_once '../includes/header.php';
-require_once 'user_functions.php'; 
+require_once 'user_functions.php';
 
 // ================= FETCH DATA (DATABASE LOGIC) =================
 

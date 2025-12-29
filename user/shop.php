@@ -9,29 +9,25 @@ require_once '../includes/db_connect.php';
 require_once '../includes/header.php';
 require_once 'user_functions.php'; 
 
-// ================= FETCH DATA (DATABASE LOGIC) =================
-
+// ================= FETCH DATA (USING FUNCTIONS FROM user_functions.php) =================
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 $current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'permanent';
 
 // 1. Get User Points 
 $user_points = get_user_points($conn, $user_id);
 
-// 2. Fetch Data based on Tab (History vs Shop Items)
+// 2. Fetch Data based on Tab 
 $items_list = [];
 $result = null;
 
 if ($current_tab == 'history' && $user_id) {
-    // Fetch user's past redemptions
     $result = get_redemption_history($conn, $user_id);
 } else {
-    // Fetch available shop items
     $items_list = get_shop_items($conn, $current_tab);
 }
 ?>
 
 <div id="shop-page">
-    
     <div class="top-bar">
         <div class="tabs">
             <a href="?tab=permanent" class="tab-link <?php echo ($current_tab == 'permanent') ? 'active' : ''; ?>">Permanent</a>
@@ -55,11 +51,10 @@ if ($current_tab == 'history' && $user_id) {
                 $item = isset($items_list[$i]) ? $items_list[$i] : null;
             ?>
                 <?php if ($item): 
-                    // Logic: Check Stock & Affordability
                     $in_stock = $item['quantity'] > 0;
                     $can_afford = ($user_points >= $item['pointCost']);
                     
-                    // Determine Button State
+
                     $btn_text = "Redeem";
                     $btn_class = "btn-redeem";
                     $btn_attr = ""; 
@@ -215,129 +210,84 @@ if ($current_tab == 'history' && $user_id) {
 
 <script>
 // ==========================================
-// 1. QUANTITY CONTROLS
+// 1. QUANTITY BUTTONS LOGIC
 // ==========================================
-
 function increaseQty(id, maxStock) {
-    // 1. Get current input element
     const input = document.getElementById('qty_input_' + id);
     let val = parseInt(input.value);
-    
-    // 2. Check if under max stock
     if(val < maxStock) {
         input.value = val + 1;
     }
 }
 
 function decreaseQty(id) {
-    // 1. Get current input element
     const input = document.getElementById('qty_input_' + id);
     let val = parseInt(input.value);
-    
-    // 2. Prevent going below 1
     if(val > 1) {
         input.value = val - 1;
     }
 }
 
 // ==========================================
-// 2. MODAL LOGIC (DETAILS)
+// 2. MODAL LOGIC
 // ==========================================
-
 function openModal(title, desc, imgSrc) {
-    // 1. Populate Text
     document.getElementById('modalTitle').innerHTML = title;
     document.getElementById('modalDesc').innerHTML = desc;
-    
-    // 2. Handle Image Visibility
     const imgElement = document.getElementById('modalImg');
-    if (imgSrc) { 
-        imgElement.src = imgSrc; 
-        imgElement.style.display = 'inline-block'; 
-    } else { 
-        imgElement.style.display = 'none'; 
-    }
-    
-    // 3. Show Modal
+    if (imgSrc) { imgElement.src = imgSrc; imgElement.style.display = 'inline-block'; } 
+    else { imgElement.style.display = 'none'; }
     document.getElementById('detailModal').style.display = 'block';
 }
-
-function closeModal() { 
-    document.getElementById('detailModal').style.display = 'none'; 
-}
+function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
 
 // ==========================================
 // 3. CONFIRMATION LOGIC
 // ==========================================
-
 let targetForm = null;
-
 function openConfirmModal(event, form, itemName, itemCost, itemId) {
-    // 1. Prevent Form from Submitting Immediately
     event.preventDefault();
     targetForm = form;
     
-    // 2. Get Selected Quantity
+    // Get visible quantity value
     const quantity = document.getElementById('qty_input_' + itemId).value;
-    
-    // 3. Update Hidden Form Input with Quantity
+    // Set hidden form input
     document.getElementById('form_qty_' + itemId).value = quantity;
     
-    // 4. Calculate Total Cost
     const totalCost = itemCost * quantity;
     
-    // 5. Update Confirm Modal UI
     document.getElementById('confirmItemName').innerText = itemName;
     document.getElementById('confirmQty').innerText = quantity;
     document.getElementById('confirmTotalCost').innerText = totalCost.toLocaleString();
-    
-    // 6. Show Modal
     document.getElementById('confirmModal').style.display = 'block';
-    
     return false;
 }
+function processRedemption() { if (targetForm) targetForm.submit(); closeConfirmModal(); }
+function closeConfirmModal() { document.getElementById('confirmModal').style.display = 'none'; targetForm = null; }
 
-function processRedemption() { 
-    // 1. Submit the stored form
-    if (targetForm) targetForm.submit(); 
-    closeConfirmModal(); 
-}
-
-function closeConfirmModal() { 
-    document.getElementById('confirmModal').style.display = 'none'; 
-    targetForm = null; 
-}
-
-// Close Modals when clicking outside
 window.onclick = function(e) { 
     if (e.target == document.getElementById('detailModal')) closeModal(); 
     if (e.target == document.getElementById('confirmModal')) closeConfirmModal(); 
 }
 
 // ==========================================
-// 4. STATUS FEEDBACK (URL PARAMS)
+// 4. STATUS & NOTIFICATIONS
 // ==========================================
-
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Check URL for status parameters
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
     const item = urlParams.get('item');
     const qty = urlParams.get('qty');
     const msg = urlParams.get('msg');
 
-    // 2. Handle Success
     if (status === 'success') {
         openModal(
             'Redemption Successful!', 
             'You redeemed <b>' + (qty ? qty : '1') + 'x ' + (item ? decodeURIComponent(item) : 'item') + '</b>.<br>Status: <b>Redeemed</b>',
             'https://cdn-icons-png.flaticon.com/512/148/148767.png'
         );
-        // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname + "?tab=" + (urlParams.get('tab') || 'permanent'));
-    } 
-    // 3. Handle Error
-    else if (status === 'error') {
+    } else if (status === 'error') {
         openModal('Transaction Failed', msg ? decodeURIComponent(msg) : 'Error', 'https://cdn-icons-png.flaticon.com/512/190/190406.png');
         window.history.replaceState({}, document.title, window.location.pathname + "?tab=" + (urlParams.get('tab') || 'permanent'));
     }

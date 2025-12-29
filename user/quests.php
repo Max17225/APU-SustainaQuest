@@ -269,7 +269,7 @@ if ($is_logged_in) {
                     
                     <div id="extra-video-container" style="display:none; margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
                         <label style="color:#d35400;">(Weekly Only) Upload Video Evidence:</label><br>
-                        <span style="font-size:0.8rem; color:#666;">Optional: Show us a video of your activity.</span><br>
+                        <span style="font-size:0.8rem; color:#666;">Optional: Show us a video of your activity (Maximum File Size 2MB).</span><br>
                         <input type="file" id="video-input" name="video_file" accept="video/mp4,video/webm">
                     </div>
 
@@ -306,10 +306,19 @@ if ($is_logged_in) {
             </div>
 
             <div style="margin-top: 15px;">
-            <strong>Submitted Evidence:</strong><br>
-            <div id="h-evidence-preview" style="margin-bottom:10px;"></div>
-            <a id="h-evidence-link" href="#" target="_blank" class="btn-primary" style="display:inline-block; width:auto; padding: 5px 15px; background:#555; text-decoration: none;">Download File</a>
-        </div>
+                <strong>Submitted Evidence:</strong><br>
+
+                <!-- IMAGE PREVIEW -->
+                <img id="h-evidence-img"
+                    style="display:none; max-width:100%; border-radius:8px; margin-top:10px;">
+
+                <!-- VIDEO PREVIEW -->
+                <video id="h-evidence-video"
+                    controls
+                    style="display:none; max-width:100%; border-radius:8px; margin-top:10px;">
+                </video>
+            </div>
+
         </div>
 
     </div>
@@ -402,8 +411,33 @@ if ($is_logged_in) {
             document.getElementById('h-sub-date').innerText = btn.getAttribute('data-sub-date');
             document.getElementById('h-desc-text').innerText = desc;
 
-            var evidenceLink = document.getElementById('h-evidence-link');
-            if(evidenceLink) evidenceLink.href = btn.getAttribute('data-evidence');
+            // =======================================
+            // EVIDENCE PREVIEW (IMAGE / VIDEO)
+            // =======================================
+            const img = document.getElementById('h-evidence-img');
+            const video = document.getElementById('h-evidence-video');
+
+            // Reset previous preview
+            img.style.display = 'none';
+            video.style.display = 'none';
+            img.src = '';
+            video.src = '';
+
+            // Get evidence URLs
+            const imageUrl = btn.getAttribute('data-evidence');
+            const videoUrl = btn.getAttribute('data-video');
+
+            // Show image if exists
+            if (imageUrl && imageUrl !== '') {
+                img.src = imageUrl;
+                img.style.display = 'block';
+            }
+
+            // Show video if exists (weekly quests)
+            if (videoUrl && videoUrl !== '') {
+                video.src = videoUrl;
+                video.style.display = 'block';
+            }
 
             var verDate = btn.getAttribute('data-ver-date');
             if (verDate && verDate !== '') {
