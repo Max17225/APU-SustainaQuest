@@ -26,6 +26,7 @@ function resolve_location(string $page): string
         'user_dashboard.php' => '/APU-SustainaQuest/user/user_dashboard.php',
         'admin_dashboard.php'=> '/APU-SustainaQuest/admin/admin_dashboard.php',
         'mod_dashboard.php'  => '/APU-SustainaQuest/moderator/mod_dashboard.php',
+        'admin'              => '/APU-SustainaQuest/admin/',
     ];
 
     if (!isset($routes[$page])) {
