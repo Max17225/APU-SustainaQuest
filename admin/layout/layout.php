@@ -19,6 +19,7 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 <html lang="<?= $config['html']['lang'] ?>">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $config['html']['title'] ?></title>
 
     <!-- Google Fonts -->
@@ -52,11 +53,22 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         <div class="nav-option">
             <ul>
                 <?php foreach ($config['nav'] as $item): ?>
-                    <li>
-                        <a href="?module=<?= $item['module'] ?>" class="<?= ($_GET['module'] ?? 'dashboard') === $item['module'] ? 'active' : '' ?>">
-                            <?= $item['label'] ?>
+
+                    <li class="nav-item <?= $item['module'] ?>">
+                        <a href="?module=<?= $item['module'] ?>"
+                        class="<?= ($_GET['module'] ?? 'dashboard') === $item['module'] ? 'active' : '' ?>"
+                        title="<?= $item['label'] ?>">
+
+                            <span class="nav-icon">
+                                <?= $item['svg'] ?>
+                            </span>
+
+                            <span class="nav-label">
+                                <?= $item['label'] ?>
+                            </span>
                         </a>
                     </li>
+
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -92,6 +104,20 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         <?php require $main_section_content; ?>
     </main>
 
+    <!-- Detail Panel (Used when user click on something and system need to display details, but not switch the page) -->
+    <!-- script down below  -->
+    <div id="detailOverlay" class="detail-overlay">
+        <div class="detail-panel">
+
+            <div class="detail-header">
+                <h2>Detail Panel</h2>
+                <button class="detail-close" id="detailClose">✕</button>
+            </div>
+
+            <div class="detail-content" id="detailContent"></div>
+        </div>
+    </div>
+
 </body>
 
 <!-- Timer script -->
@@ -123,5 +149,91 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
     setInterval(updateTopBarTime, 1000);
 </script>
 
+<!-- Detail Panel Script -->
+<script>
+(() => {
+    const overlay = document.getElementById('detailOverlay');
+    const content = document.getElementById('detailContent');
+    const closeBtn = document.getElementById('detailClose');
+
+    const endpoints = {
+        quest: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/quest_detail.php',
+        submission: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/submission_detail.php',
+        user: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/user_detail.php',
+        redemption: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/redemption_detail.php'
+    };
+
+    document.addEventListener('click', async (e) => {
+        const row = e.target.closest('.click-row');
+        if (!row) return;
+
+        const type = row.dataset.type;
+        const id   = row.dataset.id;
+
+        if (!endpoints[type]) return;
+
+        content.innerHTML = '<p>Loading...</p>';
+        overlay.classList.add('active'); // Display overlay panel
+
+        try {
+            const res = await fetch(`${endpoints[type]}?id=${id}`); // get the detail content
+            content.innerHTML = await res.text(); // inject content
+        } catch {
+            content.innerHTML = '<p>Error loading detail.</p>';
+        }
+    });
+
+    closeBtn.onclick = () => overlay.classList.remove('active');
+    overlay.onclick = e => {
+        if (e.target === overlay) overlay.classList.remove('active');
+    };
+})();
+</script>
+
+<!-- Submission Approval/Rejection Script (Submission detail panel) -->
+<script>
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.btn-approve, .btn-reject');
+        if (!btn) return;
+
+        const id = btn.dataset.id;
+        const isReject = btn.classList.contains('btn-reject');
+
+        let reason = '';
+
+        if (isReject) {
+            reason = prompt('Enter declined reason:');
+            if (reason === null || reason.trim() === '') {
+                alert('Declined reason is required.');
+                return;
+            }
+        }
+
+        const action = isReject ? 'reject' : 'approve';
+
+        const body = new URLSearchParams({
+            id,
+            reason
+        });
+
+        try {
+            const res = await fetch(
+                `/APU-SustainaQuest/admin/admin_dashboard/process/submission_${action}.php`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body
+                }
+            );
+
+            const text = await res.text();
+            alert(text);
+            location.reload();
+
+        } catch (err) {
+            alert('Action failed.');
+        }
+    });
+</script>
 
 </html>

@@ -1,3 +1,29 @@
+<!-- Staring Point -->
+
+<?php
+// ==========================
+//       Session Check
+// ==========================
+session_start();
+require_once __DIR__ . '/includes/general_function.php';
+
+if (isset($_SESSION['user_id'], $_SESSION['role'])) {
+    switch ($_SESSION['role']) {
+        case 'admin':
+            header('Location: ' . resolve_location('admin'));
+            exit;
+
+        case 'moderator':
+            header('Location: ' . resolve_location('mod_dashboard.php'));
+            exit;
+
+        default:
+            header('Location: ' . resolve_location('user_dashboard.php'));
+            exit;
+    }
+}   
+?>
+
 <?php include 'includes/header.php'; ?>
 
 <section class="hero-section">

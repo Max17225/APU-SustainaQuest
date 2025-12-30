@@ -13,7 +13,7 @@ $top_bar_content = __DIR__ . '/top_bar/admin_dashboard.php'; // get top bar cont
    Main Section Routing
    ========================= */
 $pages = [
-    'quest' => 'quest_report.php',
+    'quest' => 'quest_report/index.php',
     'user'  => 'user_report.php',
     'mod'   => 'moderator_report.php',
     'shop'  => 'shop_report.php'

@@ -1,13 +1,5 @@
 <?php
 /* ============================================================
-   user_functions.php
-   ------------------------------------------------------------
-   Centralized logic for User Progression, Badges, and Quest Data.
-   Include this file in any page that needs to access user stats
-   or quest information.
-   ============================================================ */
-
-/* ============================================================
    SECTION A: LEVELING LOGIC
    Handles XP calculations and Level Up events.
    ============================================================ */
@@ -344,5 +336,66 @@ function get_leaderboard_data($conn, $filter = 'points', $limit = 50, $offset = 
     }
 
     return $leaderboard;
+}
+
+/* ============================================================
+   SECTION E: SHOP & REDEMPTION LOGIC
+   Handles fetching items, user points, and redemption history.
+   ============================================================ */
+
+/**
+ * Fetches the current Green Points for a specific user.
+ */
+function get_user_points($conn, $user_id) {
+    if (!$user_id) return 0;
+
+    $stmt = $conn->prepare("SELECT greenPoints FROM users WHERE userId = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($row = $res->fetch_assoc()) {
+        return $row['greenPoints'];
+    }
+    return 0;
+}
+
+/**
+ * Fetches shop items based on the tab (Permanent or Limited).
+ * Returns an array of items.
+ */
+function get_shop_items($conn, $tab_name) {
+    $items = [];
+    // Map URL param 'limited' -> DB value 'Limited', otherwise 'Permanent'
+    $db_type = ($tab_name == 'limited') ? 'Limited' : 'Permanent';
+
+    $stmt = $conn->prepare("SELECT * FROM items WHERE itemType = ? AND availableStatus = 1 ORDER BY quantity DESC");
+    $stmt->bind_param("s", $db_type);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    while ($row = $res->fetch_assoc()) {
+        $items[] = $row;
+    }
+    return $items;
+}
+
+/**
+ * Fetches the redemption history for a user.
+ * Returns the MySQL result object (so we can use num_rows in the UI).
+ */
+function get_redemption_history($conn, $user_id) {
+    if (!$user_id) return null;
+
+    $sql = "SELECT r.redemptionId, r.redempDate, r.redempQuantity, r.redempStatus, 
+                   i.itemName, i.pointCost, i.itemPictureURL 
+            FROM redemptions r 
+            JOIN items i ON r.itemId = i.itemId 
+            WHERE r.userId = ? 
+            ORDER BY r.redempDate DESC";
+            
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    return $stmt->get_result();
 }
 ?>
