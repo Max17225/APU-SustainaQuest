@@ -14,4 +14,15 @@
 
     --text-glow-in: rgba(0, 255, 100, 0.2);
     --text-glow-out: rgba(0, 255, 102, 0.581);
+
+    /* Card bg must be rgba */
+    --card-bg: rgb(80, 200, 120, 0.12);
+    
+    /* Detail Panel */
+    --outside-detail-bg: rgba(0, 0, 0, 0.55);
+    --inside-detail-bg: #0a141a;
+
+    /* button color normal for yes or no */
+    --red: rgb(154, 0, 0);
+    --green: rgb(0, 154, 23);
 }
