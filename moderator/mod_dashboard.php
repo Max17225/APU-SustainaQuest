@@ -34,7 +34,6 @@ $sql_pending = "
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
   WHERE qs.approveStatus = 'Pending'
-    AND q.type = 'Weekly'
 ";
 $pending_count = (int) ($conn->query($sql_pending)->fetch_assoc()['total'] ?? 0);
 
@@ -43,7 +42,7 @@ $sql_approved_today = "
   SELECT COUNT(*) AS total
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
-  WHERE qs.approveStatus = 'Completed'
+  WHERE qs.approveStatus = 'Approved'
     AND q.type = 'Weekly'
     AND qs.verifyDate IS NOT NULL
     AND DATE(qs.verifyDate) = CURDATE()
@@ -77,7 +76,7 @@ $total_users = (int) ($conn->query($sql_total_users)->fetch_assoc()['total'] ?? 
 // Approval rate (weekly)
 $sql_approval_rate = "
   SELECT
-    SUM(CASE WHEN qs.approveStatus='Completed' THEN 1 ELSE 0 END) AS completed_count,
+    SUM(CASE WHEN qs.approveStatus='Approved' THEN 1 ELSE 0 END) AS completed_count,
     COUNT(*) AS total_count
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
@@ -98,7 +97,7 @@ $sql_popular = "
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
   WHERE q.type = 'Weekly'
-    AND qs.approveStatus = 'Completed'
+    AND qs.approveStatus = 'Approved'
   GROUP BY q.questId
   ORDER BY completions DESC
   LIMIT 1
@@ -114,7 +113,7 @@ $sql_top_user = "
   JOIN users u ON qs.submittedByUserId = u.userId
   JOIN quests q ON qs.questId = q.questId
   WHERE q.type = 'Weekly'
-    AND qs.approveStatus = 'Completed'
+    AND qs.approveStatus = 'Approved'
   GROUP BY u.userId
   ORDER BY total_completed DESC
   LIMIT 1
@@ -265,15 +264,15 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
 
     .kpi-grid{
       display:grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
     }
 
-    @media (max-width: 1100px){
-      .kpi-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 640px){
+    @media (max-width: 900px){
       .kpi-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 600px){
+      .kpi-grid{ grid-template-columns: 1fr; }
     }
 
     .card{
@@ -281,7 +280,7 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 14px 14px 12px;
+      padding: 24px;
       position:relative;
       overflow:hidden;
     }
@@ -295,9 +294,9 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
 
     .kpi-title{
       color: var(--muted);
-      font-size: 13px;
+      font-size: 20px;
       font-weight: 700;
-      letter-spacing: 0.2px;
+      letter-spacing: 1px;
     }
     .kpi-num{
       font-size: 30px;
@@ -313,8 +312,8 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
 
     .badge{
       position:absolute;
-      top: 12px;
-      right: 12px;
+      top: 20px;
+      right: 20px;
       padding: 6px 10px;
       border-radius: 999px;
       font-size: 12px;
@@ -431,6 +430,7 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
     <a class="primary" href="mod_dashboard.php">Home</a>
     <a href="verify_submissions.php">Submissions</a>
     <a href="manage_quest.php">Quests</a>
+    <a href="manage_users.php">Users</a>
     <a href="mod_profile.php">Profile</a>
     <a href="mod_recent_activity.php">Activity</a>
     <a class="logout" href="../includes/logout.php">Logout</a>
@@ -483,7 +483,7 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
     </div>
 
     <div class="card">
-      <div class="badge b-purple">Health</div>
+      <div class="badge b-purple">Approval</div>
       <div class="kpi-title">Approval Rate</div>
       <div class="kpi-num"><?= $approval_rate ?>%</div>
       <div class="kpi-sub"><?= $completed_count ?> / <?= $total_count ?> completed</div>
@@ -525,10 +525,10 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
           <span class="pill purple">Go</span>
         </a>
 
-        <a class="action" href="mod_profile.php">
+        <a class="action" href="manage_users.php">
           <div>
-            <strong>Manage User Profiles</strong><br>
-            <span>Edit Moderator Profile</span>
+            <strong>Manage Users</strong><br>
+            <span>View and ban/unban users</span>
           </div>
           <span class="pill gray">Go</span>
         </a>
