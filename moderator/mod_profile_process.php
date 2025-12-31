@@ -20,7 +20,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'moderator') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: profile.php");
+    header("Location: mod_profile.php");
     exit();
 }
 
@@ -36,7 +36,7 @@ $confirm = $_POST['confirm_password'] ?? '';
 function back($msg, $type='success'){
     $_SESSION['status_msg']  = $msg;
     $_SESSION['status_type'] = $type;
-    header("Location: profile.php");
+    header("Location: mod_profile.php");
     exit();
 }
 

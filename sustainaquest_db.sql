@@ -370,3 +370,59 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- Events for Automatic Quest Rotation
+--
+
+SET GLOBAL event_scheduler = ON;
+
+DELIMITER $$
+
+CREATE EVENT IF NOT EXISTS `rotate_daily_quests`
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_TIMESTAMP + INTERVAL 1 DAY
+DO
+BEGIN
+    -- Deactivate old Daily quests
+    UPDATE quests SET isActive = 0 WHERE type = 'Daily';
+
+    -- Activate 5 random Daily quests (excluding deleted ones)
+    UPDATE quests 
+    SET isActive = 1 
+    WHERE questId IN (
+        SELECT questId FROM (
+            SELECT q.questId 
+            FROM quests q
+            LEFT JOIN questdelete qd ON q.questId = qd.questId
+            WHERE q.type = 'Daily' AND qd.questId IS NULL
+            ORDER BY RAND() 
+            LIMIT 5
+        ) AS tmp
+    );
+END$$
+
+CREATE EVENT IF NOT EXISTS `rotate_weekly_quests`
+ON SCHEDULE EVERY 1 WEEK
+STARTS CURRENT_TIMESTAMP + INTERVAL 1 DAY
+DO
+BEGIN
+    -- Deactivate old Weekly quests
+    UPDATE quests SET isActive = 0 WHERE type = 'Weekly';
+
+    -- Activate 3 random Weekly quests (excluding deleted ones)
+    UPDATE quests 
+    SET isActive = 1 
+    WHERE questId IN (
+        SELECT questId FROM (
+            SELECT q.questId 
+            FROM quests q
+            LEFT JOIN questdelete qd ON q.questId = qd.questId
+            WHERE q.type = 'Weekly' AND qd.questId IS NULL
+            ORDER BY RAND() 
+            LIMIT 3
+        ) AS tmp
+    );
+END$$
+
+DELIMITER ;
