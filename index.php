@@ -19,6 +19,7 @@ if (isset($_SESSION['user_id'], $_SESSION['role'])) {
             header('Location: ' . resolve_location('user_dashboard.php'));
             exit;
     }
+}
 ?>
 
 <?php include 'includes/header.php'; ?>
