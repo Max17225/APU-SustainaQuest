@@ -160,7 +160,8 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         quest: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/quest_detail.php',
         submission: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/submission_detail.php',
         user: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/user_detail.php',
-        redemption: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/redemption_detail.php'
+        redemption: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/redemption_detail.php',
+        quest_delete: '/APU-SustainaQuest/admin/admin_dashboard/detail_panel/delete_detail.php'
     };
 
     document.addEventListener('click', async (e) => {
@@ -235,5 +236,66 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         }
     });
 </script>
+
+<!-- Line Chart-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const data = window.__CHART_DATA__ || {};
+    const labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    const css = getComputedStyle(document.documentElement);
+    const lineColor     = css.getPropertyValue('--active-op').trim();
+    const gridLineColor = css.getPropertyValue('--non-active').trim();
+
+    Chart.defaults.font.family = '"Aldrich", sans-serif';
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { grid: { color: gridLineColor } },
+            y: {
+                beginAtZero: true,
+                grid: { color: gridLineColor }
+            }
+        }
+    };
+
+    const createLineChart = (id, dataset) => {
+        const canvas = document.getElementById(id);
+        if (!canvas || !Array.isArray(dataset)) return;
+
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    data: dataset,
+                    borderColor: lineColor,
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }]
+            },
+            options
+        });
+    };
+
+    /* =========================
+       Render charts 
+       ========================= */
+    createLineChart('approveChart',    data.approved);
+    createLineChart('rejectChart',     data.rejected);
+    createLineChart('redemptionLineChart', data.redemption);
+
+});
+</script>
+
 
 </html>

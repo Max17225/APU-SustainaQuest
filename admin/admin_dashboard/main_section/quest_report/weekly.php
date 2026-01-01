@@ -159,7 +159,7 @@ $stmt->close();
 
 
             <div class="available-quest card">
-                <div class="card-title">Weekly Quest</div>
+                <div class="card-title">Available Weekly Quest</div>
 
                 <div class="table-wrapper">
                     <table class="record-table">

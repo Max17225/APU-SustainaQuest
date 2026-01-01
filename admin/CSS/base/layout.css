@@ -118,20 +118,19 @@ body {
     border-radius: 4px;
 }
 
+.detail-content .quest-icon {
+    width: 150px;
+    height: 150px;
+    border: 2px solid var(--active-op);
+    border-radius: 8px;
+}
+
 /* --------------------------------------------------------------------- admin_dashboard - quest_detail (Detail Panel) */
 .quest-detail {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-}
-
-.quest-detail .quest-icon {
-    width: 150px;
-    height: 150px;
-    border: 2px solid var(--active-op);
-    border-radius: 8px;
-
 }
 
 .quest-detail h3 {
@@ -156,6 +155,26 @@ body {
     word-break: break-word;
 
     border-bottom: 1px solid var(--active-op);
+}
+
+/* --------------------------------------------------------------------- admin_dashboard - delete_detail (Detail Panel) */
+.detail-content .deleted .delete-reason {
+    font-family: "Aldrich", sans-serif;
+    font-size: 1.3rem;
+    color: var(--non-active);
+    text-align: center;
+
+    max-width: 30vw;
+    width: 100%;
+
+    white-space: normal;
+    word-break: break-word;
+}
+
+.detail-content .deleted .delete-reason-title {
+    font-family: "Aldrich", sans-serif;
+    font-size: 1.5rem;
+    color: var(--active-op);
 }
 
 /* --------------------------------------------------------------------- admin_dashboard - submission_detail (Detail Panel) */
@@ -289,6 +308,55 @@ body {
 .submission-detail .btn-reject:hover {
     background-color: var(--red);
     color: var(--non-active);
+}
+
+/* --------------------------------------------------------------------- admin_dashboard - user_detail (Detail Panel) */
+.user-detail-section {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.user-detail-section .user-detail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-detail-section .user-detail h3 {
+    font-family: "Aldrich", sans-serif;
+    font-size: 2rem;
+    color: var(--active-op);
+    margin-bottom: 1rem;
+}
+
+.user-detail-section .user-submission-record {
+    flex: 2;
+}
+
+.user-detail-section .user-submission-record tr {
+    cursor: default;
+}
+
+.user-detail-section .record-table tbody tr:hover {
+    color: inherit;
+    transform: inherit;
+}
+
+.user-submission-record .table-wrapper {
+    max-height: 70vh;        
+    overflow-y: auto;
+}
+
+/* --------------------------------------------------------------------- admin_dashboard - user_detail (Detail Panel) */
+.redemption-detail h3 {
+    color: var(--active-op);
+}
+
+.redemption-detail .item-image {
+    width: 225px;
+    height: 225px;
 }
 
 /* Grid mapping */
@@ -626,11 +694,20 @@ body {
 .main-section {
     background-color: var(--top-main-bg);
     grid-area: main;
-    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
     overflow: hidden;
 }
 
 /*--------------------------------------------------------------------------------------------------------- admin_dashboard */
+.main-section .admin-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 /*-------------------------------------------------------------------------------------------------- Cards (shared) */
 .card {
     position: relative;
@@ -655,12 +732,21 @@ body {
     margin-bottom: 0.8rem;
 }
 
+.number-card .value {
+    font-family: "Aldrich", sans-serif;
+    font-size: 2rem;
+    color: var(--non-active);
+    text-align: center;
+}
+
 /*-------------------------------------------------------------------------------------------------- table design (shared) */
+/* Every table-wrapper's parent container must have a flex property (e.g display: flex, flex-direction: column and min-height: 0) */
 .table-wrapper {
     flex: 1;              
     min-height: 0;        
     overflow-y: auto;
     overflow-x: hidden;
+
 }
 
 .record-table {
@@ -717,6 +803,17 @@ body {
     opacity: 0.5;
 }
 
+.record-table .status-rejected {
+    color: #ff4d4d;
+    font-weight: 600;
+}
+
+.record-table .status-completed {
+    color: #3cff00;
+    font-weight: 600;
+}
+
+
 /* ----- scroll bar ----- */
 .table-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -728,11 +825,6 @@ body {
 }
 
 /*-------------------------------------------------------------------------------------- quest_report */
-.main-section .admin-dashboard {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
 
 .main-section .daily-weekly-option {
     width: 100%;
@@ -777,14 +869,6 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 0; 
-}
-
-/*-------------------------------- number card */
-.quest .number-card .value {
-    font-family: "Aldrich", sans-serif;
-    font-size: 2rem;
-    color: var(--non-active);
-    text-align: center;
 }
 
 /*-------------------------------- Submission Ratio Section  */
@@ -917,19 +1001,173 @@ body {
     flex: 1;
     min-height: 0;
 }
-
-.quest .status-rejected {
-    color: #ff4d4d;
-    font-weight: 600;
-}
-
-.quest .status-completed {
-    color: #3cff00;
-    font-weight: 600;
-}
-
 /*-------------------------------------------------------------------------------------- user_report */
+/* -------------------------------------------------------------------------- Top panel */
+.user .top-panel {
+    display: flex;
+    justify-content: space-evenly;
+    flex-shrink: 0;
+}
 
+.user-card {
+    flex: 1;
+}
+
+/* -------------------------------------------------------------------------- Bottom panel */
+.user .bottom-panel {
+    display: flex;
+    flex: 1;              
+    min-height: 0; 
+}
+
+.user-activity-graph {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.submission-approve,
+.submission-reject {
+    margin-bottom: 2rem;
+    height: 30vh;
+    width: 50vw;           
+    min-height: 0;       
+    display: flex;
+    flex-direction: column;
+}
+
+.user-activity-graph h4 {
+    font-family: "Aldrich", sans-serif;
+    color: var(--active-op);
+    font-size: 1rem;
+}
+
+.user .leaderboard {
+    flex: 1;              
+    display: flex;
+    flex-direction: column;
+    min-height: 0; 
+}
+
+/*-------------------------------------------------------------------------------------- mod_report */
+.mod .report-panel {
+    flex: 1;
+    display: flex;
+    min-height: 0; 
+}
+
+.mod .left-panel {
+    flex: 1;              
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    min-height: 0; 
+}
+
+.mod .left-panel .quest-created {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.mod .left-panel .quest-deleted {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.mod .right-panel {
+    flex: 1;              
+    display: flex;
+    flex-direction: column;
+    min-height: 0; 
+}
+
+.mod .right-panel .submission-approvement {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/*-------------------------------------------------------------------------------------- shop_report */
+.shop .report-panel {
+    flex: 1;
+    display: flex;
+    min-height: 0; 
+}
+
+.shop .left-panel {  
+    flex: 0.4;           
+    display: flex;
+    flex-direction: column;
+    min-height: 0; 
+}
+
+.shop .left-panel .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.low-stock-items {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; 
+}
+
+.low-stock-items .item-frame {
+    flex: 1;              
+    min-height: 0;        
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.low-stock-items ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.low-stock-items ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.low-stock-items img {
+    width: 20vh;
+    height: 20vh;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.shop .right-panel {  
+    flex: 1;           
+    display: flex;
+    flex-direction: column;
+    min-height: 0; 
+}
+
+.shop .right-panel .redemption-line-graph {
+    flex: 0.4;       
+    min-height: 0;
+    width: 60vw; 
+}
+
+.shop .right-panel .redemption-line-graph h3 {
+    margin-bottom: 0rem;
+}
+
+.shop .right-panel .redemption-activity {
+    flex: 0.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
 
 
 /* ==========================
@@ -965,7 +1203,6 @@ body {
     .submission-detail .quest-info .description {
         font-size: 0.9rem;
         max-width: 75vh;
-        border-bottom: 1px solid var(--active-op);
         padding-bottom: 1rem;
     }
 
@@ -991,6 +1228,26 @@ body {
     .submission-detail .detail-action {
         flex-direction: column;
         gap: 0.8rem;
+    }
+
+    /*-------------------------- user_detail (detail panel) */
+    .user-detail-section {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .user-detail-section .user-detail h3 {
+        font-size: 1.2rem;
+    }
+
+    .user-detail-section .user-submission-record .record-table {
+        font-size: 0.4rem;
+    }
+    .user-detail-section .user-submission-record thead th {
+        padding:  0.2rem 0.05rem;
+    }
+    .user-detail-section .user-submission-record td {
+        padding: 0.5rem 0.1rem;
     }
 
     /*--------------------------------------------------------------------------------------------------------- top bar */
@@ -1057,12 +1314,16 @@ body {
         padding: 0.8rem;
     }
 
+    .number-card {
+        display: none;
+    }
+
     /* ------------------------------------------------------------------------------------------ admin_dashboard */
     .main-section .admin-dashboard .daily-weekly-option a {
         font-size: 1rem;
     }
 
-    /*------------------------------------------------------- report panel*/
+    /*------------------------------------------------------- quest_report*/
     .quest .left-panel {
         flex: 2.4;
     }
@@ -1079,7 +1340,6 @@ body {
         display: inline-block;
     }    
 
-    .quest .number-card,
     .quest .available-quest {
         display: none;
     }
@@ -1126,7 +1386,111 @@ body {
     .quest .right-panel td {
         padding: 0.2rem 0;
     }
+
+    /*------------------------------------------------------- user_report*/
+    .user .bottom-panel {
+        flex-direction: column;
+    }
+
+    .user .user-activity-graph {
+        flex: none;
+        height: 40vh;
+        padding: 0.2rem 1rem;
+    }
+
+    .user .submission-approve,
+    .user .submission-reject {
+        margin-bottom: 2vh;
+        width: 80vw;
+    }
+
+    .user .user-activity-graph h4 {
+        font-size: 0.6rem;
+    }
+
+    .user .leaderboard {
+        flex: none;
+        height: 35vh;
+    }
+
+    .user .leaderboard .record-table {
+        font-size: 0.7rem;
+    }
+
+    .user .leaderboard thead th {
+        padding: 0.3rem 0.1rem;
+    }
+
+    /*------------------------------------------------------- mod_report*/
+    .mod .left-panel {
+        display: none;
+    }
     
+    .mod .submission-approvement .record-table {
+        font-size: 0.7rem;
+    }
+
+    .mod .submission-approvement thead th {
+        padding: 0.3rem 0.1rem;
+    }
+
+    .mod .submission-approvement td {
+        padding: 0.2rem 0.1rem;
+    }
+
+    .mod .submission-approvement .date-column,
+    .mod .submission-approvement .time-column {
+        display: none;
+    }
+
+    .mod .submission-approvement .title-column {
+        font-size: 0.5rem;
+    }
+
+    /*------------------------------------------------------- shop_report*/
+    .shop .report-panel {
+        flex-direction: column;
+    }
+
+    .shop .number-card {
+        display: none;
+    }
+
+    .shop .redemption-line-graph {
+        display: none;
+    }
+
+    .shop .left-panel {
+        flex: 0.8;
+    }
+
+    .shop .right-panel {
+        flex: 1;
+    }
+
+    .shop .right-panel .redemption-activity {
+        flex: 1;
+    }
+
+    .shop .redemption-activity .record-table {
+        font-size: 0.7rem;
+    }
+
+    .shop .redemption-activity thead th {
+        padding: 0.3rem 0.1rem;
+    }
+
+    .shop .redemption-activity td {
+        padding: 0.2rem 0.1rem;
+    }
+
+    .shop .redemption-activity .date-column{
+        display: none;
+    }
+
+    .shop .redemption-activity .title-column {
+        font-size: 0.5rem;
+    }
 
     /*--------------------------------------------------------------------------------------------------------- nav bar */
     .nav-bar {
