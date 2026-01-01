@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once "../includes/db_connect.php";
+require_once "mod_functions.php";
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -20,6 +21,24 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'moderator') {
 }
 
 function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
+
+$notice = $_SESSION['notice'] ?? '';
+unset($_SESSION['notice']);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['revert_submission'])) {
+    $subId = intval($_POST['submission_id'] ?? 0);
+    if ($subId > 0) {
+        // This new function is in mod_functions.php
+        if (revert_submission_status($conn, $subId)) {
+            $_SESSION['notice'] = "Submission #$subId has been reverted to Pending.";
+        } else {
+            $_SESSION['notice'] = "Error: Could not revert submission.";
+        }
+    }
+    // Redirect to prevent form re-submission on refresh
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 $moderatorId = (int)$_SESSION['user_id'];
 
@@ -116,13 +135,18 @@ function whoVerified($row){
     <a href="mod_dashboard.php">Home</a>
     <a href="verify_submissions.php">Submissions</a>
     <a href="manage_quest.php">Quests</a>
-    <a class="primary" href="recent_activity.php">Activity</a>
-    <a href="profile.php">Profile</a>
+    <a href="manage_users.php">Users</a>
+    <a href="mod_profile.php">Profile</a>
+    <a class="primary" href="mod_recent_activity.php">Activity</a>
     <a class="logout" href="../includes/logout.php">Logout</a>
   </div>
 </div>
 
 <div class="container">
+  <?php if ($notice): ?>
+    <div class="alert" style="background:rgba(34,211,238,.12); border-color:rgba(34,211,238,.25);"><?= e($notice) ?></div>
+  <?php endif; ?>
+
   <div class="card">
     <h1>Recent Activity</h1>
     <p class="muted">Latest 25 quest submissions (newest first).</p>
@@ -165,6 +189,14 @@ function whoVerified($row){
               <span class="badge <?= badgeClass($r['approveStatus']) ?>">
                 <?= e($r['approveStatus'] ?? '-') ?>
               </span>
+              <?php if (in_array($r['approveStatus'], ['Approved', 'Rejected']) && $r['verifiedByAi'] != 1): ?>
+                <form method="POST" style="margin-top: 5px;">
+                    <input type="hidden" name="submission_id" value="<?= e($r['submissionId']) ?>">
+                    <button type="submit" name="revert_submission" style="all:unset; cursor:pointer; font-size:11px; color: #60a5fa; text-decoration:underline;" onclick="return confirm('Are you sure you want to revert this submission to Pending?');">
+                        Revert
+                    </button>
+                </form>
+              <?php endif; ?>
             </td>
 
             <td><?= e($r['submitDate'] ?? '-') ?></td>

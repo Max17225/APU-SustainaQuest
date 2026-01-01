@@ -89,8 +89,10 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     <a href="mod_dashboard.php">Home</a>
     <a href="verify_submissions.php">Submissions</a>
     <a href="manage_quest.php">Quests</a>
-    <a class="primary" href="profile.php">Profile</a>
-    <a class="logout" href="../auth_page/logout.php">Logout</a>
+    <a href="manage_users.php">Users</a>
+    <a class="primary" href="mod_profile.php">Profile</a>
+    <a href="mod_recent_activity.php">Activity</a>
+    <a class="logout" href="../includes/logout.php">Logout</a>
   </div>
 </div>
 
@@ -106,7 +108,7 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
   </div>
 
   <div class="card">
-    <form action="profile_process.php" method="POST">
+    <form action="mod_profile_process.php" method="POST">
 
       <div class="row">
         <div>
