@@ -19,7 +19,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'moderator') {
     exit();
 }
 
-$moderatorId = (int)$_SESSION['user_id'];
+$moderator_id = (int)$_SESSION['user_id'];
 
 $status_msg  = $_SESSION['status_msg'] ?? null;
 $status_type = $_SESSION['status_type'] ?? null;
@@ -27,7 +27,7 @@ unset($_SESSION['status_msg'], $_SESSION['status_type']);
 
 // Fetch moderator details
 $stmt = $conn->prepare("SELECT moderatorId, modName, email, phoneNumber FROM moderators WHERE moderatorId = ? LIMIT 1");
-$stmt->bind_param("i", $moderatorId);
+$stmt->bind_param("i", $moderator_id);
 $stmt->execute();
 $mod = $stmt->get_result()->fetch_assoc();
 $stmt->close();

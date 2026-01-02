@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$moderatorId = (int)$_SESSION['user_id'];
+$moderator_id = (int)$_SESSION['user_id'];
 
 $email = trim($_POST['email'] ?? '');
 $phone = trim($_POST['phoneNumber'] ?? '');
@@ -45,9 +45,9 @@ if ($email === '' || $phone === '') {
 }
 
 try {
-    $wantsPasswordChange = ($current !== '' || $new !== '' || $confirm !== '');
+    $wants_password_change = ($current !== '' || $new !== '' || $confirm !== '');
 
-    if ($wantsPasswordChange) {
+    if ($wants_password_change) {
         if ($current === '' || $new === '' || $confirm === '') {
             back("To change password, fill in current + new + confirm.", "warning");
         }
@@ -60,7 +60,7 @@ try {
 
         // Get current hash
         $stmt = $conn->prepare("SELECT modPassword FROM moderators WHERE moderatorId = ? LIMIT 1");
-        $stmt->bind_param("i", $moderatorId);
+        $stmt->bind_param("i", $moderator_id);
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         $stmt->close();
@@ -69,11 +69,11 @@ try {
             back("Current password is incorrect.", "error");
         }
 
-        $newHash = password_hash($new, PASSWORD_DEFAULT);
+        $new_hash = password_hash($new, PASSWORD_DEFAULT);
 
         // Update contact + password
         $stmt = $conn->prepare("UPDATE moderators SET email = ?, phoneNumber = ?, modPassword = ? WHERE moderatorId = ?");
-        $stmt->bind_param("sssi", $email, $phone, $newHash, $moderatorId);
+        $stmt->bind_param("sssi", $email, $phone, $new_hash, $moderator_id);
         $stmt->execute();
         $stmt->close();
 
@@ -81,7 +81,7 @@ try {
     } else {
         // Update only contact info
         $stmt = $conn->prepare("UPDATE moderators SET email = ?, phoneNumber = ? WHERE moderatorId = ?");
-        $stmt->bind_param("ssi", $email, $phone, $moderatorId);
+        $stmt->bind_param("ssi", $email, $phone, $moderator_id);
         $stmt->execute();
         $stmt->close();
 

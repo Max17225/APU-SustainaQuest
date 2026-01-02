@@ -13,19 +13,19 @@ $notice = $_SESSION['notice'] ?? '';
 unset($_SESSION['notice']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $userId = intval($_POST['user_id'] ?? 0);
+    $user_id = intval($_POST['user_id'] ?? 0);
     $action = $_POST['action'] ?? '';
 
-    if ($userId > 0) {
+    if ($user_id > 0) {
         if ($action === 'ban') {
-            if (ban_user($conn, $userId)) {
-                $_SESSION['notice'] = "User #$userId has been banned.";
+            if (ban_user($conn, $user_id)) {
+                $_SESSION['notice'] = "User #$user_id has been banned.";
             } else {
                 $_SESSION['notice'] = "Error banning user.";
             }
         } elseif ($action === 'unban') {
-            if (unban_user($conn, $userId)) {
-                $_SESSION['notice'] = "User #$userId has been unbanned.";
+            if (unban_user($conn, $user_id)) {
+                $_SESSION['notice'] = "User #$user_id has been unbanned.";
             } else {
                 $_SESSION['notice'] = "Error unbanning user.";
             }

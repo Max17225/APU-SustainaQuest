@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $type = $_POST['type'] ?? 'Daily';
-    $pointReward = intval($_POST['pointReward'] ?? 0);
-    $expReward = intval($_POST['expReward'] ?? 0);
-    $questIconURL = null;
+    $point_reward = intval($_POST['pointReward'] ?? 0);
+    $exp_reward = intval($_POST['expReward'] ?? 0);
+    $quest_icon_url = null;
     $notice = '';
 
     if ($title === '' || $description === '') {
@@ -36,23 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
     } else {
         // Handle File Upload
         if (isset($_FILES['questIcon']) && $_FILES['questIcon']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../assets/image/quests/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+            $upload_dir = '../assets/image/quests/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
             }
 
-            $fileTmpPath = $_FILES['questIcon']['tmp_name'];
-            $fileName = $_FILES['questIcon']['name'];
-            $fileNameCmps = explode(".", $fileName);
-            $fileExtension = strtolower(end($fileNameCmps));
+            $file_tmp_path = $_FILES['questIcon']['tmp_name'];
+            $file_name = $_FILES['questIcon']['name'];
+            $file_name_cmps = explode(".", $file_name);
+            $file_extension = strtolower(end($file_name_cmps));
 
-            $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg', 'webp');
-            if (in_array($fileExtension, $allowedfileExtensions)) {
-                $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
-                $dest_path = $uploadDir . $newFileName;
+            $allowed_file_extensions = array('jpg', 'gif', 'png', 'jpeg', 'webp');
+            if (in_array($file_extension, $allowed_file_extensions)) {
+                $new_file_name = md5(time() . $file_name) . '.' . $file_extension;
+                $dest_path = $upload_dir . $new_file_name;
 
-                if(move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $questIconURL = 'assets/image/quests/' . $newFileName;
+                if(move_uploaded_file($file_tmp_path, $dest_path)) {
+                    $quest_icon_url = 'assets/image/quests/' . $new_file_name;
                 } else {
                     $notice = 'Error moving uploaded file.';
                 }
@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
         }
 
         if (empty($notice)) {
-            $modId = $_SESSION['user_id'] ?? null;
-            if (create_quest($conn, $title, $description, $type, $pointReward, $expReward, $modId, $questIconURL)) {
+            $mod_id = $_SESSION['user_id'] ?? null;
+            if (create_quest($conn, $title, $description, $type, $point_reward, $exp_reward, $mod_id, $quest_icon_url)) {
                 $notice = 'Quest created successfully (Added to pool).';
             } else {
                 $notice = 'Failed to create quest.';
@@ -76,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_quest'])) {
-    $questId = intval($_POST['quest_id'] ?? 0);
-    $modId = $_SESSION['user_id'] ?? 0;
+    $quest_id = intval($_POST['quest_id'] ?? 0);
+    $mod_id = $_SESSION['user_id'] ?? 0;
 
-    if (delete_quest($conn, $questId, $modId, 'Manual deletion from dashboard')) {
+    if (delete_quest($conn, $quest_id, $mod_id, 'Manual deletion from dashboard')) {
         $notice = 'Quest deleted successfully.';
     } else {
         $notice = 'Failed to delete quest.';
