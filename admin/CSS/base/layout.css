@@ -48,9 +48,9 @@ body {
     flex-direction: column;
 
     background: var(--inside-detail-bg);
-    font-family: aldrich, sans-serif;
+    font-family: var(--theme-font);
 
-    border: 2px solid var(--active-op);
+    border: 2px solid rgb(var(--active-op-rgb));
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 
@@ -72,8 +72,8 @@ body {
 .detail-header {
     padding: 1rem 1.5rem;
     background: var(--detail-header-bg);
-    border-bottom: 1px solid var(--active-op);
-    color: var(--active-op);
+    border-bottom: 1px solid rgb(var(--active-op-rgb));
+    color: rgb(var(--active-op-rgb));
 
     display: flex;
     align-items: center;
@@ -88,7 +88,7 @@ body {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     cursor: pointer;
     transition: color 0.25s ease;
 }
@@ -114,14 +114,14 @@ body {
 }
 
 .detail-content::-webkit-scrollbar-thumb {
-    background: var(--active-op);
+    background: rgb(var(--active-op-rgb));
     border-radius: 4px;
 }
 
 .detail-content .quest-icon {
     width: 150px;
     height: 150px;
-    border: 2px solid var(--active-op);
+    border: 2px solid rgb(var(--active-op-rgb));
     border-radius: 8px;
 }
 
@@ -134,14 +134,14 @@ body {
 }
 
 .quest-detail h3 {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 2rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     text-align: center;
 }
 
 .quest-detail .description {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.3rem;
     color: var(--non-active);
     text-align: center;
@@ -154,12 +154,12 @@ body {
     white-space: normal;
     word-break: break-word;
 
-    border-bottom: 1px solid var(--active-op);
+    border-bottom: 1px solid rgb(var(--active-op-rgb));
 }
 
 /* --------------------------------------------------------------------- admin_dashboard - delete_detail (Detail Panel) */
 .detail-content .deleted .delete-reason {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.3rem;
     color: var(--non-active);
     text-align: center;
@@ -172,9 +172,9 @@ body {
 }
 
 .detail-content .deleted .delete-reason-title {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.5rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
 }
 
 /* --------------------------------------------------------------------- admin_dashboard - submission_detail (Detail Panel) */
@@ -186,7 +186,7 @@ body {
 
 /* ----------------------------------------------------- quest info */
 .submission-detail .quest-info {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -194,14 +194,14 @@ body {
 }
 
 .submission-detail .quest-info h3 {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 2rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     text-align: center;
 }
 
 .submission-detail .description {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.3rem;
     color: var(--non-active);
     text-align: center;
@@ -218,14 +218,14 @@ body {
 .submission-detail .quest-icon {
     width: 150px;
     height: 150px;
-    border: 2px solid var(--active-op);
+    border: 2px solid rgb(var(--active-op-rgb));
     border-radius: 8px;
 
 }
 
 /* ----------------------------------------------------- submission info */
 .submission-detail .submission-info {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -234,14 +234,14 @@ body {
 
 .submission-detail .submission-info h3 {
     font-size: 2rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     text-align: center;
 }
 
 .submission-detail .evidence-picture {
     width: 150px;
     height: 150px;
-    border: 2px solid var(--active-op);
+    border: 2px solid rgb(var(--active-op-rgb));
     border-radius: 8px;
 
 }
@@ -249,13 +249,13 @@ body {
 .submission-detail .evidence-video {
     width: 300px;
     height: 200px;
-    border: 2px solid var(--active-op);
+    border: 2px solid rgb(var(--active-op-rgb));
     border-radius: 8px;
 
 }
 
 .submission-detail  .declined-reason {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.3rem;
     color: var(--non-active);
     text-align: center;
@@ -278,7 +278,7 @@ body {
 
 .submission-detail .detail-action button {
     flex: 1;
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     width: 100px;
     padding: 10px 14px;
 
@@ -325,10 +325,16 @@ body {
 }
 
 .user-detail-section .user-detail h3 {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 2rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     margin-bottom: 1rem;
+
+    text-align: center;
+}
+
+.user-detail-section .user-detail p {
+    text-align: center;
 }
 
 .user-detail-section .user-submission-record {
@@ -351,7 +357,7 @@ body {
 
 /* --------------------------------------------------------------------- admin_dashboard - user_detail (Detail Panel) */
 .redemption-detail h3 {
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
 }
 
 .redemption-detail .item-image {
@@ -437,7 +443,7 @@ body {
     padding: 0.75rem 1rem;
     border-radius: 7px;
 
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 0.9rem;
     color: var(--non-active);
     text-decoration: none;
@@ -453,13 +459,13 @@ body {
 
 .nav-option a:hover {
     background: var(--nav-op-bg);
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     transform: translateX(4px);
 }
 
 .nav-option a.active {
     background: var(--nav-op-bg);
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     font-weight: 600;
 }
 
@@ -470,7 +476,7 @@ body {
     left: 0;
     width: 3px;
     height: 0;
-    background: var(--active-op);
+    background: rgb(var(--active-op-rgb));
     transition: height 0.25s ease;
 }
 
@@ -506,7 +512,7 @@ body {
     padding: 0.75rem 1rem;
     /* border-radius: 12px; */
 
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.5rem;
     letter-spacing: 0.05em;
 
@@ -526,8 +532,8 @@ body {
 
 /* hover state */
 .btn-logout:hover {
-    color: var(--active-op);
-    border-top: 2px solid var(--active-op);
+    color: rgb(var(--active-op-rgb));
+    border-top: 2px solid rgb(var(--active-op-rgb));
     transform: translateY(-2px);
 }
 
@@ -571,8 +577,34 @@ body {
     border-radius: 999px; /* round both ends */
 }
 
-.top-bar-tools button {
-    display: none;
+.top-bar-tools {
+    flex: 1;
+    padding-right: 2rem;
+}
+
+/* ----------------------------------- inside top bar tools (Search bar(general)) */
+.top-bar input[type="text"] {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+
+    background: rgba(0,0,0,0.35);
+    color: var(--input-text-color);
+    font-size: 0.7rem;
+    transition: 0.4s ease; 
+    font-family: var(--theme-font);
+}
+
+.top-bar input::placeholder {
+    color: var(--placeholder-color);
+    font-family: var(--theme-font);
+}
+
+.top-bar input:focus {
+    outline: none;
+    border-color: rgb(var(--active-op-rgb));
+    box-shadow: 0 0 10px rgba(var(--active-op-rgb), 0.2);
 }
 
 /* ----------------------------------- Right side (DATE TIME) */
@@ -586,15 +618,15 @@ body {
 
 .top-bar-date {
     font-size: 0.8rem;
-    font-family: "Aldrich", sans-serif;
-    color: var(--active-op);
+    font-family: var(--theme-font);
+    color: rgb(var(--active-op-rgb));
 }
 
 .top-bar-time {
     font-size: 1.5rem;
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-weight: 600;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
 }
 
 /* ---------------------------------------------------------------------------------------------- admin_dashboard CSS (top bar) */
@@ -605,15 +637,15 @@ body {
 }
 
 .admin-dashboard-top-bar .tool-title {
-    font-family:"Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 1.6rem;
-    color: var(--active-op);
-    border-right: 3px solid var(--active-op); 
+    color: rgb(var(--active-op-rgb));
+    border-right: 3px solid rgb(var(--active-op-rgb)); 
     padding-right: 2rem; 
 }
 
 .admin-dashboard-top-bar .tool-option {
-    font-family:"Aldrich", sans-serif;
+    font-family:var(--theme-font);
     font-size: 1.2rem;
     display: flex;
     gap: 3rem; 
@@ -628,6 +660,10 @@ body {
 
     transition: color 0.25s ease;
 }
+/* mobile version left right button */
+.admin-dashboard-top-bar button {
+    display: none;
+}
 
 /* -------------------------------------------- tool btn hover effect */
 .admin-dashboard-top-bar .tool-btn::after {
@@ -638,7 +674,7 @@ body {
 
     width: 100%;
     height: 2px;
-    background: var(--active-op);
+    background: rgb(var(--active-op-rgb));
 
     transform: scaleX(0);
     transform-origin: right;
@@ -647,7 +683,7 @@ body {
 
 /* hover in */
 .admin-dashboard-top-bar .tool-btn:hover {
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
 }
 
 .admin-dashboard-top-bar .tool-btn:hover::after {
@@ -657,7 +693,7 @@ body {
 
 /* -------------------------------------------- tool btn active(current page) */
 .admin-dashboard-top-bar .tool-btn.active {
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
 }
 
 /* underline stays visible */
@@ -688,6 +724,95 @@ body {
     transform: translateY(1px);
 }
 
+/* ---------------------------------------------------------------------------------------------- user_management CSS (top bar) */
+.user-management-top-bar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* ---------------------------------------------------------- Sort list */
+.user-management-top-bar .sort-group {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    white-space: nowrap;
+}
+
+.user-management-top-bar .sort-group span {
+    font-family: var(--theme-font);
+    font-size: 1rem;
+    color: rgb(var(--active-op-rgb));
+}
+
+.user-management-top-bar .sort-option {
+    display: flex;
+
+    background: rgba(0,0,0,0.35);
+
+    border-radius: 12px;
+    border: 1px solid rgb(var(--active-op-rgb));
+
+    padding: 0.25rem;
+    gap: 0.25rem;
+}
+
+.user-management-top-bar .sort-btn {
+    font-family: var(--theme-font);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--non-active);
+    font-size: 0.7vw;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-management-top-bar .sort-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: rgb(var(--active-op-rgb));
+}
+
+.user-management-top-bar .sort-btn.active {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: #0f172a;
+    font-weight: 600;
+    box-shadow: 0 0 12px rgba(74,222,128,0.45);
+}
+
+/* Ban Filter (Toggle Style) */
+.user-management-top-bar .ban-filter {
+    display: flex;
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+}
+
+.user-management-top-bar .ban-btn {
+    font-family: var(--theme-font);
+    font-size: 1vw;
+
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: none;
+    
+    background: transparent;
+    color: var(--non-active);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-management-top-bar .ban-btn:hover {
+    color: rgb(var(--active-op-rgb));
+}
+
+.user-management-top-bar .ban-btn.active {
+    background: linear-gradient(135deg, rgba(var(--active-op-rgb), 0.4), rgb(var(--active-op-rgb)));
+    color: var(--non-active);
+    box-shadow: 0 0 12px rgba(var(--active-op-rgb),0.45);
+}
+
+
 /* ==============================
             Main Section
    ==============================*/
@@ -701,6 +826,335 @@ body {
     overflow: hidden;
 }
 
+/* ------------------------------------------------------ top type button (daily/weekly, user/moderator, permanant/limited) */
+.main-section .top-type-option {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.main-section .top-type-option .type-option-btn {
+    text-decoration: none;
+    font-family: var(--theme-font);
+    color: var(--non-active);
+    font-size: 1.3rem;
+    transition: color 0.7s ease;
+    margin: 1% 4.5%;
+}
+
+.main-section .top-type-option .type-option-btn:hover {
+    color: rgb(var(--active-op-rgb));
+}
+
+.main-section .top-type-option .type-option-btn.active {
+    color: rgb(var(--active-op-rgb));
+}
+
+/* ------------------------------------------------------ create/delete (user_management, quest_management, shop_management) */
+.main-section .create-delete-option {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.main-section .create-delete-option button {
+    background: var(--card-bg);
+    color: var(--non-active);
+
+    width: 30vw;
+    height: 5vh;
+
+    border-radius: 7px;
+    border: none;
+
+    font-family: var(--theme-font);
+    font-size: 1.6rem;
+
+    margin-top: 2vh;
+
+    cursor: pointer;
+}
+
+.main-section .create-delete-option .add-btn:hover {
+    border: 2px solid rgb(var(--active-op-rgb));
+    color: rgb(var(--active-op-rgb));
+}
+
+.main-section .create-delete-option .del-btn:hover {
+    border: 2px solid var(--red);
+    color: var(--red);
+    background: none;
+}
+
+/*------------------------------------------------------- table design */
+/* Every table-wrapper's parent container must have a flex property (e.g display: flex, flex-direction: column and min-height: 0) */
+.table-wrapper {
+    flex: 1;              
+    min-height: 0;        
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+
+.record-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+
+    font-family: var(--theme-font);
+    color: var(--non-active);
+    font-size: 0.9rem;
+    table-layout: fixed;
+}
+
+.record-table table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.record-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    text-align: center;
+    padding: 0.75rem; /* up and down only, table already has fixed width */
+
+    background: rgba(132, 132, 132, 0.423);
+    backdrop-filter: blur(6px);
+
+    color: rgb(var(--active-op-rgb));
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.record-table tbody tr {
+    text-align: center;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.record-table td {
+    padding: 0.7rem; /* up and down only */
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.record-table tbody tr:hover {
+    color: rgb(var(--active-op-rgb));
+    transform: translateY(-3px);
+}
+
+/* ----- scroll bar ----- */
+.table-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+/* ----- table design for management page only ----- */
+.management-table {
+    flex: 1;
+    
+    background-color: var(--card-bg);
+
+    border-radius: 15px;
+
+    width: 78vw;
+    height: 50vh;
+
+    margin: 5vh 0;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 0;        
+    overflow-x: hidden;
+}
+
+.management-table .record-table table {
+    width: 100%;
+}
+
+.management-table .record-table table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.management-table .record-table table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.management-table .check-all {
+    position: relative;
+    top: 2px;
+    left: 5px;
+
+    width: 1rem;
+    height: 1rem;
+}
+
+.management-table input {
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+}
+
+.management-table .edit-btn {
+    background: none;
+    cursor: pointer;
+    color: var(--non-active);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: ease 0.3s;
+}
+
+.management-table .edit-btn svg {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.management-table .edit-btn:hover {
+    color: var(--active-hover);
+    transform:  scale(0.90);
+}
+
+/* Form design for managment page only */
+.form {
+    font-family: var(--theme-font);
+    color: var(--non-active);
+}
+
+.form h2 {
+    color: rgb(var(--active-op-rgb));
+    font-size: 3rem;
+    margin-top: 2vh;
+    margin-bottom: 5vh;
+}
+
+.form form {
+    width: 100%;
+    height: 100%;
+    padding: 0 5vw;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.form .form-group {
+    display: flex;
+    margin: 1.5vh 0;
+}
+
+.form .form-group label {
+    font-size: 2rem;
+}
+
+.form-group input {
+    padding: 1vh 1vw;
+    width: 55vw;
+    margin-left: auto;
+
+    background: none;
+
+    border: 3px solid var(--non-active);
+    border-radius: 10px;
+
+    font-size: 1rem;
+    font-family: var(--theme-font);
+    color: var(--non-active);
+
+    transition: 0.25s;
+}
+
+.form-group input.valid {
+    border: 3px solid var(--green);
+    box-shadow: 0 0 10px rgba(0,255,162,.35);
+}
+
+.form-group input.invalid {
+    border: 3px solid var(--red);
+    box-shadow: 0 0 10px rgba(255,59,59,.35);
+}
+
+.form-group .input-hint {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group .hint {
+    margin-top: 0.5vh;
+    padding-left: 1.3vw;
+    font-family: var(--theme-font);
+    font-size: 12px;
+    color: var(--red);
+    min-height: 14px;
+}
+
+.form .form-action {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 7vh;
+}
+
+.form .form-action .btn {
+    width: 30vw;
+    height: 5vh;
+    
+    border-radius: 15px;
+}
+
+.form .form-action button {
+    background: var(--green);
+
+    font-family: var(--theme-font);
+    font-size: 2rem;
+    color: var(--non-active);
+}
+
+.form .form-action a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: var(--theme-font);
+    font-size: 2rem;
+    color: var(--non-active);
+
+    text-decoration: none;
+    background-color: var(--red);
+
+    transition: 0.2s ease;
+}
+
+.form .form-action .btn:hover {
+    transform: scale(0.95);
+}
+
+.form .status-toggle {
+    margin-left: auto;
+}
+
+.form label {
+    cursor: pointer;
+}
+
+.form .radio-btn {
+    width: 2vw;
+    cursor: pointer;
+}
+
+button[disabled] {
+    opacity: .4;
+    pointer-events: none;
+}
+
 /*--------------------------------------------------------------------------------------------------------- admin_dashboard */
 .main-section .admin-dashboard {
     display: flex;
@@ -708,6 +1162,21 @@ body {
     height: 100%;
 }
 
+/*-------------------------------------------------------------------------------------------------- table record */
+.admin-dashboard .record-table td:nth-child(3),
+.admin-dashboard .record-table td:nth-child(4) {
+    opacity: 0.5;
+}
+
+.admin-dashboard .record-table .status-rejected {
+    color: var(--red);
+    font-weight: 600;
+}
+
+.admin-dashboard .record-table .status-completed {
+    color: var(--green);
+    font-weight: 600;
+}
 /*-------------------------------------------------------------------------------------------------- Cards (shared) */
 .card {
     position: relative;
@@ -725,130 +1194,21 @@ body {
 }
 
 .card-title {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     text-align: center;
     font-size: 1.1rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
     margin-bottom: 0.8rem;
 }
 
 .number-card .value {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 2rem;
     color: var(--non-active);
     text-align: center;
 }
 
-/*-------------------------------------------------------------------------------------------------- table design (shared) */
-/* Every table-wrapper's parent container must have a flex property (e.g display: flex, flex-direction: column and min-height: 0) */
-.table-wrapper {
-    flex: 1;              
-    min-height: 0;        
-    overflow-y: auto;
-    overflow-x: hidden;
-
-}
-
-.record-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 0.5rem;
-
-    font-family: "Aldrich", sans-serif;
-    color: var(--non-active);
-    font-size: 0.9rem;
-    table-layout: fixed;
-}
-
-.record-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-
-    text-align: center;
-    padding: 0.75rem; /* up and down only, table already has fixed width */
-
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(6px);
-
-    color: var(--active-op);
-    font-weight: 600;
-    letter-spacing: 0.03em;
-}
-
-.record-table tbody tr {
-    text-align: center;
-    transition: transform 0.2s ease;
-}
-
-.record-table tbody .click-row {
-    cursor: pointer;
-}
-
-.record-table td {
-    padding: 0.7rem; /* up and down only */
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.record-table tbody tr:hover {
-    color: var(--active-op);
-    transform: translateY(-3px);
-}
-
-.record-table td:nth-child(3),
-.record-table td:nth-child(4) {
-    opacity: 0.5;
-}
-
-.record-table .status-rejected {
-    color: #ff4d4d;
-    font-weight: 600;
-}
-
-.record-table .status-completed {
-    color: #3cff00;
-    font-weight: 600;
-}
-
-
-/* ----- scroll bar ----- */
-.table-wrapper::-webkit-scrollbar {
-    width: 8px;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-
 /*-------------------------------------------------------------------------------------- quest_report */
-
-.main-section .daily-weekly-option {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.main-section .daily-weekly-option .option-btn {
-    text-decoration: none;
-    font-family:"Aldrich", sans-serif;
-    color: var(--non-active);
-    font-size: 1.3rem;
-    transition: color 0.7s ease;
-    margin: 1% 4.5%;
-}
-
-.main-section .daily-weekly-option .option-btn:hover {
-    color: var(--active-op);
-}
-
-.main-section .daily-weekly-option .option-btn.active {
-    color: var(--active-op);
-}
-
 /*------------------------------------------------------- report panel*/
 .quest .report-panel {
     display: flex;
@@ -893,7 +1253,7 @@ body {
 }
 
 .quest .bar-label {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 0.85rem;
     color: var(--non-active);
 
@@ -918,9 +1278,9 @@ body {
 }
 
 .quest .bar-value {
-    font-family: "Aldrich", sans-serif;
+    font-family: var(--theme-font);
     font-size: 0.8rem;
-    color: var(--active-op);
+    color: rgb(var(--active-op-rgb));
 }
 
 /* Layout: pie left, quest right */
@@ -956,7 +1316,7 @@ body {
     justify-content: space-between;
     align-items: center;
     color: var(--non-active);
-    font-family:  "Aldrich", sans-serif;
+    font-family:  var(--theme-font);
 }
 
 /* Count */
@@ -1039,8 +1399,8 @@ body {
 }
 
 .user-activity-graph h4 {
-    font-family: "Aldrich", sans-serif;
-    color: var(--active-op);
+    font-family: var(--theme-font);
+    color: rgb(var(--active-op-rgb));
     font-size: 1rem;
 }
 
@@ -1169,6 +1529,14 @@ body {
     min-height: 0;
 }
 
+/*--------------------------------------------------------------------------------------------------------- user_management */
+.main-section .user-management {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    min-height: 0;
+}
 
 /* ==========================
             Mobile View          
@@ -1262,6 +1630,8 @@ body {
 
     .top-bar-inner .top-bar-tools {
         width: 100%;
+        padding-right: 0;
+        padding: 0.5rem 0.5rem;
     }
 
     /* ------------------------------------------------------------------------------------------ admin_dashboard */
@@ -1274,7 +1644,6 @@ body {
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        padding: 0.5rem 1rem;
         overflow: hidden;
     }
 
@@ -1309,6 +1678,32 @@ body {
         display: none;
     }
 
+    /* ------------------------------------------------------------------------------------------ user_management */
+    .user-management-top-bar {
+        gap: 0;
+    }
+
+    /* search bar */
+    .top-bar input[type="text"] {
+        padding: 10px 10px;
+        border-radius: 0;
+        font-size: 0.7rem;
+        transition: 0.4s ease;
+        font-family: var(--theme-font);
+    }
+
+    .user-management-top-bar .sort-group {
+        display: none;
+    }
+
+    .user-management-top-bar .ban-filter .ban-btn {
+        padding: 11.6px 2px;
+        font-size: 10px;
+
+        border-radius: 0;
+        background-color: #242424e1;
+    }  
+
     /*--------------------------------------------------------------------------------------------------------- Main Section */
     .card {
         padding: 0.8rem;
@@ -1318,11 +1713,107 @@ body {
         display: none;
     }
 
-    /* ------------------------------------------------------------------------------------------ admin_dashboard */
-    .main-section .admin-dashboard .daily-weekly-option a {
+    .main-section .top-type-option .type-option-btn {
         font-size: 1rem;
     }
 
+    /* Create / delete btn */
+    .main-section .create-delete-option {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-section .create-delete-option button {
+        font-size: 1rem;
+        width: 90vw;
+    }
+
+    /*------------------------------------------------------- management-table*/
+    .management-table {
+        border-radius: 10px;
+        width: 90vw;
+        margin: 2vh 0;
+    }
+
+    .management-table .phone-dissable{
+        display: none;
+    }
+
+    .management-table table {
+        font-size: 0.6rem;
+    }
+
+    .management-table table thead th{
+        padding: 1vh 0;
+    }
+
+    .management-table td {
+        padding: 0.6rem 0.2rem;
+    }
+
+    .management-table .record-table table thead th:first-child {
+        border-top-left-radius: 10px;
+        font-size: 0.000000001px;
+    }
+
+    .management-table .record-table .check-all {
+        top: 0;
+        left: 0;
+        width: 15px;
+        height: 15px;
+    }
+
+    .management-table input {
+        width: 1rem;
+        width: 1rem;
+    }
+
+    /* First column (checkbox) */
+    .management-table .record-table th:nth-child(1),
+    .management-table .record-table td:nth-child(1) {
+        width: 30px;
+    }
+
+    /* Last column (edit button) */
+    .management-table .record-table th:last-child,
+    .management-table .record-table td:last-child {
+        width: 40px;
+    }
+
+    /*------------------------------------------------------- management form*/
+    .form h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form .form-group {
+        margin: 1vh;
+    }
+
+    .form .form-group label {
+        padding-top: 6px;
+        font-size: 0.8rem;
+    }
+
+    .form .form-group input {
+        font-size: 0.7rem;
+        width: 50vw;
+    }
+
+    .form .form-action .btn {
+        width: 40vw;
+        border-radius: 6px;
+    }
+
+    .form .form-action a {
+        font-size: 0.8rem;
+    }
+
+    .form .form-action button {
+        font-size: 0.8rem;
+    }
+
+    /* ------------------------------------------------------------------------------------------ admin_dashboard */
     /*------------------------------------------------------- quest_report*/
     .quest .left-panel {
         flex: 2.4;

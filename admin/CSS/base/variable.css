@@ -9,9 +9,11 @@
     --logo-light-green: rgb(41, 182, 97);
     --nav-op-bg: rgba(0, 113, 45, 0.16);
 
-    --active-op: #00ff64;
+    /* use number only for this variable!!!, in css this color might use to change for opacity */
+    --active-op-rgb: 0, 255, 100;
     --non-active: rgba(255, 255, 255, 0.75);
 
+    /* Glow light effect for text, normally rgb value were close to --active-op-rgb */
     --text-glow-in: rgba(0, 255, 100, 0.2);
     --text-glow-out: rgba(0, 255, 102, 0.581);
 
@@ -22,7 +24,14 @@
     --outside-detail-bg: rgba(0, 0, 0, 0.55);
     --inside-detail-bg: #0a141a;
 
-    /* button color normal for yes or no */
+    /* button color, normally for yes or no */
     --red: rgb(154, 0, 0);
     --green: rgb(0, 154, 23);
+
+    /* text input */
+    --input-text-color: rgb(173, 173, 173);
+    --placeholder-color: rgba(255,255,255,0.5);
+
+    /* font-family */
+    --theme-font: "Aldrich", sans-serif;
 }

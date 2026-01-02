@@ -64,7 +64,7 @@ $stmt->execute();
 $data = $stmt->get_result()->fetch_assoc();
 
 if (!$data) {
-    echo '<p>Quest not found.</p>';
+    echo '<p>Record not found. (Reason: User getting deleted.)</p>';
     exit;
 }
 ?>
