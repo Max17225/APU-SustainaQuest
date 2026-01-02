@@ -5,7 +5,7 @@ $page = $_GET['page'] ?? 'user'; // user | mod
 $isUser = ($page === 'user'); // user and mod has difference top bar display
 ?>
 
-<div class="user-management-top-bar">
+<div class="management-top-bar">
 
     <!-- Search bar -->
     <input type="text" id="searchInput" placeholder="Search Username">
@@ -29,9 +29,9 @@ $isUser = ($page === 'user'); // user and mod has difference top bar display
 
     <!-- Ban Filter (user only) -->
     <?php if ($isUser): ?>
-    <div class="ban-filter">
-        <button class="ban-btn left active" data-ban="0">Normal</button>
-        <button class="ban-btn right" data-ban="1">Banned</button>
+    <div class="filter">
+        <button class="fil-btn left active" data-ban="0">Normal</button>
+        <button class="fil-btn right" data-ban="1">Banned</button>
     </div>
     <?php endif; ?>
 

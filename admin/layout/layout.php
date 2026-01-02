@@ -402,26 +402,45 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
         const rows = Array.from(tableBody.querySelectorAll('tr'));
 
+        // get current module
+        const currentModule = "<?= $_GET['module'] ?? '' ?>";
+
         /* =========================
-        Search
+        Search 
         ========================= */
-        document.getElementById('searchInput')?.addEventListener('input', e => { // work if searchInput is exist
+        document.getElementById('searchInput')?.addEventListener('input', e => {
             const keyword = e.target.value.toLowerCase();
+
             rows.forEach(row => {
-                const name = row.dataset.username;
-                row.style.display = name.includes(keyword) ? '' : 'none';
+                let match = false;
+
+                if (currentModule === 'user') {
+                    const name = row.dataset.username || ''; // check for username, display the row which has the similar username
+                    match = name.includes(keyword);
+                }
+
+                if (currentModule === 'quest') { // check for the row on title and creator
+                    const title = row.dataset.title || '';
+                    const creator = row.dataset.creator || '';
+                    match = title.includes(keyword) || creator.includes(keyword);
+                }
+
+                row.style.display = match ? '' : 'none';
             });
         });
 
         /* =========================
-        Ban Filter
+            Filter 
         ========================= */
-        document.querySelectorAll('.ban-btn').forEach(btn => {
+        document.querySelectorAll('.fil-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.ban-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.fil-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
-                currentBan = btn.dataset.ban;
+                if (currentModule === 'user') {
+                    currentBan = btn.dataset.ban; // get the ban data 0 ro 1
+                }
+
                 applyFilterAndSort();
             });
         });
@@ -452,11 +471,14 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
             let filtered = [...rows];
 
-            <?php if (($_GET['page']) === 'user'): ?>
-                filtered = filtered.filter(row =>
-                    row.dataset.banned === currentBan
-                );
-            <?php endif; ?>
+            // module user and page user (Ban filter)
+            if (currentModule === 'user') {
+                <?php if (($_GET['page']) === 'user'): ?>
+                    filtered = filtered.filter(row =>
+                        row.dataset.banned === currentBan
+                    );
+                <?php endif; ?>
+            }
 
             if (currentSort) {
                 filtered.sort((a, b) => {

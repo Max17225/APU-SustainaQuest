@@ -725,27 +725,27 @@ body {
 }
 
 /* ---------------------------------------------------------------------------------------------- user_management CSS (top bar) */
-.user-management-top-bar {
+.management-top-bar {
     display: flex;
     gap: 1rem;
     align-items: center;
 }
 
 /* ---------------------------------------------------------- Sort list */
-.user-management-top-bar .sort-group {
+.management-top-bar .sort-group {
     display: flex;
     align-items: center;
     gap: 0.7rem;
     white-space: nowrap;
 }
 
-.user-management-top-bar .sort-group span {
+.management-top-bar .sort-group span {
     font-family: var(--theme-font);
     font-size: 1rem;
     color: rgb(var(--active-op-rgb));
 }
 
-.user-management-top-bar .sort-option {
+.management-top-bar .sort-option {
     display: flex;
 
     background: rgba(0,0,0,0.35);
@@ -757,7 +757,7 @@ body {
     gap: 0.25rem;
 }
 
-.user-management-top-bar .sort-btn {
+.management-top-bar .sort-btn {
     font-family: var(--theme-font);
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
@@ -769,12 +769,12 @@ body {
     transition: all 0.2s ease;
 }
 
-.user-management-top-bar .sort-btn:hover {
+.management-top-bar .sort-btn:hover {
     background: rgba(255,255,255,0.08);
     color: rgb(var(--active-op-rgb));
 }
 
-.user-management-top-bar .sort-btn.active {
+.management-top-bar .sort-btn.active {
     background: linear-gradient(135deg, #4ade80, #22c55e);
     color: #0f172a;
     font-weight: 600;
@@ -782,13 +782,13 @@ body {
 }
 
 /* Ban Filter (Toggle Style) */
-.user-management-top-bar .ban-filter {
+.management-top-bar .filter {
     display: flex;
     background: rgba(0,0,0,0.35);
     border-radius: 12px;
 }
 
-.user-management-top-bar .ban-btn {
+.management-top-bar .fil-btn {
     font-family: var(--theme-font);
     font-size: 1vw;
 
@@ -802,11 +802,11 @@ body {
     transition: all 0.2s ease;
 }
 
-.user-management-top-bar .ban-btn:hover {
+.management-top-bar .fil-btn:hover {
     color: rgb(var(--active-op-rgb));
 }
 
-.user-management-top-bar .ban-btn.active {
+.management-top-bar .fil-btn.active {
     background: linear-gradient(135deg, rgba(var(--active-op-rgb), 0.4), rgb(var(--active-op-rgb)));
     color: var(--non-active);
     box-shadow: 0 0 12px rgba(var(--active-op-rgb),0.45);
@@ -1679,7 +1679,7 @@ button[disabled] {
     }
 
     /* ------------------------------------------------------------------------------------------ user_management */
-    .user-management-top-bar {
+    .management-top-bar {
         gap: 0;
     }
 
@@ -1692,11 +1692,11 @@ button[disabled] {
         font-family: var(--theme-font);
     }
 
-    .user-management-top-bar .sort-group {
+    .management-top-bar .sort-group {
         display: none;
     }
 
-    .user-management-top-bar .ban-filter .ban-btn {
+    .management-top-bar .filter .fil-btn {
         padding: 11.6px 2px;
         font-size: 10px;
 

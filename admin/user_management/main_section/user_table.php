@@ -24,7 +24,7 @@ $users = $stmt->fetch_all(MYSQLI_ASSOC);
 
 <!-------------------------------------------------------------------------------------------- HTML -->
 <div class="user-management user">
-    <!-- TOP daily weekly selector -->
+    <!-- TOP normal or moderator selector -->
     <div class="top-type-option">
         <a href="?module=user&page=user"
             class="type-option-btn active">

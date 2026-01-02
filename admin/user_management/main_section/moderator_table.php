@@ -14,7 +14,7 @@ $mods = $stmt->fetch_all(MYSQLI_ASSOC);
 
 <!-------------------------------------------------------------------------------------------- HTML -->
 <div class="user-management moderator">
-    <!-- TOP daily weekly selector -->
+    <!-- TOP normal or mod selector -->
     <div class="top-type-option">
         <a href="?module=user&page=user"
             class="type-option-btn">
