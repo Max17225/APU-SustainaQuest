@@ -26,11 +26,11 @@ $notice = $_SESSION['notice'] ?? '';
 unset($_SESSION['notice']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['revert_submission'])) {
-    $subId = intval($_POST['submission_id'] ?? 0);
-    if ($subId > 0) {
+    $sub_id = intval($_POST['submission_id'] ?? 0);
+    if ($sub_id > 0) {
         // This new function is in mod_functions.php
-        if (revert_submission_status($conn, $subId)) {
-            $_SESSION['notice'] = "Submission #$subId has been reverted to Pending.";
+        if (revert_submission_status($conn, $sub_id)) {
+            $_SESSION['notice'] = "Submission #$sub_id has been reverted to Pending.";
         } else {
             $_SESSION['notice'] = "Error: Could not revert submission.";
         }
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['revert_submission']))
     exit();
 }
 
-$moderatorId = (int)$_SESSION['user_id'];
+$moderator_id = (int)$_SESSION['user_id'];
 
 // Load latest 25 submissions (newest first)
 // Also show who verified (moderator/admin/AI)
@@ -71,7 +71,7 @@ while ($r = $res->fetch_assoc()) {
     $rows[] = $r;
 }
 
-function badgeClass($status){
+function badge_class($status){
     $s = strtolower(trim((string)$status));
     if ($s === 'pending') return 'b-warn';
     if ($s === 'completed' || $s === 'approved') return 'b-ok';
@@ -79,7 +79,7 @@ function badgeClass($status){
     return 'b-gray';
 }
 
-function whoVerified($row){
+function who_verified($row){
     // Based on columns: verifiedByAi, verifiedByModeratorId, verifiedByAdminId
     if (!empty($row['verifiedByAi'])) return "AI";
     if (!empty($row['verifiedByModeratorId'])) return "Moderator";
@@ -186,7 +186,7 @@ function whoVerified($row){
             <td><?= e($r['submittedBy'] ?? '-') ?></td>
 
             <td>
-              <span class="badge <?= badgeClass($r['approveStatus']) ?>">
+              <span class="badge <?= badge_class($r['approveStatus']) ?>">
                 <?= e($r['approveStatus'] ?? '-') ?>
               </span>
               <?php if (in_array($r['approveStatus'], ['Approved', 'Rejected']) && $r['verifiedByAi'] != 1): ?>
@@ -201,7 +201,7 @@ function whoVerified($row){
 
             <td><?= e($r['submitDate'] ?? '-') ?></td>
             <td><?= e($r['verifyDate'] ?? '-') ?></td>
-            <td><?= e(whoVerified($r)) ?></td>
+            <td><?= e(who_verified($r)) ?></td>
           </tr>
         <?php endforeach; ?>
       <?php endif; ?>
