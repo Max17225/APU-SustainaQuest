@@ -15,21 +15,21 @@ unset($_SESSION['msg']);
 // Handle Approval/Rejection
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $msg = '';
-    $subId = intval($_POST['submission_id'] ?? 0);
+    $sub_id = intval($_POST['submission_id'] ?? 0);
     $action = $_POST['action'] ?? '';
     $reason = trim($_POST['reason'] ?? '');
-    $modId = $_SESSION['user_id'];
+    $mod_id = $_SESSION['user_id'];
 
-    if ($subId > 0 && in_array($action, ['Approve', 'Reject'])) {
+    if ($sub_id > 0 && in_array($action, ['Approve', 'Reject'])) {
         if ($action === 'Approve') {
-            if (approve_quest_submission($conn, $subId, $modId)) {
-                $msg = "Submission #$subId has been Approved and points awarded.";
+            if (approve_quest_submission($conn, $sub_id, $mod_id)) {
+                $msg = "Submission #$sub_id has been Approved and points awarded.";
             } else {
                 $msg = "Error approving submission.";
             }
         } elseif ($action === 'Reject') {
-            if (update_submission_status($conn, $subId, 'Rejected', $modId, $reason)) {
-                $msg = "Submission #$subId has been Rejected.";
+            if (update_submission_status($conn, $sub_id, 'Rejected', $mod_id, $reason)) {
+                $msg = "Submission #$sub_id has been Rejected.";
             } else {
                 $msg = "Error rejecting submission.";
             }
@@ -74,9 +74,11 @@ $submissions = fetch_pending_weekly_submissions($conn);
     .alert{padding:10px 12px;border-radius:12px;border:1px solid var(--border);margin-bottom:12px;background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.25);color:#fff}
     
     .sub-header{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:15px}
-    .sub-content{display:flex;gap:20px;flex-wrap:wrap}
-    .evidence{flex:1;min-width:300px}
-    .details{flex:1}
+    .sub-content{display:flex;flex-direction:column;gap:20px}
+    .evidence{width:100%}
+    .details{width:100%}
+    .media-row{display:flex;gap:15px;flex-wrap:wrap}
+    .media-row > *{flex:1;min-width:300px}
     
     label{display:block;margin-top:12px;font-weight:700;font-size:13px;color:var(--muted)}
     textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;margin-top:6px;font-family:inherit}
@@ -127,14 +129,18 @@ $submissions = fetch_pending_weekly_submissions($conn);
                 <div class="sub-content">
                     <div class="evidence">
                         <p style="font-weight:700; margin-bottom:8px;">Evidence:</p>
-                        <?php if (!empty($s['evidenceVideoURL'])): ?>
-                            <video controls style="width: 100%; max-height: 300px; background: #000; border-radius:8px;">
-                                <source src="<?php echo '../' . htmlspecialchars($s['evidenceVideoURL']); ?>" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        <?php elseif (!empty($s['evidencePictureURL'])): ?>
-                            <img src="<?php echo '../' . htmlspecialchars($s['evidencePictureURL']); ?>" style="width: 100%; max-height: 300px; object-fit: contain; border: 1px solid var(--border); border-radius:8px;">
-                        <?php else: ?>
+                        <div class="media-row">
+                            <?php if (!empty($s['evidenceVideoURL'])): ?>
+                                <video controls style="width: 100%; max-height: 300px; background: #000; border-radius:8px;">
+                                    <source src="<?php echo '../' . htmlspecialchars($s['evidenceVideoURL']); ?>" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            <?php endif; ?>
+                            <?php if (!empty($s['evidencePictureURL'])): ?>
+                                <img src="<?php echo '../' . htmlspecialchars($s['evidencePictureURL']); ?>" style="width: 100%; max-height: 300px; object-fit: contain; border: 1px solid var(--border); border-radius:8px;">
+                            <?php endif; ?>
+                        </div>
+                        <?php if (empty($s['evidenceVideoURL']) && empty($s['evidencePictureURL'])): ?>
                             <p>No evidence file found.</p>
                         <?php endif; ?>
                     </div>
