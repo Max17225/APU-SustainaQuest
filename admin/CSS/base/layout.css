@@ -1024,10 +1024,32 @@ body {
     transform:  scale(0.90);
 }
 
+/* First column (checkbox) */
+.management-table .record-table th:nth-child(1),
+.management-table .record-table td:nth-child(1) {
+    width: 5vw;
+}
+
+/* Last column (edit button) */
+.management-table .record-table th:last-child,
+.management-table .record-table td:last-child {
+    width: 5vw;
+}
+
 /* Form design for managment page only */
 .form {
     font-family: var(--theme-font);
     color: var(--non-active);
+    overflow-y: auto;
+}
+
+.form::-webkit-scrollbar {
+    width: 8px;
+}
+
+.form::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }
 
 .form h2 {
@@ -1035,6 +1057,15 @@ body {
     font-size: 3rem;
     margin-top: 2vh;
     margin-bottom: 5vh;
+}
+
+.form img {
+    width: 15rem;
+    height: 15rem;
+    border: 2px solid rgb(var(--active-op-rgb));
+    border-radius: 12px;
+
+    cursor: pointer;
 }
 
 .form form {
@@ -1046,6 +1077,11 @@ body {
     flex-direction: column;
 }
 
+.form .image-group {
+    display: flex;
+    justify-content: center;
+}
+
 .form .form-group {
     display: flex;
     margin: 1.5vh 0;
@@ -1055,7 +1091,8 @@ body {
     font-size: 2rem;
 }
 
-.form-group input {
+.form-group input,
+.form-group textarea  {
     padding: 1vh 1vw;
     width: 55vw;
     margin-left: auto;
@@ -1101,6 +1138,7 @@ body {
     display: flex;
     justify-content: space-evenly;
     margin-top: 7vh;
+    padding-bottom: 3vh;
 }
 
 .form .form-action .btn {
@@ -1141,12 +1179,12 @@ body {
     margin-left: auto;
 }
 
-.form label {
+.form .radio-btn {
+    width: 2vw;
     cursor: pointer;
 }
 
-.form .radio-btn {
-    width: 2vw;
+.form .form-group .toggle-option {
     cursor: pointer;
 }
 
@@ -1530,7 +1568,7 @@ button[disabled] {
 }
 
 /*--------------------------------------------------------------------------------------------------------- user_management */
-.main-section .user-management {
+.main-section .management {
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -362,12 +362,23 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
             return;
         }
 
-        if (!confirm(`Delete ${ids.length} selected record(s)?`)) return;
+        // quest delete need reason
+        let reason = null;
+        if (entity === 'quest') {
+            reason = prompt('Enter delete reason for selected quest(s):');
+            if (!reason || !reason.trim()) {
+                alert('Delete reason is required.');
+                return;
+            }
+        } else {
+            if (!confirm(`Delete ${ids.length} selected record(s)?`)) return;
+        }
+
 
         fetch('process/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ entity, ids })
+            body: JSON.stringify({ entity, ids, reason })
         })
         .then(res => res.text())
         .then(text => {
@@ -399,11 +410,13 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
         let currentSort = null;
         let currentBan  = '0'; // default Normal
+        let currentType = 'daily';
 
         const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-        // get current module
+        // get current module and page
         const currentModule = "<?= $_GET['module'] ?? '' ?>";
+        const currentPage = "<?= $_GET['page'] ?? '' ?>";
 
         /* =========================
         Search 
@@ -421,7 +434,7 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
                 if (currentModule === 'quest') { // check for the row on title and creator
                     const title = row.dataset.title || '';
-                    const creator = row.dataset.creator || '';
+                    const creator = row.dataset.questCreator || ''; // access JS with camel case (questCreator = data-quest-creator)
                     match = title.includes(keyword) || creator.includes(keyword);
                 }
 
@@ -439,6 +452,10 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
                 if (currentModule === 'user') {
                     currentBan = btn.dataset.ban; // get the ban data 0 ro 1
+                }
+
+                if (currentModule === 'quest') {
+                    currentType = btn.dataset.questType.toLowerCase(); // Daily or Weekly
                 }
 
                 applyFilterAndSort();
@@ -472,40 +489,73 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
             let filtered = [...rows];
 
             // module user and page user (Ban filter)
-            if (currentModule === 'user') {
-                <?php if (($_GET['page']) === 'user'): ?>
+            if (currentModule === 'user' && currentPage === 'user') {
                     filtered = filtered.filter(row =>
                         row.dataset.banned === currentBan
                     );
-                <?php endif; ?>
+            }
+
+            if (currentModule === 'quest') {
+                filtered = filtered.filter(row =>
+                    row.dataset.questType === currentType
+                );
             }
 
             if (currentSort) {
                 filtered.sort((a, b) => {
-                    switch (currentSort) {
-                        case 'level':
-                            return b.dataset.level - a.dataset.level;
+                    if ( currentModule === 'user' && currentPage === 'user' ) {
+                        switch (currentSort) {
+                            case 'level':
+                                return b.dataset.level - a.dataset.level;
 
-                        case 'greenPoints':
-                            return b.dataset.points - a.dataset.points;
+                            case 'greenPoints':
+                                return b.dataset.points - a.dataset.points;
 
-                        case 'sub-approve':
-                            return b.dataset.approved - a.dataset.approved;
+                            case 'sub-approve':
+                                return b.dataset.approved - a.dataset.approved;
 
-                        case 'sub-reject':
-                            return b.dataset.rejected - a.dataset.rejected;
+                            case 'sub-reject':
+                                return b.dataset.rejected - a.dataset.rejected;
 
-                        case 'active':
-                            return b.dataset.total - a.dataset.total;
+                            case 'active':
+                                return b.dataset.total - a.dataset.total;
 
-                        case 'inactive':
-                            return a.dataset.total - b.dataset.total;
+                            case 'inactive':
+                                return a.dataset.total - b.dataset.total;
+                        }
+                    }
+
+                    if (currentModule === 'quest') {
+                        switch (currentSort) {
+                            case 'createDate':
+                                return new Date(b.dataset.createDate) - new Date(a.dataset.createDate);
+
+                            case 'exp':
+                                return Number(b.dataset.expReward) - Number(a.dataset.expReward);
+
+                            case 'greenPoint':
+                                return Number(b.dataset.pointReward) - Number(a.dataset.pointReward);
+
+                            case 'activated':
+                                return Number(b.dataset.isActive) - Number(a.dataset.isActive);
+
+                            default:
+                                return 0;
+                        }
                     }
                 });
             } else {
-                filtered.sort((a, b) =>
-                    a.dataset.username.localeCompare(b.dataset.username)
-                );
+                if (currentModule === 'user') {
+                    filtered.sort((a, b) =>
+                        a.dataset.username.localeCompare(b.dataset.username)
+                    );
+                }
+
+                if (currentModule === 'quest') {
+                    filtered.sort((a, b) =>
+                        a.dataset.title.localeCompare(b.dataset.title)
+                    );
+                }
             }
 
             tableBody.innerHTML = '';
@@ -525,7 +575,7 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
         const form = input.closest('form');
         const mode = form.dataset.mode; //  data-mode form mode create / edit
-        const hint = input.nextElementSibling; // get hint inside html
+        const hint = input.nextElementSibling; 
         const value = input.value.trim();
 
         // EDIT MODE: unchanged field -> skip validation
@@ -610,6 +660,7 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
                 hasInvalid = true;
             }
 
+            //Check for Edit, check if they change any data or not, if yes enable update button to click
             if (mode !== 'edit') return;
 
             const original = input.dataset.original;
@@ -634,20 +685,100 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
             if (original !== undefined && input.value !== original) {
                 hasChange = true;
             }
+
+            // file
+            if (input.type === 'file') {
+                if (input.files && input.files.length > 0) {
+                    hasChange = true;
+                }
+                return;
+            }
         });
 
+        /* =========================
+            TEXTAREA (Check if they edit text area)
+           ========================= */
+        form.querySelectorAll('textarea').forEach(textarea => {
+            if (mode !== 'edit') return;
+
+            const original = textarea.dataset.original ?? '';
+
+            if (textarea.value !== original) {
+                hasChange = true;
+            }
+        });
+
+
         if (mode === 'create') {
-            const empty = [...form.querySelectorAll('input[required]')]
-                .some(i => !i.value.trim());
+            let empty = false;
+
+            // Required inputs (text, number, email)
+            form.querySelectorAll('input[required]:not([type="radio"]):not([type="file"])')
+                .forEach(i => {
+                    if (!i.value.trim()) empty = true;
+                });
+
+            // Required textarea
+            form.querySelectorAll('textarea[required]')
+                .forEach(t => {
+                    if (!t.value.trim()) empty = true;
+                });
+
+            // Required file
+            form.querySelectorAll('input[type="file"][required]')
+                .forEach(f => {
+                    if (!f.files || f.files.length === 0) empty = true;
+                });
+
+            // Required radio groups
+            const radioNames = new Set(
+                [...form.querySelectorAll('input[type="radio"][required]')].map(r => r.name)
+            );
+
+            radioNames.forEach(name => {
+                if (!form.querySelector(`input[type="radio"][name="${name}"]:checked`)) {
+                    empty = true;
+                }
+            });
+
             submit.disabled = hasInvalid || empty;
             return;
         }
 
+        // for edit mode
         submit.disabled = !hasChange || hasInvalid;
     }
 
     document.addEventListener('DOMContentLoaded', checkForm);
+    document.addEventListener('input', checkForm);
+    document.addEventListener('change', checkForm);
 
+</script>
+
+<!-- Click Image to change -->
+<script>
+    const fileInput = document.getElementById('questIcon');
+    const frame = document.getElementById('imageFrame');
+    const preview = document.getElementById('previewImg');
+
+    frame.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            preview.src = e.target.result;
+            preview.hidden = false;
+
+            const placeholder = frame.querySelector('.placeholder');
+            if (placeholder) placeholder.remove();
+        };
+        reader.readAsDataURL(file);
+    });
 </script>
 
 

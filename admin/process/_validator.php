@@ -69,3 +69,26 @@ function validate_password(string $password): ?string
 
     return null;
 }
+
+function validate_quest_title($conn, $title, $id = 0) {
+
+    if (strlen($title) < 3 || strlen($title) > 100) {
+        return 'Title must be 3–100 characters';
+    }
+
+    $sql = "SELECT 1 FROM quests WHERE title = ?";
+    if ($id) $sql .= " AND questId != ?";
+
+    $stmt = $conn->prepare($sql);
+    $id
+        ? $stmt->bind_param("si", $title, $id)
+        : $stmt->bind_param("s", $title);
+
+    $stmt->execute();
+
+    if ($stmt->get_result()->num_rows) {
+        return 'Quest title already exists';
+    }
+
+    return null;
+}

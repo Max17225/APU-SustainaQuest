@@ -6,7 +6,7 @@ $isMod = ($type === 'mod');
 $nameField = $isMod ? 'modName' : 'userName';
 ?>
 
-<div class="user-management form">
+<div class="management form">
 
     <h2><?= $isMod ? 'Create Moderator' : 'Create User' ?></h2>
 

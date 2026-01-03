@@ -23,7 +23,7 @@ $users = $stmt->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!-------------------------------------------------------------------------------------------- HTML -->
-<div class="user-management user">
+<div class="management user">
     <!-- TOP normal or moderator selector -->
     <div class="top-type-option">
         <a href="?module=user&page=user"

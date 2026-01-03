@@ -20,8 +20,8 @@
 
     <!-- Daily Weekly Filter -->
     <div class="filter">
-        <button class="fil-btn left active" data-questType="Daily">Daily</button>
-        <button class="fil-btn right" data-questType="Weekly">Weekly</button>
+        <button class="fil-btn left active" data-quest-type="daily">Daily</button>
+        <button class="fil-btn right" data-quest-type="weekly">Weekly</button>
     </div>
 
 </div>

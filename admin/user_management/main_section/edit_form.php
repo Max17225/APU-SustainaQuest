@@ -38,7 +38,7 @@ if (!$data) {
 $nameField = $isMod ? 'modName' : 'userName';
 ?>
 
-<div class="user-management form">
+<div class="management form">
 
     <h2><?= $isMod ? 'Edit Moderator' : 'Edit User' ?></h2>
 

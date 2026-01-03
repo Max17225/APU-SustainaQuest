@@ -90,3 +90,62 @@ if ($entity === 'mod') {
     header("Location: ../?module=user&page=mod");
     exit;
 }
+
+// Change questDelete Table, drop the selected record to make the quest available again
+if ($_POST['entity'] === 'quests' && isset($_POST['restore'])) {
+
+    $id = (int)$_POST['id'];
+
+    // restore quest
+    $conn->query("DELETE FROM questDelete WHERE questId = $id");
+
+    header("Location: ../?module=quest&page=available");
+    exit;
+}
+
+if ($_POST['entity'] == 'quests') {
+    $id           = (int)$_POST['id'];
+    $title        = trim($_POST['title']);
+    $description  = trim($_POST['description']);
+    $pointReward  = (int)$_POST['pointReward'];
+    $expReward    = (int)$_POST['expReward'];
+    $type         = $_POST['questType'];
+
+    // ---------- ICON (OPTIONAL) ----------
+    $iconSQL = '';
+    $params  = [$title, $description, $pointReward, $expReward, $type];
+    $types   = "ssiss";
+
+    if (!empty($_FILES['questIcon']['name'])) {
+        $ext = pathinfo($_FILES['questIcon']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('quest_') . '.' . $ext;
+
+        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/APU-SustainaQuest/assets/image/quests/';
+        $fullPath = $baseDir . $filename;
+
+        move_uploaded_file($_FILES['questIcon']['tmp_name'], $fullPath);
+        $iconPath = 'assets/image/quests/' . $filename;
+
+        $iconSQL = ", questIconURL = ?";
+        $params[] = $iconPath;
+        $types .= "s";
+    }
+
+    $params[] = $id;
+    $types .= "i";
+
+    // ---------- UPDATE ----------
+    $sql = "
+        UPDATE quests
+        SET title = ?, description = ?, pointReward = ?, expReward = ?, type = ?
+        $iconSQL
+        WHERE questId = ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+
+    header("Location: ../?module=quest&page=available");
+    exit;
+}

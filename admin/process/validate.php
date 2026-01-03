@@ -1,6 +1,6 @@
 <?php
 // admin/process/validate.php
-// work with js to show hint
+// work with js 
 
 require_once __DIR__ . '/../../includes/db_connect.php';
 require_once __DIR__ . '/_validator.php';
@@ -18,6 +18,10 @@ if ($type === 'username') {
 
 if ($type === 'email') {
     $error = validate_email($conn, $value, $entity, $id);
+}
+
+if ($type === 'questTitle') {
+    $error = validate_quest_title($conn, $value, $id);
 }
 
 echo json_encode([

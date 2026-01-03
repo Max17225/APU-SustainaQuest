@@ -61,3 +61,52 @@ if ($entity === 'mod') {
     header("Location: ../?module=user&page=mod");
     exit;
 }
+
+/* =========================
+   CREATE QUEST
+   ========================= */
+if ($entity === 'quest') {
+
+    $iconPath = null;
+
+    if (!empty($_FILES['questIcon']['name'])) {
+
+        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/APU-SustainaQuest/assets/image/quests/';
+        // save directory if not 
+        if (!is_dir($baseDir)) {
+            mkdir($baseDir, 0777, true);
+        }
+
+        $ext = pathinfo($_FILES['questIcon']['name'], PATHINFO_EXTENSION); // extracts jpg, png...
+        $fileName = uniqid('quest_', true) . '.' . $ext; // generate a unique name
+
+        $fullPath = $baseDir . $fileName;
+
+        // move to target folder
+        move_uploaded_file($_FILES['questIcon']['tmp_name'], $fullPath);
+
+        // URL value saved into DB
+        $iconPath = 'assets/image/quests/' . $fileName;
+    }
+
+    $stmt = $conn->prepare("
+        INSERT INTO quests
+            (createdByAdminId, title, description, pointReward, expReward, type, questIconURL, isActive)
+        VALUES (1, ?, ?, ?, ?, ?, ?, 0)
+    ");
+
+    $stmt->bind_param(
+        "ssiiss",
+        $_POST['title'],
+        $_POST['description'],
+        $_POST['pointReward'],
+        $_POST['expReward'],
+        $_POST['questType'],
+        $iconPath
+    );
+
+    $stmt->execute();
+
+    header("Location: ../?module=quest&page=available");
+    exit;
+}
