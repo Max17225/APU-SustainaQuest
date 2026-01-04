@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $type = $_POST['type'] ?? 'Daily';
-    $pointReward = intval($_POST['pointReward'] ?? 0);
-    $expReward = intval($_POST['expReward'] ?? 0);
-    $questIconURL = null;
+    $point_reward = intval($_POST['pointReward'] ?? 0);
+    $exp_reward = intval($_POST['expReward'] ?? 0);
+    $quest_icon_url = null;
     $notice = '';
 
     if ($title === '' || $description === '') {
@@ -36,23 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
     } else {
         // Handle File Upload
         if (isset($_FILES['questIcon']) && $_FILES['questIcon']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../assets/image/quests/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+            $upload_dir = '../assets/image/quests/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
             }
 
-            $fileTmpPath = $_FILES['questIcon']['tmp_name'];
-            $fileName = $_FILES['questIcon']['name'];
-            $fileNameCmps = explode(".", $fileName);
-            $fileExtension = strtolower(end($fileNameCmps));
+            $file_tmp_path = $_FILES['questIcon']['tmp_name'];
+            $file_name = $_FILES['questIcon']['name'];
+            $file_name_cmps = explode(".", $file_name);
+            $file_extension = strtolower(end($file_name_cmps));
 
-            $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg', 'webp');
-            if (in_array($fileExtension, $allowedfileExtensions)) {
-                $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
-                $dest_path = $uploadDir . $newFileName;
+            $allowed_file_extensions = array('jpg', 'gif', 'png', 'jpeg', 'webp');
+            if (in_array($file_extension, $allowed_file_extensions)) {
+                $new_file_name = md5(time() . $file_name) . '.' . $file_extension;
+                $dest_path = $upload_dir . $new_file_name;
 
-                if(move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $questIconURL = 'assets/image/quests/' . $newFileName;
+                if(move_uploaded_file($file_tmp_path, $dest_path)) {
+                    $quest_icon_url = 'assets/image/quests/' . $new_file_name;
                 } else {
                     $notice = 'Error moving uploaded file.';
                 }
@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
         }
 
         if (empty($notice)) {
-            $modId = $_SESSION['user_id'] ?? null;
-            if (create_quest($conn, $title, $description, $type, $pointReward, $expReward, $modId, $questIconURL)) {
+            $mod_id = $_SESSION['user_id'] ?? null;
+            if (create_quest($conn, $title, $description, $type, $point_reward, $exp_reward, $mod_id, $quest_icon_url)) {
                 $notice = 'Quest created successfully (Added to pool).';
             } else {
                 $notice = 'Failed to create quest.';
@@ -76,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quest'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_quest'])) {
-    $questId = intval($_POST['quest_id'] ?? 0);
-    $modId = $_SESSION['user_id'] ?? 0;
+    $quest_id = intval($_POST['quest_id'] ?? 0);
+    $mod_id = $_SESSION['user_id'] ?? 0;
 
-    if (delete_quest($conn, $questId, $modId, 'Manual deletion from dashboard')) {
+    if (delete_quest($conn, $quest_id, $mod_id, 'Manual deletion from dashboard')) {
         $notice = 'Quest deleted successfully.';
     } else {
         $notice = 'Failed to delete quest.';
@@ -109,9 +109,9 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Arial,sans-serif}
     a{text-decoration:none;color:inherit}
-    .topbar{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(10,16,30,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+    .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:15px;padding:14px 18px;background:rgba(10,16,30,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
     .brand{font-weight:900}
-    .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .nav{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .nav a{padding:9px 12px;border-radius:999px;border:1px solid transparent;color:var(--muted);font-weight:750;font-size:14px}
     .nav a:hover{background:var(--panel);border-color:var(--border);color:var(--text)}
     .nav a.primary{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.28);color:var(--text)}
@@ -138,11 +138,22 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     td{background:rgba(255,255,255,.05);border:1px solid var(--border);padding:12px 10px;vertical-align:middle}
     tr td:first-child{border-top-left-radius:14px;border-bottom-left-radius:14px}
     tr td:last-child{border-top-right-radius:14px;border-bottom-right-radius:14px}
+    /* Mobile Sidebar */
+    .hamburger{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0}
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;opacity:0;visibility:hidden;transition:.3s}
+    .sidebar-overlay.active{opacity:1;visibility:visible}
+    .mobile-sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;background:#0b1220;z-index:100;transform:translateX(-100%);transition:.3s;border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:10px;margin:0}
+    .mobile-sidebar.active{transform:translateX(0)}
+    .mobile-sidebar a{padding:12px 16px;border-radius:12px;color:var(--muted);font-weight:700;display:block}
+    .mobile-sidebar a:hover,.mobile-sidebar a.active{background:var(--panel);color:var(--text)}
+    .mobile-sidebar .close-btn{align-self:flex-end;font-size:24px;background:none;border:none;color:var(--muted);cursor:pointer;margin-bottom:10px}
+    @media(max-width:768px){.nav{display:none}.hamburger{display:block}}
   </style>
 </head>
 <body>
 
 <div class="topbar">
+  <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
   <div class="brand">SustainaQuest</div>
   <div class="nav">
     <a href="mod_dashboard.php">Home</a>
@@ -153,6 +164,18 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     <a href="mod_recent_activity.php">Activity</a>
     <a class="logout" href="../includes/logout.php">Logout</a>
   </div>
+</div>
+
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="mobile-sidebar">
+  <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+  <a href="mod_dashboard.php">Home</a>
+  <a href="verify_submissions.php">Submissions</a>
+  <a href="manage_quest.php" class="active">Quests</a>
+  <a href="manage_users.php">Users</a>
+  <a href="mod_profile.php">Profile</a>
+  <a href="mod_recent_activity.php">Activity</a>
+  <a href="../includes/logout.php" style="color:#fb7185">Logout</a>
 </div>
 
 <div class="container">
@@ -246,5 +269,11 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     </div>
 </div>
 
+<script>
+function toggleSidebar(){
+  document.querySelector('.mobile-sidebar').classList.toggle('active');
+  document.querySelector('.sidebar-overlay').classList.toggle('active');
+}
+</script>
 </body>
 </html>

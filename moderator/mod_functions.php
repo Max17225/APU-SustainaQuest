@@ -2,13 +2,13 @@
 // moderator/mod_functions.php
 // Helper functions used by moderator pages
 
-function create_quest(mysqli $conn, string $title, string $description, string $type, int $pointReward = 0, int $expReward = 0, ?int $moderatorId = null, ?string $questIconURL = null): bool
+function create_quest(mysqli $conn, string $title, string $description, string $type, int $point_reward = 0, int $exp_reward = 0, ?int $moderator_id = null, ?string $quest_icon_url = null): bool
 {
     // Default isActive to 0 so it enters the pool waiting for rotation
     $sql = "INSERT INTO quests (createdByModeratorId, questIconURL, title, description, type, pointReward, expReward, isActive) VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
-    $stmt->bind_param('issssii', $moderatorId, $questIconURL, $title, $description, $type, $pointReward, $expReward);
+    $stmt->bind_param('issssii', $moderator_id, $quest_icon_url, $title, $description, $type, $point_reward, $exp_reward);
     $ok = $stmt->execute();
     $stmt->close();
     return (bool)$ok;
@@ -38,7 +38,7 @@ function rotate_quests(mysqli $conn): void
 
     // 2. Randomly activate 5 Daily quests
     // Logic: Select random Daily quests that are NOT in the questdelete table using JOIN
-    $sqlDaily = "UPDATE quests 
+    $sql_daily = "UPDATE quests 
                  SET isActive = 1 
                  WHERE questId IN (
                      SELECT questId FROM (
@@ -48,11 +48,11 @@ function rotate_quests(mysqli $conn): void
                          ORDER BY RAND() LIMIT 5
                      ) AS tmp
                  )";
-    $conn->query($sqlDaily);
+    $conn->query($sql_daily);
 
     // 3. Randomly activate 3 Weekly quests
     // Logic: Select random Weekly quests that are NOT in the questdelete table using JOIN
-    $sqlWeekly = "UPDATE quests 
+    $sql_weekly = "UPDATE quests 
                   SET isActive = 1 
                   WHERE questId IN (
                      SELECT questId FROM (
@@ -62,7 +62,7 @@ function rotate_quests(mysqli $conn): void
                          ORDER BY RAND() LIMIT 3
                      ) AS tmp
                  )";
-    $conn->query($sqlWeekly);
+    $conn->query($sql_weekly);
 }
 
 function fetch_pending_weekly_submissions(mysqli $conn): array
@@ -80,7 +80,7 @@ function fetch_pending_weekly_submissions(mysqli $conn): array
     return $res->fetch_all(MYSQLI_ASSOC);
 }
 
-function update_submission_status(mysqli $conn, int $submissionId, string $status, int $modId, string $reason = ''): bool
+function update_submission_status(mysqli $conn, int $submission_id, string $status, int $mod_id, string $reason = ''): bool
 {
     $now = date('Y-m-d H:i:s');
     
@@ -94,19 +94,19 @@ function update_submission_status(mysqli $conn, int $submissionId, string $statu
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
     
-    $stmt->bind_param('sissi', $status, $modId, $now, $reason, $submissionId);
+    $stmt->bind_param('sissi', $status, $mod_id, $now, $reason, $submission_id);
     $ok = $stmt->execute();
     $stmt->close();
     
     return (bool)$ok;
 }
 
-function delete_quest(mysqli $conn, int $questId, int $modId, ?string $reason = null): bool
+function delete_quest(mysqli $conn, int $quest_id, int $mod_id, ?string $reason = null): bool
 {
     // 1. Log to questdelete table first
     $stmt = $conn->prepare("INSERT INTO questdelete (questId, deletedByModeratorId, reason) VALUES (?, ?, ?)");
     if ($stmt) {
-        $stmt->bind_param('iis', $questId, $modId, $reason);
+        $stmt->bind_param('iis', $quest_id, $mod_id, $reason);
         $stmt->execute();
         $stmt->close();
     }
@@ -114,28 +114,28 @@ function delete_quest(mysqli $conn, int $questId, int $modId, ?string $reason = 
     // 2. Delete from quests table
     $stmt = $conn->prepare("DELETE FROM quests WHERE questId = ?");
     if (!$stmt) return false;
-    $stmt->bind_param('i', $questId);
+    $stmt->bind_param('i', $quest_id);
     $ok = $stmt->execute();
     $stmt->close();
     
     return (bool)$ok;
 }
 
-function ban_user(mysqli $conn, int $userId): bool
+function ban_user(mysqli $conn, int $user_id): bool
 {
     $stmt = $conn->prepare("UPDATE users SET isBanned = 1 WHERE userId = ?");
     if (!$stmt) return false;
-    $stmt->bind_param('i', $userId);
+    $stmt->bind_param('i', $user_id);
     $ok = $stmt->execute();
     $stmt->close();
     return (bool)$ok;
 }
 
-function unban_user(mysqli $conn, int $userId): bool
+function unban_user(mysqli $conn, int $user_id): bool
 {
     $stmt = $conn->prepare("UPDATE users SET isBanned = 0 WHERE userId = ?");
     if (!$stmt) return false;
-    $stmt->bind_param('i', $userId);
+    $stmt->bind_param('i', $user_id);
     $ok = $stmt->execute();
     $stmt->close();
     return (bool)$ok;
@@ -149,10 +149,10 @@ function fetch_all_users(mysqli $conn): array
     return $res->fetch_all(MYSQLI_ASSOC);
 }
 
-function approve_quest_submission(mysqli $conn, int $submissionId, int $modId): bool
+function approve_quest_submission(mysqli $conn, int $submission_id, int $mod_id): bool
 {
     // 1. Update status to Approved
-    if (!update_submission_status($conn, $submissionId, 'Approved', $modId, '')) {
+    if (!update_submission_status($conn, $submission_id, 'Approved', $mod_id, '')) {
         return false;
     }
 
@@ -163,26 +163,26 @@ function approve_quest_submission(mysqli $conn, int $submissionId, int $modId): 
         JOIN quests q ON qs.questId = q.questId
         WHERE qs.submissionId = ?
     ");
-    $stmt->bind_param('i', $submissionId);
+    $stmt->bind_param('i', $submission_id);
     $stmt->execute();
     $res = $stmt->get_result()->fetch_assoc();
     $stmt->close();
 
     if ($res && $res['submittedByUserId']) {
-        $userId = (int)$res['submittedByUserId'];
+        $user_id = (int)$res['submittedByUserId'];
         $points = (int)$res['pointReward'];
         $exp = (int)$res['expReward'];
 
         // 3. Award Green Points & XP
-        $conn->query("UPDATE users SET greenPoints = greenPoints + $points WHERE userId = $userId");
+        $conn->query("UPDATE users SET greenPoints = greenPoints + $points WHERE userId = $user_id");
         require_once __DIR__ . '/../user/user_functions.php';
-        add_xp_and_level_up($conn, $userId, $exp);
+        add_xp_and_level_up($conn, $user_id, $exp);
     }
 
     return true;
 }
 
-function revert_submission_status(mysqli $conn, int $submissionId): bool
+function revert_submission_status(mysqli $conn, int $submission_id): bool
 {
     $conn->begin_transaction();
 
@@ -194,7 +194,7 @@ function revert_submission_status(mysqli $conn, int $submissionId): bool
             JOIN quests q ON qs.questId = q.questId
             WHERE qs.submissionId = ?
         ");
-        $stmt->bind_param('i', $submissionId);
+        $stmt->bind_param('i', $submission_id);
         $stmt->execute();
         $submission = $stmt->get_result()->fetch_assoc();
         $stmt->close();
@@ -210,21 +210,21 @@ function revert_submission_status(mysqli $conn, int $submissionId): bool
 
         // 2. If it was approved, deduct points and XP from the user
         if ($submission['approveStatus'] === 'Approved' && $submission['submittedByUserId']) {
-            $userId = (int)$submission['submittedByUserId'];
+            $user_id = (int)$submission['submittedByUserId'];
             $points = (int)$submission['pointReward'];
             $exp = (int)$submission['expReward'];
 
-            $updateUserStmt = $conn->prepare("UPDATE users SET greenPoints = greenPoints - ?, levelProgress = levelProgress - ? WHERE userId = ?");
-            $updateUserStmt->bind_param('iii', $points, $exp, $userId);
-            $updateUserStmt->execute();
-            $updateUserStmt->close();
+            $update_user_stmt = $conn->prepare("UPDATE users SET greenPoints = greenPoints - ?, levelProgress = levelProgress - ? WHERE userId = ?");
+            $update_user_stmt->bind_param('iii', $points, $exp, $user_id);
+            $update_user_stmt->execute();
+            $update_user_stmt->close();
         }
 
         // 3. Reset the submission status to 'Pending' and clear verification data
-        $resetStmt = $conn->prepare("UPDATE questsubmissions SET approveStatus = 'Pending', verifyDate = NULL, verifiedByModeratorId = NULL, verifiedByAdminId = NULL, declinedReason = NULL WHERE submissionId = ?");
-        $resetStmt->bind_param('i', $submissionId);
-        $resetStmt->execute();
-        $resetStmt->close();
+        $reset_stmt = $conn->prepare("UPDATE questsubmissions SET approveStatus = 'Pending', verifyDate = NULL, verifiedByModeratorId = NULL, verifiedByAdminId = NULL, declinedReason = NULL WHERE submissionId = ?");
+        $reset_stmt->bind_param('i', $submission_id);
+        $reset_stmt->execute();
+        $reset_stmt->close();
 
         $conn->commit();
         return true;

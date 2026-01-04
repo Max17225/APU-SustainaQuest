@@ -15,21 +15,21 @@ unset($_SESSION['msg']);
 // Handle Approval/Rejection
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $msg = '';
-    $subId = intval($_POST['submission_id'] ?? 0);
+    $sub_id = intval($_POST['submission_id'] ?? 0);
     $action = $_POST['action'] ?? '';
     $reason = trim($_POST['reason'] ?? '');
-    $modId = $_SESSION['user_id'];
+    $mod_id = $_SESSION['user_id'];
 
-    if ($subId > 0 && in_array($action, ['Approve', 'Reject'])) {
+    if ($sub_id > 0 && in_array($action, ['Approve', 'Reject'])) {
         if ($action === 'Approve') {
-            if (approve_quest_submission($conn, $subId, $modId)) {
-                $msg = "Submission #$subId has been Approved and points awarded.";
+            if (approve_quest_submission($conn, $sub_id, $mod_id)) {
+                $msg = "Submission #$sub_id has been Approved and points awarded.";
             } else {
                 $msg = "Error approving submission.";
             }
         } elseif ($action === 'Reject') {
-            if (update_submission_status($conn, $subId, 'Rejected', $modId, $reason)) {
-                $msg = "Submission #$subId has been Rejected.";
+            if (update_submission_status($conn, $sub_id, 'Rejected', $mod_id, $reason)) {
+                $msg = "Submission #$sub_id has been Rejected.";
             } else {
                 $msg = "Error rejecting submission.";
             }
@@ -60,9 +60,9 @@ $submissions = fetch_pending_weekly_submissions($conn);
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Arial,sans-serif}
     a{text-decoration:none;color:inherit}
-    .topbar{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(10,16,30,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+    .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:15px;padding:14px 18px;background:rgba(10,16,30,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
     .brand{font-weight:900}
-    .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .nav{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .nav a{padding:9px 12px;border-radius:999px;border:1px solid transparent;color:var(--muted);font-weight:750;font-size:14px}
     .nav a:hover{background:var(--panel);border-color:var(--border);color:var(--text)}
     .nav a.primary{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.28);color:var(--text)}
@@ -74,24 +74,38 @@ $submissions = fetch_pending_weekly_submissions($conn);
     .alert{padding:10px 12px;border-radius:12px;border:1px solid var(--border);margin-bottom:12px;background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.25);color:#fff}
     
     .sub-header{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:15px}
-    .sub-content{display:flex;gap:20px;flex-wrap:wrap}
-    .evidence{flex:1;min-width:300px}
-    .details{flex:1}
+    .sub-content{display:flex;flex-direction:column;gap:20px}
+    .evidence{width:100%}
+    .details{width:100%}
+    .media-row{display:flex;gap:15px;flex-wrap:wrap}
+    .media-row > *{flex:1;min-width:300px}
     
     label{display:block;margin-top:12px;font-weight:700;font-size:13px;color:var(--muted)}
     textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;margin-top:6px;font-family:inherit}
     
     .btn-group{display:flex;gap:10px;margin-top:15px}
-    button{padding:10px 20px;border-radius:12px;border:1px solid transparent;color:#fff;font-weight:800;cursor:pointer;flex:1}
+    button{padding:10px 20px;border-radius:12px;border:1px solid transparent;color:#fff;font-weight:800;cursor:pointer}
+    .btn-group button{flex:1}
     .btn-approve{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.35);color:#34d399}
     .btn-approve:hover{background:rgba(52,211,153,.22)}
     .btn-reject{background:rgba(251,113,133,.15);border-color:rgba(251,113,133,.35);color:#fb7185}
     .btn-reject:hover{background:rgba(251,113,133,.22)}
+    /* Mobile Sidebar */
+    .hamburger{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0}
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;opacity:0;visibility:hidden;transition:.3s}
+    .sidebar-overlay.active{opacity:1;visibility:visible}
+    .mobile-sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;background:#0b1220;z-index:100;transform:translateX(-100%);transition:.3s;border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:10px;margin:0}
+    .mobile-sidebar.active{transform:translateX(0)}
+    .mobile-sidebar a{padding:12px 16px;border-radius:12px;color:var(--muted);font-weight:700;display:block}
+    .mobile-sidebar a:hover,.mobile-sidebar a.active{background:var(--panel);color:var(--text)}
+    .mobile-sidebar .close-btn{align-self:flex-end;font-size:24px;background:none;border:none;color:var(--muted);cursor:pointer;margin-bottom:10px}
+    @media(max-width:768px){.nav{display:none}.hamburger{display:block}}
   </style>
 </head>
 <body>
 
 <div class="topbar">
+  <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
   <div class="brand">SustainaQuest</div>
   <div class="nav">
     <a href="mod_dashboard.php">Home</a>
@@ -102,6 +116,18 @@ $submissions = fetch_pending_weekly_submissions($conn);
     <a href="mod_recent_activity.php">Activity</a>
     <a class="logout" href="../includes/logout.php">Logout</a>
   </div>
+</div>
+
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="mobile-sidebar">
+  <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+  <a href="mod_dashboard.php">Home</a>
+  <a href="verify_submissions.php" class="active">Submissions</a>
+  <a href="manage_quest.php">Quests</a>
+  <a href="manage_users.php">Users</a>
+  <a href="mod_profile.php">Profile</a>
+  <a href="mod_recent_activity.php">Activity</a>
+  <a href="../includes/logout.php" style="color:#fb7185">Logout</a>
 </div>
 
 <div class="container">
@@ -127,14 +153,18 @@ $submissions = fetch_pending_weekly_submissions($conn);
                 <div class="sub-content">
                     <div class="evidence">
                         <p style="font-weight:700; margin-bottom:8px;">Evidence:</p>
-                        <?php if (!empty($s['evidenceVideoURL'])): ?>
-                            <video controls style="width: 100%; max-height: 300px; background: #000; border-radius:8px;">
-                                <source src="<?php echo '../' . htmlspecialchars($s['evidenceVideoURL']); ?>" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        <?php elseif (!empty($s['evidencePictureURL'])): ?>
-                            <img src="<?php echo '../' . htmlspecialchars($s['evidencePictureURL']); ?>" style="width: 100%; max-height: 300px; object-fit: contain; border: 1px solid var(--border); border-radius:8px;">
-                        <?php else: ?>
+                        <div class="media-row">
+                            <?php if (!empty($s['evidenceVideoURL'])): ?>
+                                <video controls style="width: 100%; max-height: 300px; background: #000; border-radius:8px;">
+                                    <source src="<?php echo '../' . htmlspecialchars($s['evidenceVideoURL']); ?>" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            <?php endif; ?>
+                            <?php if (!empty($s['evidencePictureURL'])): ?>
+                                <img src="<?php echo '../' . htmlspecialchars($s['evidencePictureURL']); ?>" style="width: 100%; max-height: 300px; object-fit: contain; border: 1px solid var(--border); border-radius:8px;">
+                            <?php endif; ?>
+                        </div>
+                        <?php if (empty($s['evidenceVideoURL']) && empty($s['evidencePictureURL'])): ?>
                             <p>No evidence file found.</p>
                         <?php endif; ?>
                     </div>
@@ -160,5 +190,11 @@ $submissions = fetch_pending_weekly_submissions($conn);
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+<script>
+function toggleSidebar(){
+  document.querySelector('.mobile-sidebar').classList.toggle('active');
+  document.querySelector('.sidebar-overlay').classList.toggle('active');
+}
+</script>
 </body>
 </html>
