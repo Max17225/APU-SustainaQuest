@@ -36,7 +36,7 @@ $stmt = $conn->prepare("
 
         CASE
             WHEN qs.verifiedByAi = 1 THEN 'AI'
-            WHEN qs.verifiedByAdminId IS NOT NULL THEN 'Admin'
+            WHEN qs.verifiedByAdminId = 1 THEN 'Admin'
             WHEN qs.verifiedByModeratorId IS NOT NULL THEN m_verifier.modName
             ELSE 'Pending'
         END AS verifiedBy
@@ -55,9 +55,6 @@ $stmt = $conn->prepare("
     LEFT JOIN Moderators m_verifier
         ON qs.verifiedByModeratorId = m_verifier.moderatorId
 
-    LEFT JOIN Admins a_verifier
-        ON qs.verifiedByAdminId = a_verifier.adminId
-
     WHERE qs.submissionId = ?;
 ");
 
@@ -67,7 +64,7 @@ $stmt->execute();
 $data = $stmt->get_result()->fetch_assoc();
 
 if (!$data) {
-    echo '<p>Quest not found.</p>';
+    echo '<p>Record not found. (Reason: User getting deleted.)</p>';
     exit;
 }
 ?>
@@ -92,6 +89,8 @@ if (!empty($data['evidenceVideoURL'])) {
             <p>Created By: <?= htmlspecialchars($data['questCreator']) ?></p>
             <p class="description"><?= nl2br(htmlspecialchars($data['description'])) ?></p> 
         </div>
+
+        <hr>
 
         <!-- Submission info -->
         <div class="submission-info">

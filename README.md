@@ -1,60 +1,53 @@
-# 🌿 SustainaQuest 
+# 🌿 SustainaQuest
 
-A web-based sustainability engagement platform designed for the APU community to take part in eco-friendly challenges, earn Green Points, and redeem rewards.  
-This system encourages positive environmental behavior through gamification, education, and real-world impact.
-
----
-
-## 📘 Overview
-
-**SustainaQuest** allows APU students and staff to participate in daily and weekly sustainability challenges (called *Quests*).  
-Participants earn **Green Points** for completing verified eco-actions such as recycling, reducing waste, and saving energy.  
-Points can be used to redeem rewards in the in-app shop, while leaderboards and badges foster healthy competition among the community.
-
-The system reflects APU’s commitment to sustainability by combining **gamification**, **participation**, and **digital motivation**.
+A web-based, gamified sustainability engagement platform designed for the APU community. SustainaQuest leverages **Artificial Intelligence** and **Digital Gamification** to encourage eco-friendly behaviors through daily challenges, competitive leaderboards, and a reward redemption system.
 
 ---
 
-## 👥 User Roles
+## 📘 Technical Overview
 
-| Role | Description | Key Functions |
-|------|--------------|----------------|
-| 🧑‍🎓 **User (Student/Staff)** | Main participant who completes quests and earns points. | View quests, submit evidence, view leaderboard, redeem rewards. |
-| 🧑‍💻 **Moderator** | Verifies submitted challenges and maintains fairness. | Approve/decline submissions, create or manage quests. |
-| 👑 **Admin** | Full system control (GOD role). | Manage all data, users, shop, rewards, and reports. |
+* **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+* **AI Engine:** **TensorFlow.js** with **MobileNet** model (Client-side Image Classification)
+* **Backend:** PHP 
+* **Database:** MySQL 
+* **Server Environment:** WAMP (Apache/PHP configuration optimized for large media uploads)
+
+---
+
+## 👥 User Roles & Access Control
+
+| Role | Access Level | Key Functions |
+| :--- | :--- | :--- |
+| 👤 **Visitor** | **Read-Only** | Can view homepage, available quests, leaderboard and the shop catalog but cannot submit evidence, redeem items or view history. |
+| 🧑‍🎓 **User** | **Full Access** | Participate in quests, upload image/video evidence, earn XP/Points, redeem rewards, and track history. |
+| 🧑‍💻 **Moderator** | **Verification** | Review Weekly Quest "Pending" submissions and manage quest content. |
+| 👑 **Admin** | **System Control** | Manage users, configure shop inventory, view reports, and have full access of the entire system which can do all moderators can do. |
 
 ---
 
 ## 💡 Key Features
 
-### 🌱 Sustainability Challenges
-- Participate in **daily** (1–2 day) and **weekly** (larger) sustainability quests.
-- Upload photo evidence to verify completion.
-- Limited quests per day (3–5) to maintain focus.
+### 🤖 1. AI-Powered Quest Verification
+* **Real-Time Analysis:** Daily quests are verified instantly in the browser using **TensorFlow.js**.
+* **Smart Feedback:** The system analyzes the user's camera feed or upload *before* submission. If the object doesn't match the description, the upload is blocked, reducing server load and moderator backlog.
 
-### 🏅 Green Points & Rewards
-- Earn Green Points for verified challenges.
-- Spend points in the **Reward Shop**, which refreshes weekly with new items.
-- Top 3 participants on the leaderboard receive real or digital prizes.
+### 📹 2. Multi-Media Evidence Submission
+* **Daily Quests:** Accept image uploads (optimized for quick AI scans).
+* **Weekly Quests:** Accept **Video Evidence** (MP4/WebM) to document more complex tasks.
 
-### 📊 Leaderboard & Badges
-- View your rank compared to other APU participants.
-- Unlock achievement badges such as *Eco Starter*, *Recycling Hero*, etc.
+### 🛍️ 3. Secure Reward Shop
+* **Transactional Integrity:** Uses **SQL Row Locking** to prevent "race conditions" where two users might try to redeem the last item simultaneously.
+* **Validation:** Server-side checks ensure users have sufficient Green Points before processing any transaction.
+* **Inventory Management:** Items distinguish between "Permanent" (always available) and "Limited" (rare stock).
 
-### 🧾 Moderation & Verification
-- Moderators review user evidence for authenticity.
-- Cheating or false submissions can result in bans (enforced by Moderator/Admin).
+### 🎮 4. Advanced Gamification System
+* **XP & Leveling:** Users earn Experience Points (XP) alongside Green Points. Accumulating XP increases the User Level.
+* **Dynamic Badges:** The system runs an automated check on every login to award badges (e.g., *Green Rookie, Sustainability God*) based on specific milestones (Level 10, 5000 Points, etc.).
+* **Leaderboard:** Ranks users dynamically based on total Green Points and Levels.
 
-### 🛍️ Reward Shop (Weekly Refresh)
-- Displays available eco-friendly rewards.
-- Includes countdown timer to next refresh.
-- Refreshes automatically based on a preloaded item list in the database.
+### 🛡️ 5. Security & Validation
+* **Access Control:** Strict session management protects user data; unauthorized direct access to scripts is blocked.
+* **Data Safety:** All passwords are encrypted using **Bcrypt hashing**.
+* **Input Sanitization:** All file uploads are validated for type and size to prevent malicious attacks or server crashes.
 
 ---
-
-
-
-
-
-
-

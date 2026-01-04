@@ -15,8 +15,8 @@ return [
 
     /* ---------- Theme ---------- */
     'theme' => [
-        'default'   => 'dark',
-        'available' => ['dark', 'light']
+        'default'   => 'Dark',
+        'available' => ['Dark', 'Fridge']
     ],
 
     /* ---------- CSS ---------- */
@@ -24,7 +24,7 @@ return [
         'base' => [
             'CSS/admin.css',
         ],
-        // %s will be replaced by theme name
+        
         'theme' => 'CSS/theme/%s.css'
     ],
 

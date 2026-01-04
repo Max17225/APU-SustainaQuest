@@ -131,14 +131,14 @@ $stmt->close();
 <!-------------------------------------------------------------------------------------------- HTML -->
 <div class="admin-dashboard quest">
     <!-- TOP daily weekly selector -->
-    <div class="daily-weekly-option">
+    <div class="top-type-option">
         <a href="?module=dashboard&page=quest&type=daily"
-            class="option-btn daily-btn <?= $currentType === 'daily' ? 'active' : '' ?>">
+            class="type-option-btn <?= $currentType === 'daily' ? 'active' : '' ?>">
             Daily Quest
         </a>
 
         <a href="?module=dashboard&page=quest&type=weekly"
-            class="option-btn weekly-btn <?= $currentType === 'weekly' ? 'active' : '' ?>">
+            class="type-option-btn <?= $currentType === 'weekly' ? 'active' : '' ?>">
             Weekly Quest
         </a>
     </div>
@@ -148,13 +148,13 @@ $stmt->close();
         <div class="left-panel">
 
             <div class="number-card card">
-                <div class="card-title">Today Submission</div>
+                <h3 class="card-title">Today Submission</h3>
                 <div class="value"><?= $todaySubmission ?></div>
             </div>
 
 
             <div class="submission-ratio card">
-                <div class="card-title">Submission Ratio</div>
+                <h3 class="card-title">Submission Ratio</h3>
 
                 <div class="ratio-content">
                     <div class="pie-chart"
@@ -175,7 +175,7 @@ $stmt->close();
 
 
             <div class="available-quest card">
-                <div class="card-title">Today's Quest</div>
+                <h3 class="card-title">Today's Quest</h3>
 
                 <div class="table-wrapper">
                     <table class="record-table">
@@ -207,9 +207,9 @@ $stmt->close();
 
         <div class="right-panel">
             <div class="submission-record card">
-                <div class="card-title pc-version-title">Daily Quests Submission (Verify By AI)</div>
-                <div class="card-title phone-version-title">Daily Quests Submission</div>
-                
+                <h3 class="card-title pc-version-title">Daily Quests Submission (Verify By AI)</h3>
+                <h3 class="card-title phone-version-title">Daily Quests Submission</h3>
+
                 <div class="table-wrapper">
                     <table class="record-table">
                         <thead>
