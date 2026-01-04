@@ -184,7 +184,7 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
       top: 0;
       z-index: 50;
       display:flex;
-      justify-content:space-between;
+      gap: 15px;
       align-items:center;
       padding: 14px 18px;
       background: rgba(10, 16, 30, 0.75);
@@ -205,6 +205,7 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
     }
 
     .nav{
+      margin-left: auto;
       display:flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -416,11 +417,22 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
       font-size: 12px;
       text-align:center;
     }
+    /* Mobile Sidebar */
+    .hamburger{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0}
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;opacity:0;visibility:hidden;transition:.3s}
+    .sidebar-overlay.active{opacity:1;visibility:visible}
+    .mobile-sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;background:#0b1220;z-index:100;transform:translateX(-100%);transition:.3s;border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:10px;margin:0}
+    .mobile-sidebar.active{transform:translateX(0)}
+    .mobile-sidebar a{padding:12px 16px;border-radius:12px;color:var(--muted);font-weight:700;display:block}
+    .mobile-sidebar a:hover,.mobile-sidebar a.active{background:var(--panel);color:var(--text)}
+    .mobile-sidebar .close-btn{align-self:flex-end;font-size:24px;background:none;border:none;color:var(--muted);cursor:pointer;margin-bottom:10px}
+    @media(max-width:768px){.nav{display:none}.hamburger{display:block}}
   </style>
 </head>
 <body>
 
 <div class="topbar">
+  <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
   <div class="brand">
     SustainaQuest
     <small>Welcome, <?= $display_name ?></small>
@@ -435,6 +447,18 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
     <a href="mod_recent_activity.php">Activity</a>
     <a class="logout" href="../includes/logout.php">Logout</a>
   </div>
+</div>
+
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="mobile-sidebar">
+  <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+  <a href="mod_dashboard.php" class="active">Home</a>
+  <a href="verify_submissions.php">Submissions</a>
+  <a href="manage_quest.php">Quests</a>
+  <a href="manage_users.php">Users</a>
+  <a href="mod_profile.php">Profile</a>
+  <a href="mod_recent_activity.php">Activity</a>
+  <a href="../includes/logout.php" style="color:#fb7185">Logout</a>
 </div>
 
 <div class="container">
@@ -569,5 +593,11 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
   </div>
 
 
+<script>
+function toggleSidebar(){
+  document.querySelector('.mobile-sidebar').classList.toggle('active');
+  document.querySelector('.sidebar-overlay').classList.toggle('active');
+}
+</script>
 </body>
 </html>
