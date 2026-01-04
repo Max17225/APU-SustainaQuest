@@ -21,7 +21,7 @@ body {
 }
 
 /* =========================
-   Detail Drawer
+   Detail Drawer （admin_dashboard only）
    ========================= */
 .detail-overlay {
     position: fixed;
@@ -125,7 +125,7 @@ body {
     border-radius: 8px;
 }
 
-/* --------------------------------------------------------------------- admin_dashboard - quest_detail (Detail Panel) */
+/* ------------------------------------- quest_detail (Detail Panel) */
 .quest-detail {
     display: flex;
     flex-direction: column;
@@ -157,7 +157,7 @@ body {
     border-bottom: 1px solid rgb(var(--active-op-rgb));
 }
 
-/* --------------------------------------------------------------------- admin_dashboard - delete_detail (Detail Panel) */
+/* -------------------------------------- delete_detail (Detail Panel) */
 .detail-content .deleted .delete-reason {
     font-family: var(--theme-font);
     font-size: 1.3rem;
@@ -177,14 +177,14 @@ body {
     color: rgb(var(--active-op-rgb));
 }
 
-/* --------------------------------------------------------------------- admin_dashboard - submission_detail (Detail Panel) */
+/* ------------------------------------- submission_detail (Detail Panel) */
 .submission-detail {
     display: flex;
     gap: 10vw;
     justify-content: space-evenly;
 }
 
-/* ----------------------------------------------------- quest info */
+/* -------------------------------------- quest info (Detail Panel)*/
 .submission-detail .quest-info {
     font-family: var(--theme-font);
     display: flex;
@@ -223,7 +223,7 @@ body {
 
 }
 
-/* ----------------------------------------------------- submission info */
+/* ---------------------------------------- submission info (detail panel) */
 .submission-detail .submission-info {
     font-family: var(--theme-font);
     display: flex;
@@ -269,7 +269,7 @@ body {
     word-break: break-word;
 }
 
-/* ----------------------------------- Action buttons */
+/* -------------------- Action buttons (submission info (detail panel), reject or approve) */
 .submission-detail .detail-action {
     margin-top: 1.5rem;
     display: flex;
@@ -310,7 +310,7 @@ body {
     color: var(--non-active);
 }
 
-/* --------------------------------------------------------------------- admin_dashboard - user_detail (Detail Panel) */
+/* ---------------------------------------------------- user_detail (Detail Panel) */
 .user-detail-section {
     display: flex;
     gap: 1.5rem;
@@ -355,7 +355,7 @@ body {
     overflow-y: auto;
 }
 
-/* --------------------------------------------------------------------- admin_dashboard - user_detail (Detail Panel) */
+/* ----------------------------------------------------- redemption (Detail Panel) */
 .redemption-detail h3 {
     color: rgb(var(--active-op-rgb));
 }
@@ -582,7 +582,29 @@ body {
     padding-right: 2rem;
 }
 
-/* ----------------------------------- inside top bar tools (Search bar(general)) */
+/* ----------------------------------- Right side (DATE TIME (general)) */
+.top-bar-datetime {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+    cursor: default;
+}
+
+.top-bar-date {
+    font-size: 0.8rem;
+    font-family: var(--theme-font);
+    color: rgb(var(--active-op-rgb));
+}
+
+.top-bar-time {
+    font-size: 1.5rem;
+    font-family: var(--theme-font);
+    font-weight: 600;
+    color: rgb(var(--active-op-rgb));
+}
+
+/* ----------------------------------- top bar tools (Search bar(management page only)) */
 .top-bar input[type="text"] {
     flex: 1;
     padding: 10px 14px;
@@ -605,28 +627,6 @@ body {
     outline: none;
     border-color: rgb(var(--active-op-rgb));
     box-shadow: 0 0 10px rgba(var(--active-op-rgb), 0.2);
-}
-
-/* ----------------------------------- Right side (DATE TIME) */
-.top-bar-datetime {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.1;
-    cursor: default;
-}
-
-.top-bar-date {
-    font-size: 0.8rem;
-    font-family: var(--theme-font);
-    color: rgb(var(--active-op-rgb));
-}
-
-.top-bar-time {
-    font-size: 1.5rem;
-    font-family: var(--theme-font);
-    font-weight: 600;
-    color: rgb(var(--active-op-rgb));
 }
 
 /* ---------------------------------------------------------------------------------------------- admin_dashboard CSS (top bar) */
@@ -724,7 +724,7 @@ body {
     transform: translateY(1px);
 }
 
-/* ---------------------------------------------------------------------------------------------- user_management CSS (top bar) */
+/* --------------------------------------------------------------------------------------------------- management CSS (top bar) */
 .management-top-bar {
     display: flex;
     gap: 1rem;
@@ -812,7 +812,7 @@ body {
     box-shadow: 0 0 12px rgba(var(--active-op-rgb),0.45);
 }
 
-/* ---------------------------------------------------------------------------------------------- Setting CSS (top bar) */
+/* ----------------------------------------------------------------------------------------------------- Setting CSS (top bar) */
 .setting-top-bar .tool-title {
     font-family: var(--theme-font);
     font-size: 1.6rem;
@@ -857,7 +857,7 @@ body {
     color: rgb(var(--active-op-rgb));
 }
 
-/* ------------------------------------------------------ create/delete (user_management, quest_management, shop_management) */
+/* ------------------------------------------ create/delete - management page (user_management, quest_management, shop_management) */
 .main-section .create-delete-option {
     display: flex;
     width: 100%;
@@ -893,7 +893,7 @@ body {
     background: none;
 }
 
-/*------------------------------------------------------- table design */
+/*------------------------------------------------------------------------------------------------------ table design (general) */
 /* Every table-wrapper's parent container must have a flex property (e.g display: flex, flex-direction: column and min-height: 0) */
 .table-wrapper {
     flex: 1;              
@@ -1061,7 +1061,7 @@ body {
     width: 5vw;
 }
 
-/* Form design for managment page only */
+/* ------------------------------------------------------------------------------------- (Form) design for managment page only */
 .form {
     font-family: var(--theme-font);
     color: var(--non-active);
@@ -1230,7 +1230,7 @@ button[disabled] {
     pointer-events: none;
 }
 
-/*--------------------------------------------------------------------------------------------------------- admin_dashboard */
+/*------------------------------------------------------------------------------------------------------- admin_dashboard only */
 .main-section .admin-dashboard {
     display: flex;
     flex-direction: column;
@@ -1252,7 +1252,7 @@ button[disabled] {
     color: var(--green);
     font-weight: 600;
 }
-/*-------------------------------------------------------------------------------------------------- Cards (shared) */
+/*-------------------------------------------------------------------------------------------------- Cards */
 .card {
     position: relative;
 
@@ -1436,7 +1436,7 @@ button[disabled] {
     flex: 1;
     min-height: 0;
 }
-/*-------------------------------------------------------------------------------------- user_report */
+/*---------------------------------------------------------------------------------------------- user_report */
 /* -------------------------------------------------------------------------- Top panel */
 .user .top-panel {
     display: flex;
@@ -1604,7 +1604,7 @@ button[disabled] {
     min-height: 0;
 }
 
-/*--------------------------------------------------------------------------------------------------------- management (user, quest, shop)*/
+/*--------------------------------------------------------------------------------main section - management (user, quest, shop)*/
 .main-section .management {
     display: flex;
     flex-direction: column;
@@ -1623,7 +1623,7 @@ button[disabled] {
     padding-bottom: 1vh;
 }
 
-/*--------------------------------------------------------------------------------------------------------- Setting Main section*/
+/*------------------------------------------------------------------------------------------------------ Setting - Main section*/
 .main-section .setting-panel {
     display: flex;
     flex-direction: column;
@@ -1728,12 +1728,12 @@ button[disabled] {
             "nav";
     }
 
-    /* detial panel */
+    /* all (detial panel) */
     .detail-header h2 {
         font-size: 1.2rem;
     }
 
-    /*-------------------------- submission_detail (detail panel) */
+    /*----------------------------------------------------------------------------------- submission_detail (detail panel) */
     .submission-detail {
         flex-direction: column;
         gap: 1.5rem;
@@ -1773,7 +1773,7 @@ button[disabled] {
         gap: 0.8rem;
     }
 
-    /*-------------------------- user_detail (detail panel) */
+    /*--------------------------------------------------------------------------------------- user_detail (detail panel) */
     .user-detail-section {
         flex-direction: column;
         gap: 1rem;
@@ -1879,7 +1879,7 @@ button[disabled] {
         background-color: #242424e1;
     }  
 
-    /* ------------------------------------------------------------------------------------------ Setting */
+    /* --------------------------------------------------------------------------------------------------------- Setting page */
     .setting-top-bar {
         display: flex;
         justify-content: center;
@@ -1890,6 +1890,7 @@ button[disabled] {
     }
 
     /*--------------------------------------------------------------------------------------------------------- Main Section */
+    /* ----------------------------------------------------------------------------------------------- card  */
     .card {
         padding: 0.8rem;
     }
@@ -1898,6 +1899,7 @@ button[disabled] {
         display: none;
     }
 
+    /* ----------------------------------------------------------------------------------------------- Top type option */
     .main-section .top-type-option .type-option-btn {
         font-size: 1rem;
     }
@@ -1913,7 +1915,7 @@ button[disabled] {
         width: 90vw;
     }
 
-    /*------------------------------------------------------- management-table*/
+    /*------------------------------------------------------------------------------------------------ management-table*/
     .management-table {
         border-radius: 10px;
         width: 90vw;
@@ -1965,7 +1967,7 @@ button[disabled] {
         width: 40px;
     }
 
-    /*------------------------------------------------------- management form*/
+    /*---------------------------------------------------------------------------------------------------- management form*/
     .form h2 {
         font-size: 1.5rem;
         margin-bottom: 0.5rem;
@@ -1998,7 +2000,7 @@ button[disabled] {
         font-size: 0.8rem;
     }
 
-    /* ------------------------------------------------------------------------------------------ admin_dashboard */
+    /* ----------------------------------------------------------------------------------------------------- admin_dashboard */
     /*------------------------------------------------------- quest_report*/
     .quest .left-panel {
         flex: 2.4;
@@ -2168,7 +2170,7 @@ button[disabled] {
         font-size: 0.5rem;
     }
 
-    /*----------------------------------------------------------------------------------------------------- Setting Main section*/
+    /*-------------------------------------------------------------------------------------------------- Setting - Main section*/
     .main-section .setting-panel {
         padding-top: 2vh;
     }
@@ -2186,7 +2188,7 @@ button[disabled] {
         font-size: 0.8rem;
     }
 
-    /*--------------------------------------------------------------------------------------------------------- nav bar */
+    /*------------------------------------------------------------------------------------------------------- nav bar (bottom) */
     .nav-bar {
         box-shadow:
             0 0 24px rgba(0, 0, 0, 0.7),
