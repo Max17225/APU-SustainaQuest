@@ -1,0 +1,37 @@
+/* admin/CSS/theme/Fridge.css */
+
+:root {
+    /* =========================
+       Core colors
+       ========================= */
+    --nav-bg: #363636;
+    --top-main-bg: #2b2b2b;
+    --logo-light-green: rgb(145, 145, 145);
+    --nav-op-bg: rgba(123, 123, 123, 0.16);
+
+    /* use number only for this variable!!!, in css this color might use to change for opacity */
+    --active-op-rgb: 255, 255, 255;
+    --non-active: rgb(119, 119, 119);
+
+    /* Glow light effect for text, normally rgb value were close to --active-op-rgb */
+    --text-glow-in: rgb(255, 255, 255);
+    --text-glow-out: rgb(255, 255, 255);
+
+    /* Card bg must be rgba */
+    --card-bg: rgba(255, 255, 255, 0.12);
+    
+    /* Detail Panel */
+    --outside-detail-bg: rgba(0, 0, 0, 0.55);
+    --inside-detail-bg: #262626;
+
+    /* button color, normally for yes or no */
+    --red: rgb(154, 0, 0);
+    --green: rgb(0, 154, 23);
+
+    /* text input */
+    --input-text-color: rgb(173, 173, 173);
+    --placeholder-color: rgba(255,255,255,0.5);
+
+    /* font-family */
+    --theme-font: "Aldrich", sans-serif;
+}

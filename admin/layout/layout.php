@@ -300,6 +300,45 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
     });
 </script>
 
+<!-- switch page button script (admin_dashboard) -->
+<script>
+    (function () {
+        const bar = document.querySelector('.admin-dashboard-top-bar');
+        if (!bar) return;
+
+        const leftBtn  = bar.querySelector('.left-btn');
+        const rightBtn = bar.querySelector('.right-btn');
+
+        if (!leftBtn || !rightBtn) return;
+
+        // Order definition (single source of truth)
+        const pages = ['quest', 'user', 'mod', 'shop'];
+
+        // Read current page from URL
+        const params = new URLSearchParams(window.location.search);
+        const module = params.get('module') || 'dashboard';
+        const current = params.get('page') || 'quest';
+
+        let index = pages.indexOf(current);
+        if (index === -1) index = 0;
+
+        function goTo(i) {
+            const page = pages[i];
+            window.location.href = `?module=${module}&page=${page}`;
+        }
+
+        leftBtn.addEventListener('click', () => {
+            index = (index - 1 + pages.length) % pages.length;
+            goTo(index);
+        });
+
+        rightBtn.addEventListener('click', () => {
+            index = (index + 1) % pages.length;
+            goTo(index);
+        });
+    })();
+</script>
+
 <!------------------------ Script for (user_management, quest_management, shop_management) ---------------->
 <script>
     document.querySelectorAll('.fil-btn').forEach(btn => {
