@@ -988,6 +988,16 @@ body {
     border-top-right-radius: 10px;
 }
 
+.management-table .small-col {
+    width: 8vw;
+}
+
+.management-table td .item-cell {
+    display: flex;
+    align-items: center;
+    gap: 2vw;
+}
+
 .management-table .check-all {
     position: relative;
     top: 2px;
@@ -1017,6 +1027,14 @@ body {
 .management-table .edit-btn svg {
     width: 1.4rem;
     height: 1.4rem;
+}
+
+.management-table img {
+    width: 4rem;
+    height: 4rem;
+
+    border-radius: 10px;
+    border: 2px solid var(--non-active);
 }
 
 .management-table .edit-btn:hover {
@@ -1109,6 +1127,14 @@ body {
     transition: 0.25s;
 }
 
+.form-group .readonly-field {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    color: rgb(var(--active-op-rgb));
+    font-size: 2rem;
+}
+
 .form-group input.valid {
     border: 3px solid var(--green);
     box-shadow: 0 0 10px rgba(0,255,162,.35);
@@ -1176,6 +1202,10 @@ body {
 }
 
 .form .status-toggle {
+    margin-left: auto;
+}
+
+.form .radio-hint-wrapper {
     margin-left: auto;
 }
 
@@ -1574,6 +1604,16 @@ button[disabled] {
     align-items: center;
     height: 100%;
     min-height: 0;
+}
+
+.management .note {
+    font-family: var(--theme-font);
+    color: var(--non-active);
+}
+
+.management .note-group {
+    text-align: center;
+    padding-bottom: 1vh;
 }
 
 /* ==========================

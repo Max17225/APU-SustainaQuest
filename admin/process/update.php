@@ -91,7 +91,7 @@ if ($entity === 'mod') {
     exit;
 }
 
-// Change questDelete Table, drop the selected record to make the quest available again
+// Change questDelete Table, drop the selected record to make the quest available again 
 if ($_POST['entity'] === 'quests' && isset($_POST['restore'])) {
 
     $id = (int)$_POST['id'];
@@ -147,5 +147,109 @@ if ($_POST['entity'] == 'quests') {
     $stmt->execute();
 
     header("Location: ../?module=quest&page=available");
+    exit;
+}
+
+if ($entity === 'items') {
+
+    $id = (int)$_POST['id'];
+
+
+    //   Fetch existing item
+    $stmt = $conn->prepare("
+        SELECT itemPictureURL, itemType
+        FROM items
+        WHERE itemId = ?
+    ");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $current = $stmt->get_result()->fetch_assoc();
+
+    if (!$current) {
+        die("Item not found");
+    }
+
+    $itemType = $current['itemType']; // IMMUTABLE
+    $picturePath = $current['itemPictureURL'];
+
+    // Image upload
+    if (!empty($_FILES['itemPicture']['name'])) {
+
+        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/APU-SustainaQuest/assets/image/items/';
+
+        if (!is_dir($baseDir)) {
+            mkdir($baseDir, 0777, true);
+        }
+
+        $ext = pathinfo($_FILES['itemPicture']['name'], PATHINFO_EXTENSION);
+        $fileName = uniqid('item_', true) . '.' . $ext;
+        $fullPath = $baseDir . $fileName;
+
+        move_uploaded_file($_FILES['itemPicture']['tmp_name'], $fullPath);
+
+        $picturePath = 'assets/image/items/' . $fileName;
+    }
+
+    // Available Process (Limited only)
+    $availableStatus = 0;
+
+    if ($itemType === 'Limited') {
+
+        $availableStatus = isset($_POST['availableStatus'])
+            ? (int)$_POST['availableStatus']
+            : 0;
+
+        // limit check
+        if ($availableStatus === 1) {
+
+            $check = $conn->prepare("
+                SELECT COUNT(*) AS total
+                FROM items
+                WHERE itemType = 'Limited'
+                  AND availableStatus = 1
+                  AND itemId != ?
+            ");
+            $check->bind_param("i", $id);
+            $check->execute();
+            $count = $check->get_result()->fetch_assoc()['total'];
+
+            if ($count >= 8) {
+                header("Location: ../?module=shop&action=edit&id={$id}");
+                exit;
+            }
+        }
+
+    } else {
+        // Permanent items never toggle availability
+        $availableStatus = $current['availableStatus'] ?? 1;
+    }
+
+    // update item detail
+    $stmt = $conn->prepare("
+        UPDATE items
+        SET
+            itemName = ?,
+            itemDesc = ?,
+            itemPictureURL = ?,
+            quantity = ?,
+            pointCost = ?,
+            availableStatus = ?
+        WHERE itemId = ?
+    ");
+
+    $stmt->bind_param(
+        "sssiiii",
+        $_POST['itemName'],
+        $_POST['itemDesc'],
+        $picturePath,
+        $_POST['quantity'],
+        $_POST['pointCost'],
+        $availableStatus,
+        $id
+    );
+
+    $stmt->execute();
+
+    header("Location: ../?module=shop");
     exit;
 }

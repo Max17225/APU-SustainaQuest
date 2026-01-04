@@ -110,3 +110,78 @@ if ($entity === 'quest') {
     header("Location: ../?module=quest&page=available");
     exit;
 }
+
+/* =========================
+   CREATE ITEM (SHOP)
+   ========================= */
+if ($entity === 'items') {
+
+    /* =========================
+       PERMANENT LIMIT CHECK
+       ========================= */
+    if ($_POST['itemType'] === 'Permanent') {
+
+        $check = $conn->query("
+            SELECT COUNT(*) AS total
+            FROM items
+            WHERE itemType = 'Permanent'
+        ");
+
+        $count = $check->fetch_assoc()['total'] ?? 0;
+
+        if ($count >= 8) {
+            // hard stop 
+            header("Location: ../?module=shop&action=create");
+            exit;
+        }
+    }
+
+    /* =========================
+       IMAGE UPLOAD
+       ========================= */
+    $imagePath = null;
+
+    if (!empty($_FILES['itemPicture']['name'])) {
+
+        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/APU-SustainaQuest/assets/image/items/';
+
+        if (!is_dir($baseDir)) {
+            mkdir($baseDir, 0777, true);
+        }
+
+        $ext = pathinfo($_FILES['itemPicture']['name'], PATHINFO_EXTENSION);
+        $fileName = uniqid('item_', true) . '.' . $ext;
+        $fullPath = $baseDir . $fileName;
+
+        move_uploaded_file($_FILES['itemPicture']['tmp_name'], $fullPath);
+
+        $imagePath = 'assets/image/items/' . $fileName;
+    }
+
+    /* =========================
+       INSERT ITEM
+       ========================= */
+    $availableStatus = ($_POST['itemType'] === 'Limited') ? 0 : 1;
+
+    $stmt = $conn->prepare("
+        INSERT INTO items
+            (itemName, itemDesc, itemPictureURL, quantity, itemType, pointCost, availableStatus)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+
+    $stmt->bind_param(
+        "sssisii",
+        $_POST['itemName'],
+        $_POST['itemDesc'],
+        $imagePath,
+        $_POST['quantity'],
+        $_POST['itemType'],
+        $_POST['pointCost'],
+        $availableStatus
+    );
+
+    $stmt->execute();
+
+    header("Location: ../?module=shop");
+    exit;
+}

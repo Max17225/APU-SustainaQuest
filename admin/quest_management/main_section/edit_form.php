@@ -58,7 +58,7 @@ if (!$data) {
             <!-- hidden file input -->
             <input
                 type="file"
-                id="questIcon"
+                id="icon"
                 name="questIcon"
                 accept="image/*"
                 hidden

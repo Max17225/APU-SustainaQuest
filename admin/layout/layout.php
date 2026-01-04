@@ -301,6 +301,21 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 </script>
 
 <!------------------------ Script for (user_management, quest_management, shop_management) ---------------->
+<script>
+    document.querySelectorAll('.fil-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.dataset.type;
+
+            document.querySelector('.status-permanent').style.display =
+                type === 'permanent' ? 'inline' : 'none';
+
+            document.querySelector('.status-limited').style.display =
+                type === 'limited' ? 'inline' : 'none';
+        });
+    });
+</script>
+
+
 <!-- add button -->
 <script>
     document.getElementById('addBtn')?.addEventListener('click', () => {
@@ -401,25 +416,29 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
     });
 </script>
 
-<!-- Script for management's top bar (search / sort tools) -->
+<!-- Script for management's top bar (search / sort tools / filter) -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
         const tableBody = document.querySelector('.management-table .record-table tbody');
         if (!tableBody) return;
 
-        let currentSort = null;
-        let currentBan  = '0'; // default Normal
-        let currentType = 'daily';
-
         const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-        // get current module and page
-        const currentModule = "<?= $_GET['module'] ?? '' ?>";
-        const currentPage = "<?= $_GET['page'] ?? '' ?>";
+        let currentSort = null;
 
         /* =========================
-        Search 
+        Current states
+        ========================= */
+        let currentBan       = '0';          // user
+        let currentQuestType = 'daily';      // quest
+        let currentItemType  = 'permanent';  // shop
+
+        const currentModule = "<?= $_GET['module'] ?? '' ?>";
+        const currentPage   = "<?= $_GET['page'] ?? '' ?>";
+
+        /* =========================
+        SEARCH
         ========================= */
         document.getElementById('searchInput')?.addEventListener('input', e => {
             const keyword = e.target.value.toLowerCase();
@@ -428,14 +447,17 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
                 let match = false;
 
                 if (currentModule === 'user') {
-                    const name = row.dataset.username || ''; // check for username, display the row which has the similar username
-                    match = name.includes(keyword);
+                    match = (row.dataset.username || '').includes(keyword);
                 }
 
-                if (currentModule === 'quest') { // check for the row on title and creator
-                    const title = row.dataset.title || '';
-                    const creator = row.dataset.questCreator || ''; // access JS with camel case (questCreator = data-quest-creator)
-                    match = title.includes(keyword) || creator.includes(keyword);
+                if (currentModule === 'quest') {
+                    match =
+                        (row.dataset.title || '').includes(keyword) ||
+                        (row.dataset.questCreator || '').includes(keyword);
+                }
+
+                if (currentModule === 'shop') {
+                    match = (row.dataset.name || '').includes(keyword);
                 }
 
                 row.style.display = match ? '' : 'none';
@@ -443,19 +465,25 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         });
 
         /* =========================
-            Filter 
+        FILTER BUTTONS
         ========================= */
         document.querySelectorAll('.fil-btn').forEach(btn => {
             btn.addEventListener('click', () => {
+
                 document.querySelectorAll('.fil-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
-                if (currentModule === 'user') {
-                    currentBan = btn.dataset.ban; // get the ban data 0 ro 1
+                if (currentModule === 'user') { // ban or normal
+                    currentBan = btn.dataset.ban;
                 }
 
-                if (currentModule === 'quest') {
-                    currentType = btn.dataset.questType.toLowerCase(); // Daily or Weekly
+                if (currentModule === 'quest') { // daily or weekly
+                    currentQuestType = btn.dataset.questType.toLowerCase();
+                }
+
+                if (currentModule === 'shop') {
+                    currentItemType = btn.dataset.type.toLowerCase(); 
+                    // permanent | limited
                 }
 
                 applyFilterAndSort();
@@ -463,7 +491,7 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         });
 
         /* =========================
-        Sort Buttons
+        SORT BUTTONS
         ========================= */
         document.querySelectorAll('.sort-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -482,69 +510,73 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         });
 
         /* =========================
-        Core logic (For sort button)
+        CORE LOGIC
         ========================= */
         function applyFilterAndSort() {
 
             let filtered = [...rows];
 
-            // module user and page user (Ban filter)
+            /* ---------- FILTER ---------- */
             if (currentModule === 'user' && currentPage === 'user') {
-                    filtered = filtered.filter(row =>
-                        row.dataset.banned === currentBan
-                    );
+                filtered = filtered.filter(row => row.dataset.banned === currentBan);
             }
 
             if (currentModule === 'quest') {
-                filtered = filtered.filter(row =>
-                    row.dataset.questType === currentType
-                );
+                filtered = filtered.filter(row => row.dataset.questType === currentQuestType);
             }
 
+            if (currentModule === 'shop') {
+                filtered = filtered.filter(row => row.dataset.type === currentItemType);
+            }
+
+            /* ---------- SORT ---------- */
             if (currentSort) {
                 filtered.sort((a, b) => {
-                    if ( currentModule === 'user' && currentPage === 'user' ) {
+
+                    /* USER */
+                    if (currentModule === 'user') {
                         switch (currentSort) {
-                            case 'level':
-                                return b.dataset.level - a.dataset.level;
-
-                            case 'greenPoints':
-                                return b.dataset.points - a.dataset.points;
-
-                            case 'sub-approve':
-                                return b.dataset.approved - a.dataset.approved;
-
-                            case 'sub-reject':
-                                return b.dataset.rejected - a.dataset.rejected;
-
-                            case 'active':
-                                return b.dataset.total - a.dataset.total;
-
-                            case 'inactive':
-                                return a.dataset.total - b.dataset.total;
+                            case 'level':        return b.dataset.level - a.dataset.level;
+                            case 'greenPoints':  return b.dataset.points - a.dataset.points;
+                            case 'sub-approve':  return b.dataset.approved - a.dataset.approved;
+                            case 'sub-reject':   return b.dataset.rejected - a.dataset.rejected;
+                            case 'active':       return b.dataset.total - a.dataset.total;
+                            case 'inactive':     return a.dataset.total - b.dataset.total;
                         }
                     }
 
+                    /* QUEST */
                     if (currentModule === 'quest') {
                         switch (currentSort) {
                             case 'createDate':
                                 return new Date(b.dataset.createDate) - new Date(a.dataset.createDate);
-
                             case 'exp':
-                                return Number(b.dataset.expReward) - Number(a.dataset.expReward);
-
+                                return b.dataset.expReward - a.dataset.expReward;
                             case 'greenPoint':
-                                return Number(b.dataset.pointReward) - Number(a.dataset.pointReward);
-
+                                return b.dataset.pointReward - a.dataset.pointReward;
                             case 'activated':
-                                return Number(b.dataset.isActive) - Number(a.dataset.isActive);
-
-                            default:
-                                return 0;
+                                return b.dataset.isActive - a.dataset.isActive;
                         }
                     }
+
+                    /* SHOP */
+                    if (currentModule === 'shop') {
+                        switch (currentSort) {
+                            case 'total-redeem':
+                                return b.dataset.total - a.dataset.total;
+                            case 'total-quantity':
+                                return b.dataset.quantity - a.dataset.quantity;
+                            case 'point-cost':
+                                return b.dataset.point - a.dataset.point;
+                            case 'item-available-status':
+                                return b.dataset.status - a.dataset.status;
+                        }
+                    }
+
+                    return 0;
                 });
             } else {
+                /* DEFAULT SORT */
                 if (currentModule === 'user') {
                     filtered.sort((a, b) =>
                         a.dataset.username.localeCompare(b.dataset.username)
@@ -554,6 +586,12 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
                 if (currentModule === 'quest') {
                     filtered.sort((a, b) =>
                         a.dataset.title.localeCompare(b.dataset.title)
+                    );
+                }
+
+                if (currentModule === 'shop') {
+                    filtered.sort((a, b) =>
+                        a.dataset.name.localeCompare(b.dataset.name)
                     );
                 }
             }
@@ -757,7 +795,7 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
 
 <!-- Click Image to change -->
 <script>
-    const fileInput = document.getElementById('questIcon');
+    const fileInput = document.getElementById('icon');
     const frame = document.getElementById('imageFrame');
     const preview = document.getElementById('previewImg');
 
@@ -781,5 +819,72 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
     });
 </script>
 
+<!-- Script for shop management from only (Create)-->
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        const form = document.querySelector('form[data-mode="create"]');
+        if (!form) return;
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const hint = document.getElementById('itemTypeHint');
+        const radios = form.querySelectorAll('input[name="itemType"]');
+
+        let permanentCount = 0;
+
+        // fetch total count
+        try {
+            const res = await fetch(
+                '/APU-SustainaQuest/admin/shop_management/process/get_item_count.php?type=Permanent'
+            );
+            const data = await res.json();
+            permanentCount = Number(data.count) || 0;
+        } catch {
+            permanentCount = 0;
+        }
+
+        // type selection logic
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+
+                // Reset state
+                hint.textContent = '';
+                submitBtn.disabled = false;
+
+                if (radio.value === 'Permanent' && permanentCount >= 8) {
+                    hint.textContent = 'Maximum 8 Permanent items allowed.';
+                    submitBtn.disabled = true;
+
+                    // Auto-uncheck
+                    radio.checked = false;
+                }
+            });
+        });
+
+    });
+</script>
+
+<!-- Script for shop management from only (Edit) -->
+<script>
+    document.addEventListener('change', async e => {
+
+        const input = e.target;
+        if (input.name !== 'availableStatus' || input.value !== '1') return;
+
+        const hint = document.getElementById('limitHint');
+        const submit = document.querySelector('button[type="submit"]');
+
+        const res = await fetch('/APU-SustainaQuest/admin/shop_management/process/check_limited_available.php');
+        const data = await res.json();
+
+        if (!data.allowed) {
+            hint.textContent = 'Maximum 8 limited items can be available.';
+            submit.disabled = true;
+            input.checked = false;
+        } else {
+            hint.textContent = '';
+        }
+    });
+</script>
 
 </html>
