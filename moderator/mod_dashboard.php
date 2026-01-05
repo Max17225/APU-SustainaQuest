@@ -42,7 +42,7 @@ $sql_approved_today = "
   SELECT COUNT(*) AS total
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
-  WHERE qs.approveStatus = 'Approved'
+  WHERE qs.approveStatus IN ('Approved', 'Completed')
     AND q.type = 'Weekly'
     AND qs.verifyDate IS NOT NULL
     AND DATE(qs.verifyDate) = CURDATE()
@@ -64,8 +64,11 @@ $rejected_today = (int) ($conn->query($sql_rejected_today)->fetch_assoc()['total
 // Active quests available (weekly)
 $sql_active_quests = "
   SELECT COUNT(*) AS total
-  FROM quests
-  WHERE type = 'Weekly'
+  FROM quests q
+  LEFT JOIN questdelete qd ON q.questId = qd.questId
+  WHERE q.type = 'Weekly'
+    AND q.isActive = 1
+    AND qd.questId IS NULL
 ";
 $active_quests = (int) ($conn->query($sql_active_quests)->fetch_assoc()['total'] ?? 0);
 
@@ -76,7 +79,7 @@ $total_users = (int) ($conn->query($sql_total_users)->fetch_assoc()['total'] ?? 
 // Approval rate (weekly)
 $sql_approval_rate = "
   SELECT
-    SUM(CASE WHEN qs.approveStatus='Approved' THEN 1 ELSE 0 END) AS completed_count,
+    SUM(CASE WHEN qs.approveStatus IN ('Approved', 'Completed') THEN 1 ELSE 0 END) AS completed_count,
     COUNT(*) AS total_count
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
@@ -97,7 +100,7 @@ $sql_popular = "
   FROM questsubmissions qs
   JOIN quests q ON qs.questId = q.questId
   WHERE q.type = 'Weekly'
-    AND qs.approveStatus = 'Approved'
+    AND qs.approveStatus IN ('Approved', 'Completed')
   GROUP BY q.questId
   ORDER BY completions DESC
   LIMIT 1
@@ -113,7 +116,7 @@ $sql_top_user = "
   JOIN users u ON qs.submittedByUserId = u.userId
   JOIN quests q ON qs.questId = q.questId
   WHERE q.type = 'Weekly'
-    AND qs.approveStatus = 'Approved'
+    AND qs.approveStatus IN ('Approved', 'Completed')
   GROUP BY u.userId
   ORDER BY total_completed DESC
   LIMIT 1
@@ -401,6 +404,7 @@ $display_name = htmlspecialchars($_SESSION['username'] ?? 'Moderator');
     .row{
       display:flex;
       justify-content:space-between;
+      flex-wrap:wrap;
       gap: 10px;
       padding: 12px 12px;
       border-radius: 14px;

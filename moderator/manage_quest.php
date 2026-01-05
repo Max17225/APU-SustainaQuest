@@ -235,6 +235,7 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
         <?php if (empty($quests)): ?>
             <p>No quests found.</p>
         <?php else: ?>
+            <div style="overflow-x:auto">
             <table>
                 <thead>
                     <tr><th>Icon</th><th>Title</th><th>Type</th><th>Points</th><th>EXP</th><th>Active</th><th>Created</th><th>Action</th></tr>
@@ -265,6 +266,7 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
                 <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         <?php endif; ?>
     </div>
 </div>

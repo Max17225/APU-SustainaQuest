@@ -16,7 +16,11 @@ function create_quest(mysqli $conn, string $title, string $description, string $
 
 function fetch_all_quests(mysqli $conn): array
 {
-    $sql = "SELECT * FROM quests ORDER BY createDate DESC";
+    $sql = "SELECT q.* 
+            FROM quests q
+            LEFT JOIN questdelete qd ON q.questId = qd.questId
+            WHERE qd.questId IS NULL
+            ORDER BY q.createDate DESC";
     $res = $conn->query($sql);
     if (!$res) return [];
     return $res->fetch_all(MYSQLI_ASSOC);
@@ -24,7 +28,11 @@ function fetch_all_quests(mysqli $conn): array
 
 function is_weekly_quest_active(mysqli $conn): bool
 {
-    $sql = "SELECT COUNT(*) AS cnt FROM quests WHERE type = 'Weekly' AND isActive = 1";
+    $sql = "SELECT COUNT(*) AS cnt 
+            FROM quests q
+            LEFT JOIN questdelete qd ON q.questId = qd.questId
+            WHERE q.type = 'Weekly' AND q.isActive = 1
+              AND qd.questId IS NULL";
     $res = $conn->query($sql);
     if (!$res) return false;
     $row = $res->fetch_assoc();
@@ -111,8 +119,8 @@ function delete_quest(mysqli $conn, int $quest_id, int $mod_id, ?string $reason 
         $stmt->close();
     }
 
-    // 2. Delete from quests table
-    $stmt = $conn->prepare("DELETE FROM quests WHERE questId = ?");
+    // 2. Soft Delete: Deactivate in quests table instead of deleting
+    $stmt = $conn->prepare("UPDATE quests SET isActive = 0 WHERE questId = ?");
     if (!$stmt) return false;
     $stmt->bind_param('i', $quest_id);
     $ok = $stmt->execute();
@@ -151,8 +159,8 @@ function fetch_all_users(mysqli $conn): array
 
 function approve_quest_submission(mysqli $conn, int $submission_id, int $mod_id): bool
 {
-    // 1. Update status to Approved
-    if (!update_submission_status($conn, $submission_id, 'Approved', $mod_id, '')) {
+    // 1. Update status to Completed
+    if (!update_submission_status($conn, $submission_id, 'Completed', $mod_id, '')) {
         return false;
     }
 
@@ -209,7 +217,7 @@ function revert_submission_status(mysqli $conn, int $submission_id): bool
         }
 
         // 2. If it was approved, deduct points and XP from the user
-        if ($submission['approveStatus'] === 'Approved' && $submission['submittedByUserId']) {
+        if (in_array($submission['approveStatus'], ['Approved', 'Completed']) && $submission['submittedByUserId']) {
             $user_id = (int)$submission['submittedByUserId'];
             $points = (int)$submission['pointReward'];
             $exp = (int)$submission['expReward'];
