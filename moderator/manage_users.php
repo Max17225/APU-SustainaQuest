@@ -128,6 +128,7 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
   </div>
 
   <div class="card">
+    <div style="overflow-x:auto">
     <table>
       <thead>
         <tr>
@@ -173,6 +174,7 @@ function e($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
       <?php endif; ?>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 

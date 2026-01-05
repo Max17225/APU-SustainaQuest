@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($sub_id > 0 && in_array($action, ['Approve', 'Reject'])) {
         if ($action === 'Approve') {
             if (approve_quest_submission($conn, $sub_id, $mod_id)) {
-                $msg = "Submission #$sub_id has been Approved and points awarded.";
+                $msg = "Submission #$sub_id has been marked as Completed and points awarded.";
             } else {
                 $msg = "Error approving submission.";
             }
@@ -78,7 +78,7 @@ $submissions = fetch_pending_weekly_submissions($conn);
     .evidence{width:100%}
     .details{width:100%}
     .media-row{display:flex;gap:15px;flex-wrap:wrap}
-    .media-row > *{flex:1;min-width:300px}
+    .media-row > *{flex:1;min-width:250px}
     
     label{display:block;margin-top:12px;font-weight:700;font-size:13px;color:var(--muted)}
     textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;margin-top:6px;font-family:inherit}
@@ -100,6 +100,7 @@ $submissions = fetch_pending_weekly_submissions($conn);
     .mobile-sidebar a:hover,.mobile-sidebar a.active{background:var(--panel);color:var(--text)}
     .mobile-sidebar .close-btn{align-self:flex-end;font-size:24px;background:none;border:none;color:var(--muted);cursor:pointer;margin-bottom:10px}
     @media(max-width:768px){.nav{display:none}.hamburger{display:block}}
+    @media(max-width:480px){.btn-group{flex-direction:column}.media-row > *{min-width:100%}}
   </style>
 </head>
 <body>

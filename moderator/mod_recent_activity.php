@@ -176,6 +176,7 @@ function who_verified($row){
   </div>
 
   <div class="card">
+    <div style="overflow-x:auto">
     <table>
       <thead>
         <tr>
@@ -212,7 +213,7 @@ function who_verified($row){
               <span class="badge <?= badge_class($r['approveStatus']) ?>">
                 <?= e($r['approveStatus'] ?? '-') ?>
               </span>
-              <?php if (in_array($r['approveStatus'], ['Approved', 'Rejected']) && $r['verifiedByAi'] != 1): ?>
+              <?php if (in_array($r['approveStatus'], ['Approved', 'Completed', 'Rejected']) && $r['verifiedByAi'] != 1): ?>
                 <form method="POST" style="margin-top: 5px;">
                     <input type="hidden" name="submission_id" value="<?= e($r['submissionId']) ?>">
                     <button type="submit" name="revert_submission" style="all:unset; cursor:pointer; font-size:11px; color: #60a5fa; text-decoration:underline;" onclick="return confirm('Are you sure you want to revert this submission to Pending?');">
@@ -230,6 +231,7 @@ function who_verified($row){
       <?php endif; ?>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 
