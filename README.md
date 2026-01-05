@@ -13,8 +13,7 @@ SustainaQuest leverages **Artificial Intelligence** and **Digital Gamification**
 | **Frontend** | HTML5, CSS3, JS | Vanilla JavaScript for responsive UI. |
 | **AI Engine** | **TensorFlow.js** | Uses **MobileNet** model for client-side image classification. |
 | **Backend** | PHP | Handles server-side logic and session management. |
-| **Database** | MySQL | Relational database for users, quests, and transactions. |
-| **Server** | WAMP | Apache/PHP configuration optimized for large media uploads. |
+| **Database** | MySQL | Relational database for storing and retrieving users, quests, and etc. |
 
 ---
 
@@ -41,7 +40,6 @@ SustainaQuest leverages **Artificial Intelligence** and **Digital Gamification**
 ### 🛡️ 5. Security & Validation
 * **Access Control:** Strict session management; unauthorized direct access to scripts is blocked.
 * **Encryption:** Passwords are secured using **Bcrypt hashing**.
-* **Sanitization:** All file uploads are validated for type and size to prevent malicious attacks.
 
 ---
 
@@ -110,3 +108,4 @@ Use the following accounts to test the system features.
 4.  Access the site via `localhost/APU-SustainaQuest`.
 
 ---
+
