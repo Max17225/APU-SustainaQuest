@@ -3,7 +3,7 @@ $title = 'Login - SustainaQuest';
 $left_paragraph = 'Every change begins with a choice — a choice to care, to act, and to move forward. SustainaQuest empowers you to take that first step — to make sustainability not a dream, but a habit. Together, our small steps become the path to a greener tomorrow.';
 
 $form_content = <<<HTML
-    <form action="login_process.php" method="POST">
+    <form action="process/login_process.php" method="POST">
 
         <h1>Login</h1>
 
@@ -44,5 +44,5 @@ HTML;
 
 $bottom_link = '<div class="switch-btn"><a href="../index.php">View as Guest</a></div>';
 
-include 'auth_layout.php';
+include 'auth_layout.php'; // A layout for the page, for better UX
 ?>

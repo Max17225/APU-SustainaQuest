@@ -3,7 +3,7 @@ $title = 'Register - SustainaQuest';
 $left_paragraph = 'Create your SustainaQuest account and start earning rewards for every eco-friendly action you take — from recycling to saving energy. Join a community committed to making a positive impact on the planet, one quest at a time!';
 
 $form_content =<<<HTML
-    <form action="register_process.php" method="POST">
+    <form action="process/register_process.php" method="POST">
         <h1>Register</h1>
 
         <!-- Email -->

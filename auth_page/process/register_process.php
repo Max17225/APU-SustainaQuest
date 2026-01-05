@@ -2,8 +2,8 @@
 
 <?php
 session_start();
-require_once '../includes/db_connect.php'; 
-require_once '../includes/general_function.php';
+require_once '../../includes/db_connect.php'; 
+require_once '../../includes/general_function.php';
 
 /* =========================
    Request Method Check
