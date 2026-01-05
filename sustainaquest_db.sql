@@ -35,6 +35,13 @@ CREATE TABLE IF NOT EXISTS `admins` (
   PRIMARY KEY (`adminId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`adminId`, `adminName`, `adminPassword`) VALUES
+(1, 'adam', '$2y$10$uyVeXLag3P9T.8KDMrBl0ulm9W/IxiP4DgCIiHzk9IEMhEbJ1KXd6');
+
 -- --------------------------------------------------------
 
 --
@@ -124,6 +131,17 @@ CREATE TABLE IF NOT EXISTS `moderators` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `moderators`
+--
+
+INSERT INTO `moderators` (`moderatorId`, `modName`, `modPassword`, `email`, `phoneNumber`) VALUES
+(1, 'Mod_Sarah', '$2y$10$CwPeP9jclUY6/O8rwAZkYOCLawThMnp9CFhPmOaqQEYQisjjls8Im', 'sarah@mod.com', '60192388281'),
+(2, 'Mod_Mike', '$2y$10$U9.fsyWzqo9EFkCOQ9FPhu8mXTzJQRtMY5cO8IKuLqjxE4zOSqHfm', 'mike@mod.com', '60118239292'),
+(3, 'Mod_Leo', '$2y$10$sHdLmpQ3UNHkpeTsF/h2ceLO96iCwEnrKRRPB4OBRwD3M8EK7Thou', 'leo@mod.com', '60291828371');
+COMMIT;
+
+
 -- --------------------------------------------------------
 
 --
@@ -172,14 +190,15 @@ CREATE TABLE IF NOT EXISTS `quests` (
 --
 
 INSERT INTO `quests` (`questId`, `createdByModeratorId`, `createdByAdminId`, `questIconURL`, `title`, `description`, `type`, `pointReward`, `expReward`, `createDate`, `isActive`) VALUES
-(1, NULL, NULL, 'assets/image/quests/bottle.png', 'Recycle Plastic Bottle', 'Find a plastic bottle. The AI looks for a \"water bottle\" or \"bottle\".', 'Daily', 10, 50, '2025-12-29 14:01:26', 1),
-(2, NULL, NULL, 'assets/image/quests/apple.png', 'Eat a Healthy Apple', 'Eat a fruit! Show us a red or green apple.', 'Daily', 10, 40, '2025-12-29 14:01:26', 1),
-(3, NULL, NULL, 'assets/image/quests/laptop.png', 'Eco-Friendly Work', 'Show us your workspace setup (Laptop).', 'Daily', 15, 60, '2025-12-29 14:01:26', 1),
-(4, NULL, NULL, 'assets/image/quests/mug.png', 'Reusable Coffee Mug', 'Drink from a reusable mug. Show us your \"cup\" or \"coffee mug\".', 'Daily', 10, 45, '2025-12-29 14:01:26', 1),
-(5, NULL, NULL, 'assets/image/quests/mouse.png', 'Sustainable Tech', 'Use a computer mouse instead of a trackpad for efficiency.', 'Daily', 5, 30, '2025-12-29 14:01:26', 1),
-(6, NULL, NULL, 'assets/image/quests/plant.png', 'Plant a Small Tree', 'Show us a potted plant or flower pot.', 'Weekly', 150, 500, '2025-12-29 14:01:26', 1),
-(7, NULL, NULL, 'assets/image/quests/bicycle.png', 'Cycle to Work', 'Ride a bicycle! Show us your bike.', 'Weekly', 200, 600, '2025-12-29 14:01:26', 1),
-(8, NULL, NULL, 'assets/image/quests/backpack.png', 'Pack a Reusable Bag', 'Show us your backpack or bag ready for the day.', 'Weekly', 100, 400, '2025-12-29 14:01:26', 1);
+(1, 1, NULL, 'assets/image/quests/bottle.png', 'Recycle Plastic Bottle', 'Find a plastic bottle. The AI looks for a \"water bottle\" or \"bottle\".', 'Daily', 10, 50, '2025-12-29 14:01:26', 1),
+(2, 1, NULL, 'assets/image/quests/apple.png', 'Eat a Healthy Apple', 'Eat a fruit! Show us a red or green apple.', 'Daily', 10, 40, '2025-12-29 14:01:26', 1),
+(3, 2, NULL, 'assets/image/quests/laptop.png', 'Eco-Friendly Work', 'Show us your workspace setup (Laptop).', 'Daily', 15, 60, '2025-12-29 14:01:26', 1),
+(4, 2, NULL, 'assets/image/quests/mug.png', 'Reusable Coffee Mug', 'Drink from a reusable mug. Show us your \"cup\" or \"coffee mug\".', 'Daily', 10, 45, '2025-12-29 14:01:26', 1),
+(5, 3, NULL, 'assets/image/quests/mouse.png', 'Sustainable Tech', 'Use a computer mouse instead of a trackpad for efficiency.', 'Daily', 5, 30, '2025-12-29 14:01:26', 1),
+(6, 3, NULL, 'assets/image/quests/plant.png', 'Plant a Small Tree', 'Show us a potted plant or flower pot.', 'Weekly', 150, 500, '2025-12-29 14:01:26', 1),
+(7, NULL, 1, 'assets/image/quests/bicycle.png', 'Cycle to Work', 'Ride a bicycle! Show us your bike.', 'Weekly', 200, 600, '2025-12-29 14:01:26', 1),
+(8, NULL, 1, 'assets/image/quests/backpack.png', 'Pack a Reusable Bag', 'Show us your backpack or bag ready for the day.', 'Weekly', 100, 400, '2025-12-29 14:01:26', 1);
+
 
 -- --------------------------------------------------------
 
@@ -213,7 +232,9 @@ CREATE TABLE IF NOT EXISTS `questsubmissions` (
 --
 
 INSERT INTO `questsubmissions` (`submissionId`, `questId`, `submittedByUserId`, `evidencePictureURL`, `evidenceVideoURL`, `submitDate`, `verifyDate`, `approveStatus`, `verifiedByAi`, `verifiedByModeratorId`, `verifiedByAdminId`, `declinedReason`) VALUES
-(1, 1, 1, 'assets/uploads/1766988919_img_69521c776278f.jpg', NULL, '2025-12-29 14:15:19', '2025-12-29 06:15:19', 'Approved', 1, NULL, NULL, NULL);
+(3, 4, 1, 'assets/uploads/1767590151_img_695b490771598.png', NULL, '2026-01-05 13:15:51', '2026-01-05 05:15:51', 'Completed', 1, NULL, NULL, NULL),
+(5, 8, 1, 'assets/uploads/1767590817_img_695b4ba114e33.jpg', 'assets/uploads/1767590817_vid_695b4ba114fd0.mp4', '2026-01-05 13:26:57', '2026-01-05 05:38:20', 'Pending', 0, NULL, NULL, NULL),
+(6, 7, 1, 'assets/uploads/1767590903_img_695b4bf7719dd.jpg', NULL, '2026-01-05 13:28:23', NULL, 'Pending', 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
