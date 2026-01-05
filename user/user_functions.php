@@ -91,7 +91,7 @@ function check_and_award_badges($conn, $user_id) {
     $current_level  = $user_data['level'];
 
     // Get Quest Count (Approved only)
-    $q_stmt = $conn->prepare("SELECT COUNT(*) as total FROM questsubmissions WHERE submittedByUserId = ? AND approveStatus = 'Approved'");
+    $q_stmt = $conn->prepare("SELECT COUNT(*) as total FROM questsubmissions WHERE submittedByUserId = ? AND approveStatus = 'Completed'");
     $q_stmt->bind_param("i", $user_id);
     $q_stmt->execute();
     $quest_count = $q_stmt->get_result()->fetch_assoc()['total'];
@@ -259,7 +259,7 @@ function get_user_quest_history($conn, $uid) {
     while($row = $result->fetch_assoc()) {
         if ($row['approveStatus'] == 'Pending') {
             $history['pending'][] = $row;
-        } elseif ($row['approveStatus'] == 'Approved') {
+        } elseif ($row['approveStatus'] == 'Completed') {
             $history['completed'][] = $row;
         } else {
             $history['rejected'][] = $row;
@@ -288,7 +288,7 @@ function get_leaderboard_data($conn, $filter = 'points', $limit = 50, $offset = 
         case 'quests':
             $main_stat_field = "totalQuests";
             // The fix: Copy the subquery logic here
-            $quest_subquery = "(SELECT COUNT(*) FROM questsubmissions qs WHERE qs.submittedByUserId = u.userId AND qs.approveStatus = 'Approved')";
+            $quest_subquery = "(SELECT COUNT(*) FROM questsubmissions qs WHERE qs.submittedByUserId = u.userId AND qs.approveStatus = 'Completed')";
             $order_clause = "$quest_subquery DESC, u.greenPoints DESC";
             break;
 
@@ -308,7 +308,7 @@ function get_leaderboard_data($conn, $filter = 'points', $limit = 50, $offset = 
             u.greenPoints, 
             u.level,
             -- Subquery to count approved quests (Aliased for display)
-            (SELECT COUNT(*) FROM questsubmissions qs WHERE qs.submittedByUserId = u.userId AND qs.approveStatus = 'Approved') as totalQuests,
+            (SELECT COUNT(*) FROM questsubmissions qs WHERE qs.submittedByUserId = u.userId AND qs.approveStatus = 'Completed') as totalQuests,
             -- Window function using the RAW sorting logic
             RANK() OVER (ORDER BY $order_clause) as current_rank
         FROM users u

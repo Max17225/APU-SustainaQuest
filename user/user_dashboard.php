@@ -78,7 +78,7 @@ $activity_sql = "
      FROM questsubmissions qs
      JOIN quests q ON qs.questId = q.questId
      WHERE qs.submittedByUserId = $user_id
-       AND qs.approveStatus = 'Approved')
+       AND qs.approveStatus = 'Completed')
 
     ORDER BY activity_date DESC
     LIMIT 6
@@ -192,7 +192,7 @@ if ($user_badges_result) {
                             </div>
                             
                             <span class="status-badge
-                                <?= strtolower($q['approveStatus']) === 'approved'
+                                <?= strtolower($q['approveStatus']) === 'completed'
                                     ? 'status-completed'
                                     : (strtolower($q['approveStatus']) === 'pending'
                                         ? 'status-pending'

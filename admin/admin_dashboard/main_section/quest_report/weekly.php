@@ -76,7 +76,7 @@ $result = $conn->query($sqlWeeklyQuest);
 $weeklyQuests = $result->fetch_all(MYSQLI_ASSOC);
 
 // -------------------------------------------------------------------- right panel
-$sqlDailySubmissions = "
+$sqlWeeklySubmissions = "
     SELECT
         qs.submissionId,
         q.title,
@@ -90,7 +90,7 @@ $sqlDailySubmissions = "
     ORDER BY qs.submitDate DESC
 ";
 
-$stmt = $conn->prepare($sqlDailySubmissions);
+$stmt = $conn->prepare($sqlWeeklySubmissions);
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -102,14 +102,14 @@ $stmt->close();
 <!-------------------------------------------------------------------------------------------- HTML -->
 <div class="admin-dashboard quest">
     <!-- TOP daily weekly selector -->
-    <div class="daily-weekly-option">
+    <div class="top-type-option">
         <a href="?module=dashboard&page=quest&type=daily"
-            class="option-btn daily-btn <?= $currentType === 'daily' ? 'active' : '' ?>">
+            class="type-option-btn <?= $currentType === 'daily' ? 'active' : '' ?>">
             Daily Quest
         </a>
         
         <a href="?module=dashboard&page=quest&type=weekly"
-            class="option-btn weekly-btn <?= $currentType === 'weekly' ? 'active' : '' ?>">
+            class="type-option-btn <?= $currentType === 'weekly' ? 'active' : '' ?>">
             Weekly Quest
         </a>
     </div>

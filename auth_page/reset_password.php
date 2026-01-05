@@ -3,7 +3,7 @@ $title = 'Reset Password - SustainaQuest';
 $left_paragraph = 'Every change begins with a choice — a choice to care, to act, and to move forward. SustainaQuest empowers you to take that first step — to make sustainability not a dream, but a habit. Together, our small steps become the path to a greener tomorrow.';
 
 $form_content =<<<HTML
-    <form action="reset_password_process.php" method="POST">
+    <form action="process/reset_password_process.php" method="POST">
         <h1>Reset Password</h1>
 
         <!-- username -->

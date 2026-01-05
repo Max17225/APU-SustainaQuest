@@ -35,8 +35,7 @@ $deletedQuests = $conn->query("
         d.deleteId,
         q.title,
         d.deleteDate,
-
-        COALESCE(m.modName, a.adminName) AS deletedBy,
+        m.modName AS deletedBy,
 
         CASE
             WHEN q.createdByAdminId IS NOT NULL THEN 'Admin'
@@ -46,15 +45,12 @@ $deletedQuests = $conn->query("
     FROM questDelete d
     JOIN quests q 
         ON d.questId = q.questId
-
     LEFT JOIN moderators m 
         ON d.deletedByModeratorId = m.moderatorId
-    LEFT JOIN admins a 
-        ON d.deletedByAdminId = a.adminId
-
     LEFT JOIN moderators m2 
         ON q.createdByModeratorId = m2.moderatorId
-
+    WHERE d.deletedByModeratorId IS NOT NULL
+      AND d.deletedByAdminId IS NULL
     ORDER BY d.deleteDate DESC
 ")->fetch_all(MYSQLI_ASSOC);
 
@@ -80,7 +76,6 @@ $submissions = $conn->query("
 
     WHERE qs.approveStatus != 'Pending'
       AND qs.verifiedByModeratorId IS NOT NULL
-      AND qs.verifiedByAdminId IS NULL
       AND qs.verifiedByAi = 0
     ORDER BY qs.verifyDate DESC
 ")->fetch_all(MYSQLI_ASSOC);

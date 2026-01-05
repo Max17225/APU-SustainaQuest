@@ -107,12 +107,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // ========================================================
     // 5. DETERMINE SUBMISSION STATUS
     // ========================================================
-    $status = ($is_ai_verified === 1) ? 'Approved' : 'Pending';
+    $status = ($is_ai_verified === 1) ? 'Completed' : 'Pending';
     $verified_by_ai = ($is_ai_verified === 1) ? 1 : 0;
 
     // If Approved, set verifyDate to NOW(). If Pending, keep it NULL.
     // We handle this via the SQL query logic or variable.
-    $verify_date_val = ($status === 'Approved') ? date('Y-m-d H:i:s') : null;
+    $verify_date_val = ($status === 'Completed') ? date('Y-m-d H:i:s') : null;
 
     // ========================================================
     // 6. SAVE SUBMISSION TO DATABASE
@@ -132,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // ====================================================
         // 7. AWARD POINTS & EXP (AUTO-APPROVED ONLY)
         // ====================================================
-        if ($status === 'Approved') {
+        if ($status === 'Completed') {
             
             // A. Award Green Points
             $upd = $conn->prepare("UPDATE users SET greenPoints = greenPoints + ? WHERE userId = ?");

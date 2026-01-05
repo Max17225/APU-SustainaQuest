@@ -1,27 +1,20 @@
 # 🌿 SustainaQuest
 
-A web-based, gamified sustainability engagement platform designed for the APU community. SustainaQuest leverages **Artificial Intelligence** and **Digital Gamification** to encourage eco-friendly behaviors through daily challenges, competitive leaderboards, and a reward redemption system.
+> **A web-based, gamified sustainability engagement platform designed for the APU community.**
+ 
+SustainaQuest leverages **Artificial Intelligence** and **Digital Gamification** to encourage eco-friendly behaviors through daily challenges, competitive leaderboards, and a reward redemption system.
 
 ---
 
 ## 📘 Technical Overview
 
-* **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
-* **AI Engine:** **TensorFlow.js** with **MobileNet** model (Client-side Image Classification)
-* **Backend:** PHP 
-* **Database:** MySQL 
-* **Server Environment:** WAMP (Apache/PHP configuration optimized for large media uploads)
-
----
-
-## 👥 User Roles & Access Control
-
-| Role | Access Level | Key Functions |
+| Component | Technology | Description |
 | :--- | :--- | :--- |
-| 👤 **Visitor** | **Read-Only** | Can view homepage, available quests, leaderboard and the shop catalog but cannot submit evidence, redeem items or view history. |
-| 🧑‍🎓 **User** | **Full Access** | Participate in quests, upload image/video evidence, earn XP/Points, redeem rewards, and track history. |
-| 🧑‍💻 **Moderator** | **Verification** | Review Weekly Quest "Pending" submissions and manage quest content. |
-| 👑 **Admin** | **System Control** | Manage users, configure shop inventory, view reports, and have full access of the entire system which can do all moderators can do. |
+| **Frontend** | HTML5, CSS3, JS | Vanilla JavaScript for responsive UI. |
+| **AI Engine** | **TensorFlow.js** | Uses **MobileNet** model for client-side image classification. |
+| **Backend** | PHP | Handles server-side logic and session management. |
+| **Database** | MySQL | Relational database for users, quests, and transactions. |
+| **Server** | WAMP | Apache/PHP configuration optimized for large media uploads. |
 
 ---
 
@@ -42,12 +35,78 @@ A web-based, gamified sustainability engagement platform designed for the APU co
 
 ### 🎮 4. Advanced Gamification System
 * **XP & Leveling:** Users earn Experience Points (XP) alongside Green Points. Accumulating XP increases the User Level.
-* **Dynamic Badges:** The system runs an automated check on every login to award badges (e.g., *Green Rookie, Sustainability God*) based on specific milestones (Level 10, 5000 Points, etc.).
+* **Dynamic Badges:** Automated checks run on login to award badges (e.g., *Green Rookie, Sustainability God*) based on milestones.
 * **Leaderboard:** Ranks users dynamically based on total Green Points and Levels.
 
 ### 🛡️ 5. Security & Validation
-* **Access Control:** Strict session management protects user data; unauthorized direct access to scripts is blocked.
-* **Data Safety:** All passwords are encrypted using **Bcrypt hashing**.
-* **Input Sanitization:** All file uploads are validated for type and size to prevent malicious attacks or server crashes.
+* **Access Control:** Strict session management; unauthorized direct access to scripts is blocked.
+* **Encryption:** Passwords are secured using **Bcrypt hashing**.
+* **Sanitization:** All file uploads are validated for type and size to prevent malicious attacks.
+
+---
+
+## 👥 User Roles & Access Control
+
+| Role | Access Level | Key Functions |
+| :--- | :--- | :--- |
+| 👤 **Visitor** | **Read-Only** | View homepage, quests, leaderboard, and shop catalog. Cannot submit evidence or redeem items. |
+| 🧑‍🎓 **User** | **Full Access** | Participate in quests, upload evidence, earn XP/Points, redeem rewards, and track history. |
+| 🧑‍💻 **Moderator** | **Verification** | Review Weekly Quest "Pending" submissions and manage quest content. |
+| 👑 **Admin** | **System Control** | Full system access. Manage users, shop inventory, view reports, and perform all moderator actions. |
+
+---
+
+## 🔐 Demo Login Credentials
+
+Use the following accounts to test the system features.
+
+### 👑 Admin Account
+| Username | Password |
+| :--- | :--- |
+| `adam` | `admin` |
+
+### 🧑‍💻 Moderator Accounts
+*All moderators share the same password.*
+> **Password:** `password123`
+
+* `Mod_Sarah`
+* `Mod_Mike`
+* `Mod_Leo`
+
+### 🧑‍🎓 User Accounts
+*All users share the same password.*
+> **Password:** `password123`
+
+<details>
+<summary><strong>👇 Click to expand list of User Accounts</strong></summary>
+
+| Username |
+| :--- |
+| `Adam_Super` |
+| `Eco_Warrior_X` |
+| `Green_Queen` |
+| `Planet_Protector` |
+| `Solar_Sam` |
+| `Nature_Nora` |
+| `Recycle_Rick` |
+| `Bio_Bella` |
+| `Windy_Wendy` |
+| `Carbon_Carl` |
+| `Clean_Air_Alice` |
+| `Ocean_Orion` |
+| `Litter_Larry` |
+| `Plastic_Pat` |
+| `Newbie_Tom` |
+
+</details>
+
+---
+
+## 💻 Installation
+
+1.  Download and install **WAMP Server**.
+2.  Clone this repository into your `www` (WAMP) folder.
+3.  Open **phpMyAdmin** and create a new database called "SustainaQuest" then import the `sustainaquest_db.sql` file into it.
+4.  Access the site via `localhost/APU-SustainaQuest`.
 
 ---
