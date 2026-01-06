@@ -29,7 +29,10 @@ $main_section_content = __DIR__ . '/main_section/' . ($pages[$page] ?? $pages['q
 /* =========================
    Render Layout
    ========================= */
+// Boolean Variable to help layout.php decide to load the script
+$load_dashboard_script = true;
+
 // Load the layout(include: nav bar, top bar, main section)
 require __DIR__ . '/../layout/layout.php';
-// Load admin dashboard script
-require __DIR__ . '/../js/admin_dashboard.php';
+
+

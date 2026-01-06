@@ -5,18 +5,15 @@
 
 <?php
 // -------------------------------------------------------------------- Today submission
-$today = date('Y-m-d');
-
 $sqlTodayCount = "
     SELECT COUNT(*) AS total
     FROM questsubmissions qs
     JOIN quests q ON qs.questId = q.questId
     WHERE q.type = 'Daily'
-      AND DATE(qs.submitDate) = ?
+      AND q.isActive = 1
 ";
 
 $stmt = $conn->prepare($sqlTodayCount);
-$stmt->bind_param("s", $today); // s = string
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -30,15 +27,12 @@ $sqlRatio = "
     FROM quests q
     LEFT JOIN questSubmissions qs
         ON q.questId = qs.questId
-        AND qs.submitDate >= ?
-        AND qs.submitDate < DATE_ADD(?, INTERVAL 1 DAY)
     WHERE q.type = 'Daily'
       AND q.isActive = 1
     GROUP BY q.questId
 ";
 
 $stmt = $conn->prepare($sqlRatio);
-$stmt->bind_param("ss", $today, $today);
 $stmt->execute();
 
 $result = $stmt->get_result();

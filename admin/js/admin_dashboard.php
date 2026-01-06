@@ -1,5 +1,7 @@
-<!-- Detail Panel Script -->
+<!-- admin/js/admin_dashboard.php-->
+
 <script>
+    // Detail Panel Script
     (() => {
         const overlay = document.getElementById('detailOverlay');
         const content = document.getElementById('detailContent');
@@ -40,8 +42,8 @@
     })();
 </script>
 
-<!-- Submission Approval/Rejection Script (Submission detail panel)(only for admin_dashboard) -->
 <script>
+    // Submission Approval/Rejection Script (Submission detail panel)(only for admin_dashboard)
     document.addEventListener('click', async (e) => {
         const btn = e.target.closest('.btn-approve, .btn-reject');
         if (!btn) return;
@@ -86,9 +88,9 @@
     });
 </script>
 
-<!-- Line Chart-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Line Chart
     document.addEventListener('DOMContentLoaded', () => {
 
         const data = window.__CHART_DATA__ || {};
@@ -149,8 +151,8 @@
     });
 </script>
 
-<!-- switch page button script (admin_dashboard) -->
 <script>
+    // switch page button script (admin_dashboard)
     (function () {
         const bar = document.querySelector('.admin-dashboard-top-bar');
         if (!bar) return;

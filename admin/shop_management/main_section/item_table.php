@@ -11,9 +11,7 @@ $stmt = $conn->query("
         i.pointCost,
         i.availableStatus,
 
-        COUNT(r.redemptionId) AS totalRedeem,
-        SUM(r.redempStatus = 1) AS completedRedeem,
-        SUM(r.redempStatus = 0) AS pendingRedeem,
+        COALESCE(SUM(r.redempQuantity), 0) AS totalRedeem,
 
         SUM(
             CASE 

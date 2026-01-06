@@ -1,4 +1,4 @@
-<!-- Timer script -->
+<!-- admin/js/top_bar_timer.php -->
 <script>
     function updateTopBarTime() {
         const now = new Date();

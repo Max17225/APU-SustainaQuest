@@ -34,7 +34,16 @@ else {
 /* =========================
    Render Layout
    ========================= */
+// Boolean Variable to help layout.php decide to load the script
+$load_management_script = true;
+$load_shop_management_script = true;
+
+if ($action === 'edit' || $action === 'create') {
+   $load_form_script = true;
+   $load_shop_form_script = true;
+   $load_management_script = false;
+   $load_shop_management_script = false;
+}
+
 // Load the layout(include: nav bar, top bar, main section)
 require_once __DIR__ . '/../layout/layout.php';
-// Load admin management script
-require_once __DIR__ . '/../js/admin_management.php';

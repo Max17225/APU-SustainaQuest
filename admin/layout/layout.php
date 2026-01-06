@@ -99,11 +99,12 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
     </div>
 </header>
 
-    <!-- ========== MAIN SECTION ========== -->
+    <!-- ========== MAIN SECTION (MODULE-SPECIFIC) ========== -->
     <main class="main-section">
         <?php require $main_section_content; ?>
     </main>
-
+    
+    <!-- ========== Detail Panel (ADMIN DASHBOARD ONLY) ========== -->
     <!-- Detail Panel (Used when user click on something and system need to display details, but not switch the page) -->
     <!-- For now only admin dashboard using this -->
     <div id="detailOverlay" class="detail-overlay">
@@ -118,9 +119,37 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
         </div>
     </div>
 
-</body>
+    <!-- ========== JS ========== -->
+     <?php
+    // Timer Script
+    require_once __DIR__ . '/../js/top_bar_timer.php'; 
 
-<!-- Timer Script -->
-<?php require __DIR__ . '/../js/top_bar_timer.php'; ?>
+    // admin_dashboard script
+    if (isset($load_dashboard_script) && $load_dashboard_script === true) {
+        require_once __DIR__ . '/../js/admin_dashboard.php';
+    }
+
+    // admin_management script
+    if (isset($load_management_script) && $load_management_script === true) {
+        require_once __DIR__ . '/../js/admin_management.php';
+    }
+
+    // shop_management script
+    if (isset($load_shop_management_script) && $load_shop_management_script === true) {
+        require_once __DIR__ . '/../js/shop_management.php';
+    }
+
+    // form script (crate form / edit form)
+    if (isset($load_form_script) && $load_form_script === true) {
+        require_once __DIR__ . '/../js/form.php';
+    }
+
+    // shop_management form script (crate form / edit form)
+    if (isset($load_shop_form_script) && $load_shop_form_script === true) {
+        require_once __DIR__ . '/../js/shop_management_form.php';
+    }
+
+    ?>
+</body>
 
 </html>
