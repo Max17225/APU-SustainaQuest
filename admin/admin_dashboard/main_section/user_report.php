@@ -88,19 +88,19 @@ $leaderboard = $stmt->fetch_all(MYSQLI_ASSOC);
 
         <!-- Total User Card -->
         <div class="user-card number-card card">
-            <div class="card-title">Total User</div>
+            <h3 class="card-title">Total User</h3>
             <div class="value"><?= $totalUsers ?></div>
         </div>
 
         <!-- Banned User Card -->
         <div class="user-card number-card card">
-            <div class="card-title">Banned User</div>
+            <h3 class="card-title">Banned User</h3>
             <div class="value"><?= $bannedUsers ?></div>
         </div>
 
         <!-- Average green point -->
         <div class="user-card number-card card">
-            <div class="card-title">Average Green Point</div>
+            <h3 class="card-title">Average Green Point</h3>
             <div class="value"><?= $averageGreenPoints ?></div>
         </div>
 

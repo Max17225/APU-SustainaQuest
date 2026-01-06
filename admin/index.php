@@ -3,7 +3,6 @@
 <?php
 // Entry Point
 require_once __DIR__ . '/../includes/db_connect.php';
-
 require_once __DIR__ . '/../includes/session_check.php';
 
 /* =========================
@@ -32,5 +31,5 @@ if (!array_key_exists($module, $modules)) {
     $module = 'dashboard';
 }
 
-// load module inside this file
+// load module inside this file (auto opening index.php only work for URL, so in here need to add /index.php)
 require __DIR__ . '/' . $modules[$module] . '/index.php';

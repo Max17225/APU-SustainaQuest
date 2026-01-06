@@ -36,3 +36,5 @@ else {
    ========================= */
 // Load the layout(include: nav bar, top bar, main section)
 require __DIR__ . '/../layout/layout.php';
+// Load admin management script
+require __DIR__ . '/../js/admin_management.php';

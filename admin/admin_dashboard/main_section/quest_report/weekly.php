@@ -119,13 +119,13 @@ $stmt->close();
         <div class="left-panel">
 
             <div class="number-card card">
-                <div class="card-title">Pending Submission</div>
+                <h3 class="card-title">Pending Submission</h3>
                 <div class="value"><?= $pendingCount ?></div>
             </div>
 
 
             <div class="submission-ratio card">
-                <div class="card-title">Submission Ratio</div>
+                <h3 class="card-title">Submission Ratio</h3>
 
                 <div class="ratio-content">
 
@@ -159,7 +159,7 @@ $stmt->close();
 
 
             <div class="available-quest card">
-                <div class="card-title">Available Weekly Quest</div>
+                <h3 class="card-title">Available Weekly Quest</h3>
 
                 <div class="table-wrapper">
                     <table class="record-table">
@@ -191,8 +191,8 @@ $stmt->close();
 
         <div class="right-panel">
             <div class="submission-record card">
-                <div class="card-title pc-version-title">Weekly Quests Submission</div>
-                <div class="card-title phone-version-title">Weekly Quests Submission</div>
+                <h3 class="card-title pc-version-title">Weekly Quests Submission</h3>
+                <h3 class="card-title phone-version-title">Weekly Quests Submission</h3>
                 
                 <div class="table-wrapper">
                     <table class="record-table">

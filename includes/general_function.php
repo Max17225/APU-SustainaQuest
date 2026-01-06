@@ -14,7 +14,8 @@ function image_path(string $key): string
 
 // Function to resolve page locations based on a param
 // param: string $page - the key representing the page(like 'login.php')
-// return: string - the corresponding page location
+// return: string - the corresponding page location with URL PATH
+// !!!!!! Note this is not suitable for require or include (PHP only unserstand file system path)
 function resolve_location(string $page): string
 {
     $page = trim($page);
