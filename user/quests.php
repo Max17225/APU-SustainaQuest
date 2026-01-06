@@ -235,7 +235,7 @@ if ($is_logged_in) {
                 <h2 style="margin-bottom: 10px; color: #264633;">Track Your Progress</h2>
                 <p style="font-size: 1.1rem;">Please log in to view your quest history, track submissions, and see your rewards.</p>
                 <br>
-                <a href="../auth_page/login_process.php" class="btn-primary" style="padding: 12px 30px; display: inline-block; width: auto; text-decoration: none;">Login / Register</a>
+                <a href="../auth_page/login.php" class="btn-primary" style="padding: 12px 30px; display: inline-block; width: auto; text-decoration: none;">Login / Register</a>
             </div>
 
         <?php endif; ?>
@@ -279,7 +279,7 @@ if ($is_logged_in) {
             <?php else: ?>
                 <div style="margin-top: 20px; text-align: center;">
                     <p style="margin-bottom: 10px; color: #666;">Want to earn points?</p>
-                    <a href="../auth_page/login_process.php" class="btn-primary" style="text-decoration:none; display:block; padding:12px 0;">Login to Participate</a>
+                    <a href="../auth_page/login.php" class="btn-primary" style="text-decoration:none; display:block; padding:12px 0;">Login to Participate</a>
                 </div>
             <?php endif; ?>
         </div>
