@@ -82,22 +82,22 @@ $theme = $_SESSION['admin_theme'] ?? $config['theme']['default'];
     </nav>
 
     <!-- ========== TOP BAR (MODULE-SPECIFIC) ========== -->
-<header class="top-bar">
-    <div class="top-bar-inner">
+    <header class="top-bar">
+        <div class="top-bar-inner">
 
-        <!-- Left: tools -->
-        <div class="top-bar-tools">
-            <?php require $top_bar_content; ?>
+            <!-- Left: tools -->
+            <div class="top-bar-tools">
+                <?php require $top_bar_content; ?>
+            </div>
+
+            <!-- Right: date & time -->
+            <div class="top-bar-datetime">
+                <div class="top-bar-date" id="topBarDate"></div>
+                <div class="top-bar-time" id="topBarTime"></div>
+            </div>
+
         </div>
-
-        <!-- Right: date & time -->
-        <div class="top-bar-datetime">
-            <div class="top-bar-date" id="topBarDate"></div>
-            <div class="top-bar-time" id="topBarTime"></div>
-        </div>
-
-    </div>
-</header>
+    </header>
 
     <!-- ========== MAIN SECTION (MODULE-SPECIFIC) ========== -->
     <main class="main-section">
