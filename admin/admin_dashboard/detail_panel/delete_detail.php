@@ -50,12 +50,14 @@ if (!$data) {
 /* ===============================
    Icon path handling
    =============================== */
-$iconPath = '/APU-SustainaQuest/' . ltrim($data['questIconURL'], '/');
+if (isset($data['questIconURL'])) {
+    $iconPath = '/APU-SustainaQuest/' . ltrim($data['questIconURL'], '/');
+}
 ?>
 
 <div class="quest-detail deleted">
 
-    <img src="<?= htmlspecialchars($iconPath) ?>" alt="Quest Icon" class="quest-icon">
+    <img src="<?= htmlspecialchars($iconPath ?? '') ?>" alt="Quest Icon" class="quest-icon">
 
     <h3>Quest Title: <?= htmlspecialchars($data['title']) ?></h3>
 
