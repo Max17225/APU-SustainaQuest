@@ -44,12 +44,14 @@ if (!$data) {
 ?>
 
 <?php
-$iconPath = '/APU-SustainaQuest/' . ltrim($data['questIconURL'], '/');
+if (isset($data['questIconURL'])) {
+    $iconPath = '/APU-SustainaQuest/' . ltrim($data['questIconURL'], '/');
+}
 ?>
 
 <!-- Quest Details -->
 <div class="quest-detail">
-    <img src="<?= htmlspecialchars($iconPath) ?>" alt="Quest Icon" class="quest-icon">
+    <img src="<?= htmlspecialchars($iconPath ?? '' ) ?>" alt="Quest Icon" class="quest-icon">
 
     <h3>Quest Title: <?= htmlspecialchars($data['title']) ?></h3>
 
